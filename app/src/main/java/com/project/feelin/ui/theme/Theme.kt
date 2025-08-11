@@ -18,26 +18,28 @@ import androidx.compose.ui.platform.LocalContext
 /**
  * 앱의 기본 다크 베이스 스킴.
  *
- * 동적 컬러가 비활성화되었거나 Android 12 미만일 때 사용되는 기본값이며,
- * 실제 제공 시에는 [resolvedColorScheme]에서 브랜드/표면 역할을 일부 오버라이드한다.
+ * 동적 컬러가 비활성화되었거나 Android 12 미만일 때 사용되는 기본값이며, 실제 제공 시에는 [resolvedColorScheme]에서 브랜드/표면 역할을 일부
+ * 오버라이드한다.
  */
-private val DarkColorScheme = darkColorScheme(
-    primary = DarkBrandPrimary,
-    secondary = DarkBrandSecondary,
-    tertiary = DarkBrandTertiary,
-)
+private val DarkColorScheme =
+    darkColorScheme(
+        primary = DarkBrandPrimary,
+        secondary = DarkBrandSecondary,
+        tertiary = DarkBrandTertiary,
+    )
 
 /**
  * 앱의 기본 라이트 베이스 스킴.
  *
- * 동적 컬러가 비활성화되었거나 Android 12 미만일 때 사용되는 기본값이며,
- * 실제 제공 시에는 [resolvedColorScheme]에서 브랜드/표면 역할을 일부 오버라이드한다.
+ * 동적 컬러가 비활성화되었거나 Android 12 미만일 때 사용되는 기본값이며, 실제 제공 시에는 [resolvedColorScheme]에서 브랜드/표면 역할을 일부
+ * 오버라이드한다.
  */
-private val LightColorScheme = lightColorScheme(
-    primary = LightBrandPrimary,
-    secondary = LightBrandSecondary,
-    tertiary = LightBrandTertiary,
-)
+private val LightColorScheme =
+    lightColorScheme(
+        primary = LightBrandPrimary,
+        secondary = LightBrandSecondary,
+        tertiary = LightBrandTertiary,
+    )
 
 /**
  * Material3의 ColorScheme 밖에서 관리하는 앱 전용 색 토큰.
@@ -93,19 +95,17 @@ val LocalFeelinColors = staticCompositionLocalOf {
  * @return 오버라이드가 반영된 최종 ColorScheme
  */
 @Composable
-private fun resolvedColorScheme(
-    darkTheme: Boolean,
-    dynamicColor: Boolean,
-): ColorScheme {
-    val base = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+private fun resolvedColorScheme(darkTheme: Boolean, dynamicColor: Boolean): ColorScheme {
+    val base =
+        when {
+            dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            }
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
+            darkTheme -> DarkColorScheme
+            else -> LightColorScheme
+        }
 
     return base.copy(
         primary = if (darkTheme) DarkBrandPrimary else LightBrandPrimary,
@@ -120,7 +120,6 @@ private fun resolvedColorScheme(
 
 /**
  * 앱 전역 테마 엔트리.
- *
  * - Material3 [ColorScheme]은 [resolvedColorScheme]로 제공
  * - 앱 고유 색 토큰은 [LocalFeelinColors]로 제공
  *
@@ -132,33 +131,30 @@ fun FeelinTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val colorScheme = resolvedColorScheme(darkTheme = darkTheme, dynamicColor = dynamicColor)
 
-    val appColors = if (darkTheme) {
-        FeelinColors(
-            modal = DarkSystemModal,
-            inputField = DarkSystemInputField,
-            point = CommonPoint,
-            border = DarkSystemBorder,
-            dim = CommonSystemDim,
-        )
-    } else {
-        FeelinColors(
-            modal = LightSystemModal,
-            inputField = LightSystemInputField,
-            point = CommonPoint,
-            border = LightSystemBorder,
-            dim = CommonSystemDim,
-        )
-    }
+    val appColors =
+        if (darkTheme) {
+            FeelinColors(
+                modal = DarkSystemModal,
+                inputField = DarkSystemInputField,
+                point = CommonPoint,
+                border = DarkSystemBorder,
+                dim = CommonSystemDim,
+            )
+        } else {
+            FeelinColors(
+                modal = LightSystemModal,
+                inputField = LightSystemInputField,
+                point = CommonPoint,
+                border = LightSystemBorder,
+                dim = CommonSystemDim,
+            )
+        }
 
     CompositionLocalProvider(LocalFeelinColors provides appColors) {
-        MaterialTheme(
-            colorScheme = colorScheme,
-            typography = Typography,
-            content = content
-        )
+        MaterialTheme(colorScheme = colorScheme, typography = Typography, content = content)
     }
 }

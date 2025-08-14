@@ -1,4 +1,4 @@
-package com.project.feelin.ui.theme
+package com.lyrics.feelin.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

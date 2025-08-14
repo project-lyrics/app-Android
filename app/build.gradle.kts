@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.project.feelin"
+    namespace = "com.lyrics.feelin"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.project.feelin"
+        applicationId = "com.lyrics.feelin"
         minSdk = 28
         targetSdk = 36
         versionCode = 1

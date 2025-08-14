@@ -1,4 +1,4 @@
-package com.project.feelin
+package com.lyrics.feelin
 
 import org.junit.Test
 

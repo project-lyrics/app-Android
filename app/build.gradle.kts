@@ -71,8 +71,12 @@ dependencies {
 //    ui image (coil)
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
+    implementation(libs.coil.svg)
 
 //    DI (hilt + dagger)
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
+
+//    time (kotlinx.datetime)
+    implementation(libs.kotlinx.datetime)
 }

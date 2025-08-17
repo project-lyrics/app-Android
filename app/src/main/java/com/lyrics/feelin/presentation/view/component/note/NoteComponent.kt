@@ -77,7 +77,8 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 modifier = Modifier.width(350.dp).height(132.dp).padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                //                Image(noteData.lyrics.background, contentDescription = null) TODO
+                // TODO(@이대근): 가사 배경 이미지 소스 확인 및 개발 필요 2025.08.17.
+                //                Image(noteData.lyrics.background, contentDescription = null)
                 Text(
                     noteData.lyrics.content,
                     style = MaterialTheme.typography.bodyLarge.copy(color = LightGray09),

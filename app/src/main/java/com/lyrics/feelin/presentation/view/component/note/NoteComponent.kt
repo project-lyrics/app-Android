@@ -11,12 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -29,7 +31,6 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray03
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
-import com.lyrics.feelin.presentation.view.component.profile.ProfileType
 import com.lyrics.feelin.util.compareNowToUser
 
 // TODO(@이대근): 다크모드 대응 필요 2025.08.17.
@@ -91,9 +92,10 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
                     model = noteData.song.imageUrl,
-                    modifier = Modifier.size(40.dp),
+                    modifier = Modifier.size(40.dp).clip(shape = RoundedCornerShape(4.dp)),
                     contentDescription = "${noteData.song.name}'s album art",
                 )
+                Spacer(modifier = Modifier.width(10.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = noteData.song.name, style = MaterialTheme.typography.bodyMedium)
                     Text(

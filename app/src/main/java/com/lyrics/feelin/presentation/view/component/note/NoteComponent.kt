@@ -46,7 +46,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 horizontalArrangement = Arrangement.Start,
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                ProfileComponent(type = ProfileType.POOP_HAIR, size = 32)
+                ProfileComponent(type = noteData.publisher.profileCharacterType, size = 32)
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = noteData.publisher.nickname,

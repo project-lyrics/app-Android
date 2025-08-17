@@ -1,4 +1,4 @@
-package com.lyrics.feelin.ui.theme
+package com.lyrics.feelin.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

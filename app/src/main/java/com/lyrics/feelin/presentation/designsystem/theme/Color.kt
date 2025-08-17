@@ -1,4 +1,4 @@
-package com.lyrics.feelin.ui.theme
+package com.lyrics.feelin.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
@@ -43,7 +43,7 @@ val DarkAlertWarning = Color(0xFF3C75FF)
 val LightSystemBorder = Color(0xFF101223)
 val DarkSystemBorder = Color(0xFF36363F)
 
-val LightGray00 = Color(0xFF000000)
+val LightGray00 = Color(0xFFFFFFFF)
 val LightGray01 = Color(0xFFF3F4F8)
 val LightGray02 = Color(0xFFD2D4DA)
 val LightGray03 = Color(0xFFB3B5BD)

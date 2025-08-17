@@ -9,6 +9,15 @@ enum class CommunityViewStatus {
     ERROR,
 }
 
+/**
+ * 커뮤니티 뷰의 상태를 관리하는 데이터 클래스
+ *
+ * @property status 로딩 상태
+ * @property artist 아티스트 정보
+ * @property isViewNoteOnlyLyrics 가사가 있는 노트만 보여줄 지 필터링 여부
+ * @property noteState 노트 상태 정보
+ * @property errorMessage 에러 메시지 (오류 발생 시에만 값 존재)
+ */
 data class CommunityViewState(
     val status: CommunityViewStatus,
     val artist: CommunityViewArtistData,
@@ -62,6 +71,14 @@ data class CommunityViewState(
     }
 }
 
+/**
+ * 커뮤니티 뷰에서 표시되는 아티스트 정보를 담는 데이터 클래스
+ *
+ * @property id 서버에서 받은 아티스트 id
+ * @property name 아티스트 이름
+ * @property imageUrl 아티스트 이미지 URL
+ * @property isLike 사용자가 좋아요 했는 지 여부
+ */
 data class CommunityViewArtistData(
     val id: Long,
     val name: String,
@@ -91,6 +108,12 @@ enum class CommunityViewNoteStatus {
     ERROR,
 }
 
+/**
+ * 커뮤니티 뷰에서 노트 목록의 상태를 관리하는 데이터 클래스
+ *
+ * @property status 로딩 상태
+ * @property notes 노트들
+ */
 data class CommunityViewNoteState(
     val status: CommunityViewNoteStatus,
     val notes: List<NoteComponentData>,

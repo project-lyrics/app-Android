@@ -111,7 +111,7 @@ data class NoteComponentLyricsData(val content: String, val background: LyricsBa
         fun sample(): NoteComponentLyricsData {
             return NoteComponentLyricsData(
                 content = "우리가 길을 헤메이는 시퍼런봄의\n날들은 아직 한가운데",
-                background = LyricsBackground.DEFAULT,
+                background = LyricsBackground.MINT,
             )
         }
     }

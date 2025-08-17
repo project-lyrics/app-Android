@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -77,10 +78,9 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 modifier = Modifier.width(350.dp).height(132.dp).padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center,
             ) {
-                // TODO(@이대근): 가사 배경 이미지 소스 확인 및 개발 필요 2025.08.17.
-                //                Image(noteData.lyrics.background, contentDescription = null)
+                LyricsBackground(background = noteData.lyrics.background)
                 Text(
-                    noteData.lyrics.content,
+                    text = noteData.lyrics.content,
                     style = MaterialTheme.typography.bodyLarge.copy(color = LightGray09),
                 )
             }
@@ -156,6 +156,31 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 modifier = Modifier.size(24.dp),
             )
         }
+    }
+}
+
+@Composable
+private fun LyricsBackground(background: LyricsBackground, modifier: Modifier = Modifier) {
+    Image(
+        painterResource(background.toImage()),
+        contentScale = ContentScale.Crop,
+        contentDescription = null,
+    )
+}
+
+private fun LyricsBackground.toImage(): Int {
+    return when (this) {
+        LyricsBackground.DEFAULT -> R.drawable.lyrics_background_img00
+        LyricsBackground.SKYBLUE -> R.drawable.lyrics_background_img01
+        LyricsBackground.BLUE -> R.drawable.lyrics_background_img02
+        LyricsBackground.LAVENDER -> R.drawable.lyrics_background_img03
+        LyricsBackground.MINT -> R.drawable.lyrics_background_img04
+        LyricsBackground.BLACK -> R.drawable.lyrics_background_img05
+        LyricsBackground.BEIGE -> R.drawable.lyrics_background_img06
+        LyricsBackground.PINKGREEN -> R.drawable.lyrics_background_img07
+        LyricsBackground.RED -> R.drawable.lyrics_background_img08
+        LyricsBackground.WHITE -> R.drawable.lyrics_background_img09
+        LyricsBackground.RAINBOW -> R.drawable.lyrics_background_img10
     }
 }
 

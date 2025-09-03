@@ -53,6 +53,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.R
+import com.lyrics.feelin.core.designsystem.icon.BackIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
@@ -94,7 +95,7 @@ fun CommunityMainScreen(
             LargeTopAppBar(
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Rounded.ArrowBack, contentDescription = "back")
+                        Icon(BackIcon, contentDescription = "back")
                     }
                 },
                 title = {

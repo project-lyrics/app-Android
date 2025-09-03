@@ -28,3 +28,7 @@ val MyPageActiveIcon: ImageVector
 val MyPageInactiveIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.mypage_inactive)
+
+val BackIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_back)

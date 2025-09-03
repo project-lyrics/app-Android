@@ -81,10 +81,11 @@ fun CommunityMainScreen(
     }
 
     Scaffold(
-        modifier = if (isCollapsed) {
-            Modifier
-                .windowInsetsPadding(WindowInsets.systemBars)
-        } else Modifier,
+        modifier = Modifier
+            .then(
+                Modifier.windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+                    .takeIf { isCollapsed } ?: Modifier
+            ),
         topBar = {
             if (isCollapsed) {
                 FeelinTopAppBarWithBack(

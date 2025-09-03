@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -20,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lyrics.feelin.core.designsystem.icon.BackIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 
@@ -84,37 +85,40 @@ fun FeelinTopAppBarWithBack(
     ),
     centeredTitle: Boolean = false,
 ) {
-    TopAppBarBase(
-        title = {
-            Text(
-                text = title,
-                style = TextStyle(
-                    fontSize = 18.sp,
-                    lineHeight = 24.sp,
-                    fontWeight = FontWeight(700),
-                    color = LightGray09,
-                    textAlign = TextAlign.Center,
+    Column {
+        TopAppBarBase(
+            title = {
+                Text(
+                    text = title,
+                    style = TextStyle(
+                        fontSize = 18.sp,
+                        lineHeight = 24.sp,
+                        fontWeight = FontWeight(700),
+                        color = LightGray09,
+                        textAlign = TextAlign.Center,
+                    )
                 )
-            )
-        },
-        actions = actions,
-        colors = colors,
-        centeredTitle = centeredTitle,
-        paddingValues = paddingValues,
-        navigationIcon = {
-            TopBarIconButton(
-                imageVector = BackIcon,
-                onClick = onBackClick,
-                contentDescription = "Back",
-            )
-        },
-        modifier = modifier,
-    )
-    Spacer(
-        Modifier
-            .size(1.dp)
-            .background(LightGray01)
-    )
+            },
+            actions = actions,
+            colors = colors,
+            centeredTitle = centeredTitle,
+            paddingValues = paddingValues,
+            navigationIcon = {
+                TopBarIconButton(
+                    imageVector = BackIcon,
+                    onClick = onBackClick,
+                    contentDescription = "Back",
+                )
+            },
+            modifier = modifier,
+        )
+        Spacer(
+            Modifier
+                .fillMaxWidth()
+                .size(1.dp)
+                .background(LightGray01)
+        )
+    }
 }
 
 @Composable
@@ -236,14 +240,14 @@ private fun FeelinTopAppBarWithBackPreview() {
 object FeelinTopAppBarDefaults {
 
     val HorizontalPadding: Dp = 20.dp
-    val VerticalPadding: Dp = 10.dp
+    val VerticalPadding: Dp = 16.dp
     val ActionIconSize: Dp = 24.dp
     val ActionButtonSize: Dp = 24.dp
     val NavigationButtonSize: Dp = 24.dp
     val ActionsSpacing: Dp = 4.dp
 
-    val TitleContentColor: Color = Black
-    val ContainerColor: Color = White
+    val TitleContentColor: Color = LightGray09
+    val ContainerColor: Color = LightGray00
     val ActionIconColor: Color = Black
     val NavigationIconColor: Color = Black
 

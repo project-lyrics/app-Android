@@ -1,6 +1,5 @@
 package com.lyrics.feelin.presentation.view.community
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -8,32 +7,31 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,16 +42,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.R
-import com.lyrics.feelin.core.designsystem.icon.BackIcon
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
+import com.lyrics.feelin.core.designsystem.component.FeelinTransparentTopAppBar
+import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
+import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
@@ -69,62 +68,58 @@ fun CommunityMainScreen(
     viewModel: CommunityViewModel = viewModel()
 ) {
     val listState = rememberLazyListState()
+    val communityViewState by viewModel.viewState.collectAsState()
 
-    val density = LocalDensity.current
-    val collapseThresholdPx = remember(density) { with(density) { 140.dp.roundToPx() } }
-
-    val topBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
-
-    val collapsed by remember {
+    val isCollapsed by remember {
         derivedStateOf {
-            listState.firstVisibleItemIndex > 0 ||
-                    listState.firstVisibleItemScrollOffset >= collapseThresholdPx
+            listState.firstVisibleItemIndex >= 1
         }
     }
-
-    val communityViewState by viewModel.viewState.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.loadCommunityData()
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = if (isCollapsed) {
+            Modifier
+                .windowInsetsPadding(WindowInsets.systemBars)
+        } else Modifier,
         topBar = {
-            LargeTopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(BackIcon, contentDescription = "back")
-                    }
-                },
-                title = {
-                    AnimatedVisibility(visible = collapsed) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 48.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = "$artistName 레코드",
-                                style = MaterialTheme.typography.titleLarge
-                            )
-                        }
-                    }
-                },
-                scrollBehavior = scrollBehavior,
-                colors = TopAppBarDefaults.largeTopAppBarColors(
-                    containerColor = Color.Transparent,
-                    scrolledContainerColor = MaterialTheme.colorScheme.surface
+            if (isCollapsed) {
+                FeelinTopAppBarWithBack(
+                    title = "$artistName 레코드",
+                    onBackClick = onBack,
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.systemBars.only(
+                            WindowInsetsSides.Top
+                        )
+                    )
                 )
-            )
+            } else {
+                FeelinTransparentTopAppBar(
+                    onBackClick = onBack,
+                    actions = {
+                        TopBarIconButton(
+                            imageVector = NotificationIcon,
+                            contentDescription = "알림",
+                            onClick = {}
+                        )
+                    },
+                    modifier = Modifier.windowInsetsPadding(
+                        WindowInsets.systemBars.only(
+                            WindowInsetsSides.Top
+                        )
+                    )
+                )
+            }
         },
         floatingActionButton = {
             FloatingActionButton(
                 containerColor = MaterialTheme.colorScheme.primary,
                 shape = CircleShape,
-                modifier = Modifier.padding(bottom = 4.dp, end = 4.dp),
+                modifier = Modifier
+                    .padding(bottom = 4.dp, end = 4.dp),
                 onClick = {},
             ) {
                 androidx.compose.foundation.Image(
@@ -134,14 +129,15 @@ fun CommunityMainScreen(
                 )
             }
         }
-    ) { innerPadding ->
+    ) { contentPadding ->
         when (communityViewState.status) {
             CommunityViewStatus.INITIAL,
             CommunityViewStatus.LOADING -> {
                 Box(
                     modifier = Modifier
-                        .padding(paddingValues = innerPadding)
+                        .padding(paddingValues = contentPadding)
                         .fillMaxSize()
+                        .background(LightGray00)
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(alignment = Alignment.Center)
@@ -152,12 +148,19 @@ fun CommunityMainScreen(
             CommunityViewStatus.SUCCESS_LOAD -> {
                 LazyColumn(
                     state = listState,
-                    contentPadding = PaddingValues.Absolute(0.dp)
+                    contentPadding = PaddingValues(
+                        top = 0.dp,
+                        bottom = contentPadding.calculateBottomPadding()
+                    ),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(LightGray00)
                 ) {
                     item {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .height(310.dp)
                         ) {
                             // TODO: 헤더 이미지
                             AsyncImage(
@@ -172,8 +175,9 @@ fun CommunityMainScreen(
                                     .fillMaxSize()
                                     .background(
                                         Brush.verticalGradient(
-                                            0.7f to Color.Transparent,
-                                            1f to Color(0x66000000)
+                                            0.0f to Color.Transparent,
+                                            0.6f to Color.Transparent,
+                                            1.0f to Color(0x80000000)
                                         )
                                     )
                             )
@@ -273,9 +277,7 @@ fun CommunityMainScreen(
 
             CommunityViewStatus.ERROR -> {
                 Box(
-                    modifier = Modifier
-                        .padding(paddingValues = innerPadding)
-                        .fillMaxSize()
+                    modifier = Modifier.fillMaxSize()
                 ) {
                     Text(
                         "오류가 발생했습니다.",

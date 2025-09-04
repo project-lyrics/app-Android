@@ -27,7 +27,7 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
-import com.lyrics.feelin.presentation.view.community.CommunityView
+import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
 
@@ -97,7 +97,7 @@ fun FeelinNavHost(
         ) {
             composable(FeelinDestination.Home.route) {
                 selectedBottomBarIndex = 0
-                CommunityView()
+                CommunityMainScreen("필릭스", onBack = {})
             }
 
             composable(FeelinDestination.NoteSearch.route) {

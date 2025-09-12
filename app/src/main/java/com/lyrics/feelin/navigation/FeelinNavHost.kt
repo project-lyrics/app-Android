@@ -1,5 +1,6 @@
 package com.lyrics.feelin.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -15,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -83,6 +85,18 @@ fun FeelinNavHost(
         },
         contentWindowInsets = WindowInsets(0)
     ) { paddingValues ->
+        var bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+        // resources.getIdentifier()를 이용해 내비게이션 바의 크기를 받는 방법도 시도해 보았지만,
+        // 일부 경우에서는 크기를 제대로 가져오지 못합니다.
+        // 이에 아래의 측정치를 따라, 받아온 bottomPadding의 dp가 30 이하일 경우 WindowInsets이 아닌
+        // Scaffold에서 받은 bottomPadding을 하위 컴포저블에서 가지도록 수정합니다. @이대근
+        // 픽셀9 에뮬레이터 24dp, S23울트라 실기기 14.857142.dp, 노트10플러스 실기기 15.142858.dp
+        if (bottomPadding <= 30.dp) {
+            bottomPadding = paddingValues.calculateBottomPadding()
+        }
+        Log.d("MainActivity", "FeelinNavHost: bottomPadding $bottomPadding")
+        Log.d("MainActivity", "FeelinNavHost: paddingValues $paddingValues")
+
         NavHost(
             navController = navController,
             startDestination = startDestination,
@@ -92,7 +106,7 @@ fun FeelinNavHost(
                     top = paddingValues.calculateTopPadding(),
                     start = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
                     end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+                    bottom = bottomPadding
                 )
         ) {
             composable(FeelinDestination.Home.route) {

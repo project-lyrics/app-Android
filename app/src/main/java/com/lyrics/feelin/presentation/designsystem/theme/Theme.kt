@@ -51,6 +51,13 @@ private val LightColorScheme =
  * @property point 강조/포인트 색(컴포넌트 내부에서 보조 포인트로 사용)
  * @property border 경계/디바이더 색
  * @property dim 스크림/딤 색
+ * @property gray00~gray09 그레이스케일 색상 팔레트
+ * @property systemActivate 시스템 활성화 색
+ * @property systemDisable 시스템 비활성화 색
+ * @property systemPressedBrand 브랜드 눌림 상태 색
+ * @property systemPressedGreyScale 그레이스케일 눌림 상태 색
+ * @property alertWarning 경고 알림 색
+ * @property alertSuccess 성공 알림 색
  */
 @Stable
 data class FeelinColors(
@@ -59,6 +66,24 @@ data class FeelinColors(
     val point: Color,
     val border: Color,
     val dim: Color,
+    // 그레이스케일 색상들
+    val gray00: Color,
+    val gray01: Color,
+    val gray02: Color,
+    val gray03: Color,
+    val gray04: Color,
+    val gray05: Color,
+    val gray06: Color,
+    val gray07: Color,
+    val gray08: Color,
+    val gray09: Color,
+    // 시스템 색상들
+    val systemActivate: Color,
+    val systemDisable: Color,
+    val systemPressedBrand: Color,
+    val systemPressedGreyScale: Color,
+    val alertWarning: Color,
+    val alertSuccess: Color,
 )
 
 /** [FeelinColors]를 제공/소비하기 위한 CompositionLocal. */
@@ -69,6 +94,22 @@ val LocalFeelinColors = staticCompositionLocalOf {
         point = CommonPoint,
         border = LightSystemBorder,
         dim = CommonSystemDim,
+        gray00 = LightGray00,
+        gray01 = LightGray01,
+        gray02 = LightGray02,
+        gray03 = LightGray03,
+        gray04 = LightGray04,
+        gray05 = LightGray05,
+        gray06 = LightGray06,
+        gray07 = LightGray07,
+        gray08 = LightGray08,
+        gray09 = LightGray09,
+        systemActivate = LightSystemActivate,
+        systemDisable = LightSystemDisable,
+        systemPressedBrand = LightSystemPressedBrand,
+        systemPressedGreyScale = LightSystemPressedGreyScale,
+        alertWarning = CommonAlertWarning,
+        alertSuccess = LightAlertSuccess,
     )
 }
 
@@ -143,6 +184,22 @@ fun FeelinTheme(
                 point = CommonPoint,
                 border = DarkSystemBorder,
                 dim = CommonSystemDim,
+                gray00 = DarkGray00,
+                gray01 = DarkGray01,
+                gray02 = DarkGray02,
+                gray03 = DarkGray03,
+                gray04 = DarkGray04,
+                gray05 = DarkGray05,
+                gray06 = DarkGray06,
+                gray07 = DarkGray07,
+                gray08 = DarkGray08,
+                gray09 = DarkGray09,
+                systemActivate = DarkSystemActivate,
+                systemDisable = DarkSystemDisable,
+                systemPressedBrand = DarkSystemPressedBrand,
+                systemPressedGreyScale = DarkSystemPressedGreyScale,
+                alertWarning = CommonAlertWarning,
+                alertSuccess = DarkAlertSuccess,
             )
         } else {
             FeelinColors(
@@ -151,6 +208,22 @@ fun FeelinTheme(
                 point = CommonPoint,
                 border = LightSystemBorder,
                 dim = CommonSystemDim,
+                gray00 = LightGray00,
+                gray01 = LightGray01,
+                gray02 = LightGray02,
+                gray03 = LightGray03,
+                gray04 = LightGray04,
+                gray05 = LightGray05,
+                gray06 = LightGray06,
+                gray07 = LightGray07,
+                gray08 = LightGray08,
+                gray09 = LightGray09,
+                systemActivate = LightSystemActivate,
+                systemDisable = LightSystemDisable,
+                systemPressedBrand = LightSystemPressedBrand,
+                systemPressedGreyScale = LightSystemPressedGreyScale,
+                alertWarning = CommonAlertWarning,
+                alertSuccess = LightAlertSuccess,
             )
         }
 

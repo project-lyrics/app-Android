@@ -2,6 +2,7 @@ package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -27,9 +29,10 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
+import com.lyrics.feelin.presentation.designsystem.theme.DarkGray09
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
-import com.lyrics.feelin.presentation.designsystem.theme.LightBackgroundPrimary
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray08
+import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 data class BottomNavItem(
     val inactiveIcon: @Composable () -> ImageVector,
@@ -43,19 +46,21 @@ fun FeelinBottomNavigation(
     onItemSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val feelinColors = LocalFeelinColors.current
+
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .drawWithContent {
                 drawContent()
                 drawLine(
-                    color = LightGray01,
+                    color = feelinColors.gray01,
                     start = Offset(0f, 0f),
                     end = Offset(size.width, 0f),
                     strokeWidth = 2f
                 )
             },
-        color = LightBackgroundPrimary,
+        color = MaterialTheme.colorScheme.primaryContainer,
         tonalElevation = 12.dp
     ) {
         Row(
@@ -96,7 +101,7 @@ private fun FeelinBottomNavItem(
         ) {
             Icon(
                 imageVector = if (isSelected) item.activeIcon() else item.inactiveIcon(),
-                tint = Color.Unspecified,
+                tint = if (isSystemInDarkTheme()) DarkGray09 else LightGray08,
                 contentDescription = null,
                 modifier = Modifier.size(24.dp)
             )
@@ -104,9 +109,36 @@ private fun FeelinBottomNavItem(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Bottom Navigation - Light", showBackground = true)
 @Composable
 private fun FeelinNavigationRailPreview() {
+    val items = listOf(
+        BottomNavItem(
+            activeIcon = { HomeActiveIcon },
+            inactiveIcon = { HomeInactiveIcon }
+        ),
+        BottomNavItem(
+            activeIcon = { NoteSearchingActiveIcon },
+            inactiveIcon = { NoteSearchingInactiveIcon }
+        ),
+        BottomNavItem(
+            activeIcon = { MyPageActiveIcon },
+            inactiveIcon = { MyPageInactiveIcon }
+        )
+    )
+
+    FeelinTheme {
+        FeelinBottomNavigation(
+            items = items,
+            selectedIndex = 0,
+            onItemSelected = {}
+        )
+    }
+}
+
+@Preview(name = "Bottom Navigation - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FeelinNavigationRailDarkPreview() {
     val items = listOf(
         BottomNavItem(
             activeIcon = { HomeActiveIcon },

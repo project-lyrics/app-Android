@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -23,19 +25,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.lyrics.feelin.core.designsystem.icon.BackIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
+import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
 fun FeelinTransparentTopAppBar(
@@ -66,6 +64,7 @@ fun FeelinTransparentTopAppBar(
                 imageVector = BackIcon,
                 onClick = onBackClick,
                 contentDescription = "Back",
+                tint = LightGray09, // 투명 상태일 때는 다크모드 미 적용입니다.
             )
         },
         modifier = modifier,
@@ -85,18 +84,14 @@ fun FeelinTopAppBarWithBack(
     ),
     centeredTitle: Boolean = false,
 ) {
+    val feelinColors = LocalFeelinColors.current
+
     Column {
         TopAppBarBase(
             title = {
                 Text(
                     text = title,
-                    style = TextStyle(
-                        fontSize = 18.sp,
-                        lineHeight = 24.sp,
-                        fontWeight = FontWeight(700),
-                        color = LightGray09,
-                        textAlign = TextAlign.Center,
-                    )
+                    style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
                 )
             },
             actions = actions,
@@ -108,6 +103,7 @@ fun FeelinTopAppBarWithBack(
                     imageVector = BackIcon,
                     onClick = onBackClick,
                     contentDescription = "Back",
+                    tint = feelinColors.gray09,
                 )
             },
             modifier = modifier,
@@ -116,7 +112,7 @@ fun FeelinTopAppBarWithBack(
             Modifier
                 .fillMaxWidth()
                 .size(1.dp)
-                .background(LightGray01)
+                .background(feelinColors.gray01)
         )
     }
 }
@@ -190,6 +186,7 @@ fun TopBarIconButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     contentDescription: String,
+    tint: Color = LocalContentColor.current,
 ) {
     Box(
         modifier = modifier
@@ -204,36 +201,73 @@ fun TopBarIconButton(
         Icon(
             imageVector = imageVector,
             contentDescription = contentDescription,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            tint = tint,
         )
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Transparent TopBar - Light", showBackground = true)
 @Composable
 private fun FeelinTransparentTopAppBarPreview() {
-    Box {
-        FeelinTransparentTopAppBar(
-            onBackClick = {},
-            actions = {
-                TopBarIconButton(
-                    imageVector = NotificationIcon,
-                    contentDescription = "알림",
-                    onClick = {}
-                )
-            }
-        )
+    FeelinTheme {
+        Box {
+            FeelinTransparentTopAppBar(
+                onBackClick = {},
+                actions = {
+                    TopBarIconButton(
+                        imageVector = NotificationIcon,
+                        contentDescription = "알림",
+                        onClick = {}
+                    )
+                }
+            )
+        }
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Transparent TopBar - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FeelinTransparentTopAppBarDarkPreview() {
+    FeelinTheme {
+        Box {
+            FeelinTransparentTopAppBar(
+                onBackClick = {},
+                actions = {
+                    TopBarIconButton(
+                        imageVector = NotificationIcon,
+                        contentDescription = "알림",
+                        onClick = {}
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Preview(name = "TopBar with Back - Light", showBackground = true)
 @Composable
 private fun FeelinTopAppBarWithBackPreview() {
-    Box {
-        FeelinTopAppBarWithBack(
-            title = "필릭스 레코드",
-            onBackClick = {}
-        )
+    FeelinTheme {
+        Box {
+            FeelinTopAppBarWithBack(
+                title = "필릭스 레코드",
+                onBackClick = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "TopBar with Back - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FeelinTopAppBarWithBackDarkPreview() {
+    FeelinTheme {
+        Box {
+            FeelinTopAppBarWithBack(
+                title = "필릭스 레코드",
+                onBackClick = {}
+            )
+        }
     }
 }
 
@@ -246,15 +280,13 @@ object FeelinTopAppBarDefaults {
     val NavigationButtonSize: Dp = 24.dp
     val ActionsSpacing: Dp = 4.dp
 
-    val TitleContentColor: Color = LightGray09
-    val ContainerColor: Color = LightGray00
-    val ActionIconColor: Color = Black
-    val NavigationIconColor: Color = Black
+    val ActionIconColor: Color = LightGray09
+    val NavigationIconColor: Color = LightGray09
 
     @Composable
     fun topAppBarColors(
-        containerColor: Color = ContainerColor,
-        titleContentColor: Color = TitleContentColor,
+        containerColor: Color = LocalFeelinColors.current.gray00,
+        titleContentColor: Color = LocalFeelinColors.current.gray09,
         actionIconContentColor: Color = ActionIconColor,
         navigationIconContentColor: Color = NavigationIconColor
     ): FeelinTopAppBarColors = FeelinTopAppBarColors(

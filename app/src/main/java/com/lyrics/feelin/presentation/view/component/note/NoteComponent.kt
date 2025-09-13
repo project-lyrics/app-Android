@@ -1,6 +1,7 @@
 package com.lyrics.feelin.presentation.view.component.note
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,17 +31,15 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray03
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
+import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.util.compareNowToUser
 
-// TODO(@이대근): 다크모드 대응 필요 2025.08.17.
-
 @Composable
 fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
+    val feelinColors = LocalFeelinColors.current
+
     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -54,25 +54,26 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = noteData.publisher.nickname,
-                    style = MaterialTheme.typography.titleSmall,
+                    style = MaterialTheme.typography.titleSmall.copy(color = feelinColors.gray09),
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = noteData.createdAt.compareNowToUser(),
-                    style = MaterialTheme.typography.labelMedium.copy(color = LightGray03),
+                    style = MaterialTheme.typography.labelMedium.copy(color = feelinColors.gray03),
                 )
             }
             Image(
                 painter = painterResource(R.drawable.meetball_light),
                 contentDescription = "${noteData.song.name} menu",
                 modifier = Modifier.size(24.dp),
+                colorFilter = ColorFilter.tint(feelinColors.gray03),
             )
         }
         Text(
             text = noteData.content,
             overflow = TextOverflow.Ellipsis,
             maxLines = 3,
-            style = MaterialTheme.typography.bodySmall.copy(color = LightGray09),
+            style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray09),
             modifier = Modifier.padding(vertical = 16.dp),
         )
         if (noteData.lyrics != null)
@@ -85,12 +86,12 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                     text = noteData.lyrics.content,
                     style =
                         MaterialTheme.typography.bodyLarge.copy(
-                            color = LightGray09,
+                            color = LightGray09, // 가사 텍스트는 다크모드 미 적용입니다.
                             textAlign = TextAlign.Center,
                         ),
                 )
             }
-        HorizontalDivider(color = LightGray01, thickness = 1.dp)
+        HorizontalDivider(color = feelinColors.gray01, thickness = 1.dp)
         Row(
             modifier = Modifier.fillMaxWidth().height(64.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -104,10 +105,13 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = Modifier.width(10.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = noteData.song.name, style = MaterialTheme.typography.bodyMedium)
+                    Text(
+                        text = noteData.song.name,
+                        style = MaterialTheme.typography.bodyMedium.copy(color = feelinColors.gray08)
+                    )
                     Text(
                         text = noteData.song.artist.name,
-                        style = MaterialTheme.typography.labelSmall.copy(color = LightGray04),
+                        style = MaterialTheme.typography.labelSmall.copy(color = feelinColors.gray04),
                     )
                 }
             }
@@ -115,9 +119,10 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 painter = painterResource(R.drawable.play),
                 contentDescription = "${noteData.song.name} play",
                 modifier = Modifier.size(24.dp),
+                colorFilter = ColorFilter.tint(feelinColors.gray03),
             )
         }
-        HorizontalDivider(color = LightGray01, thickness = 1.dp)
+        HorizontalDivider(color = feelinColors.gray01, thickness = 1.dp)
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -135,20 +140,22 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                         ),
                     contentDescription = "note like icon",
                     modifier = Modifier.size(24.dp).padding(end = 4.dp),
+                    colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked },
                 )
                 Text(
                     text = noteData.likesCount.toString(),
-                    style = MaterialTheme.typography.bodySmall.copy(color = LightGray03),
+                    style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray03),
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Image(
                     painter = painterResource(R.drawable.chatcircle_light),
                     contentDescription = "note comment icon",
                     modifier = Modifier.size(24.dp).padding(end = 4.dp),
+                    colorFilter = ColorFilter.tint(feelinColors.gray03)
                 )
                 Text(
                     text = noteData.commentsCount.toString(),
-                    style = MaterialTheme.typography.bodySmall.copy(color = LightGray03),
+                    style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray03),
                 )
             }
             Image(
@@ -160,6 +167,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 contentDescription =
                     "note is ${if(noteData.isBookmarked) "" else "not "}bookmarked",
                 modifier = Modifier.size(24.dp),
+                colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked }
             )
         }
     }
@@ -191,11 +199,26 @@ private fun LyricsBackground.toImage(): Int {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Note Component - Light", showBackground = true)
 @Composable
 private fun NoteComponentPreview() {
     FeelinTheme {
-        Column {
+        Column(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer)
+        ) {
+            NoteComponent(noteData = NoteComponentData.sample())
+            NoteComponent(noteData = NoteComponentData.sampleNoLyrics())
+        }
+    }
+}
+
+@Preview(name = "Note Component - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun NoteComponentDarkPreview() {
+    FeelinTheme {
+        Column(
+            modifier = Modifier.background(color = MaterialTheme.colorScheme.primaryContainer)
+        ) {
             NoteComponent(noteData = NoteComponentData.sample())
             NoteComponent(noteData = NoteComponentData.sampleNoLyrics())
         }

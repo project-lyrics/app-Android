@@ -55,9 +55,9 @@ import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
-import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray03
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
+import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -69,6 +69,8 @@ fun CommunityMainScreen(
 ) {
     val listState = rememberLazyListState()
     val communityViewState by viewModel.viewState.collectAsState()
+
+    val feelinColors = LocalFeelinColors.current
 
     val isCollapsed by remember {
         derivedStateOf {
@@ -104,7 +106,8 @@ fun CommunityMainScreen(
                         TopBarIconButton(
                             imageVector = NotificationIcon,
                             contentDescription = "알림",
-                            onClick = {}
+                            tint = LightGray09, // 투명 상태일 때는 다크모드 미 적용입니다.
+                            onClick = {},
                         )
                     },
                     modifier = Modifier.windowInsetsPadding(
@@ -138,7 +141,7 @@ fun CommunityMainScreen(
                     modifier = Modifier
                         .padding(paddingValues = contentPadding)
                         .fillMaxSize()
-                        .background(LightGray00)
+                        .background(feelinColors.gray00)
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(alignment = Alignment.Center)
@@ -155,7 +158,7 @@ fun CommunityMainScreen(
                     ),
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(LightGray00)
+                        .background(feelinColors.gray00)
                 ) {
                     item {
                         Box(
@@ -183,7 +186,7 @@ fun CommunityMainScreen(
                                     )
                             )
 
-                            // 아티스트 정보 및 버튼
+                            // 아티스트 정보 및 버튼 - 다크모드 미 적용
                             Column(
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
@@ -195,7 +198,7 @@ fun CommunityMainScreen(
                                 Text(
                                     text = "$artistName 레코드",
                                     style = MaterialTheme.typography.headlineLarge.copy(
-                                        color = LightGray01
+                                        color = LightGray00
                                     ),
                                 )
                                 Spacer(modifier = Modifier.height(20.dp))
@@ -247,14 +250,14 @@ fun CommunityMainScreen(
                         ) {
                             Text(
                                 text = "노트",
-                                style = MaterialTheme.typography.headlineSmall.copy(color = LightGray09),
+                                style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(R.drawable.check_icon),
                                     tint = if (communityViewState.isViewNoteOnlyLyrics)
                                         MaterialTheme.colorScheme.primary
-                                    else LightGray03,
+                                    else feelinColors.gray03,
                                     contentDescription = "",
                                 )
                                 Text(
@@ -262,7 +265,7 @@ fun CommunityMainScreen(
                                     style = MaterialTheme.typography.labelMedium.copy(
                                         color = if (communityViewState.isViewNoteOnlyLyrics)
                                             MaterialTheme.colorScheme.primary
-                                        else LightGray03
+                                        else feelinColors.gray03
                                     ),
                                 )
                             }
@@ -290,9 +293,20 @@ fun CommunityMainScreen(
     }
 }
 
-@Preview
+@Preview(name = "Light Mode")
 @Composable
 private fun CommunityMainScreenPreview() {
+    FeelinTheme {
+        CommunityMainScreen(
+            artistName = "실리카겔",
+            onBack = {}
+        )
+    }
+}
+
+@Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun CommunityMainScreenDarkPreview() {
     FeelinTheme {
         CommunityMainScreen(
             artistName = "실리카겔",

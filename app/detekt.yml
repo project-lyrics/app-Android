@@ -89,6 +89,7 @@ complexity:
     ignoreSingleWhenExpression: false
     ignoreSimpleWhenEntries: false
     ignoreNestingFunctions: false
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 complexity 검사 제외
     nestingFunctions:
       - "also"
       - "apply"
@@ -108,13 +109,15 @@ complexity:
   LongMethod:
     active: true
     threshold: 60
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 긴 메서드 검사 제외
   LongParameterList:
     active: true
     functionThreshold: 6
     constructorThreshold: 7
-    ignoreDefaultParameters: false
+    ignoreDefaultParameters: true # Compose에서 기본값 파라미터 많이 사용
     ignoreDataClasses: true
-    ignoreAnnotatedParameter: []
+    ignoreAnnotatedParameter: ["Composable"] # @Composable 함수의 파라미터 수 제한 완화
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 파라미터 수 검사 제외
   MethodOverloading:
     active: false
     threshold: 6
@@ -161,6 +164,7 @@ complexity:
     ignoreDeprecated: false
     ignorePrivate: false
     ignoreOverridden: false
+    ignoreAnnotatedFunctions: ["Preview", "Composable"] # Preview와 Composable 함수는 함수 수 제한 제외
 
 coroutines:
   active: true
@@ -690,7 +694,7 @@ Compose:
   CompositionLocalAllowlist:
     active: true
     # -- You can optionally define a list of CompositionLocals that are allowed here
-    # allowedCompositionLocals: LocalSomething,LocalSomethingElse
+    allowedCompositionLocals: LocalFeelinColors
   CompositionLocalNaming:
     active: true
   ContentEmitterReturningValues:
@@ -749,7 +753,7 @@ Compose:
   ModifierNotUsedAtRoot:
     active: true
     # -- You can optionally add your own composables here
-    # contentEmitters: MyComposable,MyOtherComposable
+    contentEmitters: FeelinTransparentTopAppBar
     # -- You can optionally add your own Modifier types
     # customModifiers: BananaModifier,PotatoModifier
   ModifierReused:

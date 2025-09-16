@@ -167,6 +167,7 @@ fun CommunityMainScreen(
                                 .height(310.dp)
                         ) {
                             // TODO: 헤더 이미지
+                            @Suppress("MaxLineLength")
                             AsyncImage(
                                 model = "https://i.namu.wiki/i/whqmv7WsYtoH3bY7IdwldbHcrZPIsOdPZKNkEmSH6Pk5HqjYzVpBGtxYrJP5cA1LJx9VRg-jb1G319Glx_rAXnAK8-1FLn4qRiDQz2tU9bLfReoHbUxpZWZXHKbEf56okna-ycyi_fPtuuxaRTnZ4w.webp",
                                 contentDescription = "${communityViewState.artist.name}'s image",

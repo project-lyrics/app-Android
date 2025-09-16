@@ -1,3 +1,5 @@
+@file:Suppress("MatchingDeclarationName")
+
 package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.clickable

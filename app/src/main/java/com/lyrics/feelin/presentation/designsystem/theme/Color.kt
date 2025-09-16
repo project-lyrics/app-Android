@@ -1,3 +1,5 @@
+@file:Suppress("MagicNumber")
+
 package com.lyrics.feelin.presentation.designsystem.theme
 
 import androidx.compose.ui.graphics.Color

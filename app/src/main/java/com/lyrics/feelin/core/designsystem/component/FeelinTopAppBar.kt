@@ -71,6 +71,7 @@ fun FeelinTransparentTopAppBar(
     )
 }
 
+@Suppress("ModifierNotUsedAtRoot")
 @Composable
 fun FeelinTopAppBarWithBack(
     title: String,
@@ -117,6 +118,7 @@ fun FeelinTopAppBarWithBack(
     }
 }
 
+@Suppress("ModifierWithoutDefault")
 @Composable
 private fun TopAppBarBase(
     title: @Composable (() -> Unit),

@@ -856,13 +856,13 @@ style:
     active: false
     includeLineWrapping: false
   ForbiddenComment:
-    active: true
+    active: false
     # values는 deprecated되었으므로 comments로 변경
-    comments:
-      - "FIXME:"
-      - "STOPSHIP:"
-      - "TODO:"
-    allowedPatterns: ""
+    # comments:
+    #   - "FIXME:"
+    #   - "STOPSHIP:"
+    #   - "TODO:"
+    # allowedPatterns: ""
   ForbiddenImport:
     active: false
     imports: []
@@ -959,6 +959,7 @@ style:
     max: 2
     excludedFunctions:
       - "equals"
+      - "fromProfileType" # ProfileComponentData.fromProfileType 함수 제외
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: false
@@ -1003,9 +1004,13 @@ style:
     active: false # formatting의 NoUnusedImports와 중복되므로 비활성화
   UnusedPrivateClass:
     active: true
+  UnusedParameter:
+    active: true
+    allowedNames: "(_|ignored|expected|modifier)" # modifier 파라미터는 unused parameter 검사 제외
   UnusedPrivateMember:
     active: true
     allowedNames: "(_|ignored|expected|serialVersionUID)"
+    ignoreAnnotated: ["Preview"] # @Preview 어노테이션이 붙은 함수는 unused private member 검사 제외
   UseAnyOrNoneInsteadOfFind:
     active: true
   UseArrayLiteralsInAnnotations:

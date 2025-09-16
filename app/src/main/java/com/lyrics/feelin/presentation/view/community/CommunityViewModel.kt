@@ -18,6 +18,7 @@ class CommunityViewModel : ViewModel() {
             _viewState.value = CommunityViewState.loading()
 
             // TODO: 실제로는 repository에서 데이터를 가져오는 로직
+            @Suppress("MagicNumber")
             delay(500L)
 
             _viewState.value = CommunityViewState.success()

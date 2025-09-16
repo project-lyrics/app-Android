@@ -126,6 +126,7 @@ data class CommunityViewNoteState(
             )
         }
 
+        @Suppress("MagicNumber")
         fun sample(): CommunityViewNoteState {
             return CommunityViewNoteState(
                 status = CommunityViewNoteStatus.SUCCESS_LOAD,
@@ -137,6 +138,7 @@ data class CommunityViewNoteState(
             )
         }
 
+        @Suppress("MagicNumber")
         fun pagingSample(): CommunityViewNoteState {
             return CommunityViewNoteState(
                 status = CommunityViewNoteStatus.NEW_PAGE_LOADING,

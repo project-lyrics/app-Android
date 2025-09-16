@@ -48,6 +48,7 @@ data class NoteComponentData(
             )
         }
 
+        @Suppress("MaxLineLength")
         fun sample(): NoteComponentData {
             return NoteComponentData(
                 id = 1L,
@@ -64,6 +65,7 @@ data class NoteComponentData(
             )
         }
 
+        @Suppress("MaxLineLength")
         fun sampleNoLyrics(): NoteComponentData{
             return NoteComponentData(
                 id = 1L,

@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.detekt)
 }
 
 android {
@@ -45,6 +46,12 @@ kotlin {
     }
 }
 
+detekt {
+    buildUponDefaultConfig = true // 기본 설정을 기반으로 사용
+    allRules = false // 안정적인 규칙만 활성화
+    config.setFrom("$projectDir/detekt.yml") // 커스텀 설정 파일 (선택사항)
+}
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -83,4 +90,8 @@ dependencies {
 
 //    time (kotlinx.datetime)
     implementation(libs.kotlinx.datetime)
+
+    // detekt plugins
+    detektPlugins(libs.detekt.formatting)
+    detektPlugins(libs.detekt.compose)
 }

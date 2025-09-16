@@ -1,7 +1,9 @@
 package com.lyrics.feelin.core.designsystem.icon
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.lyrics.feelin.R
 
@@ -36,3 +38,7 @@ val BackIcon: ImageVector
 val NotificationIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_notification)
+
+val FeelinTextIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.feelin_text_logo)

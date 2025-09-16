@@ -4,9 +4,9 @@
 
 ### 코드 편집 완료 후 필수 작업
 
-- **모든 Kotlin 코드 편집 완료 후 반드시 `detektFormat`을 실행하세요**
-- 명령어: `./gradlew detektFormat`
-- 목적: 코드 스타일 자동 수정 및 formatting 규칙 적용
+- **모든 Kotlin 코드 편집 완료 후 반드시 `./gradlew detekt`를 실행하세요**
+- **주의**: `detektFormat`은 존재하지 않는 task입니다
+- 목적: 코드 분석, 품질 검사 및 자동 formatting 적용
 
 ### 프로젝트 구조
 
@@ -21,8 +21,9 @@
 - Modifier 매개변수 필수 포함
 - CompositionLocal 사용 제한
 
-### 주의사항
+### detekt 최적화 설정 완료
 
-- detekt 실행 시 발견되는 이슈들은 코드 품질 향상을 위한 것임
-- formatting 오류는 detektFormat으로 자동 수정 가능
-- 복잡도, 네이밍 등의 이슈는 수동 수정 필요
+- **@Composable, @Preview 함수**: complexity 및 unused 검사 예외
+- **modifier 파라미터**: unused parameter 검사 예외
+- **fromXXX 메서드**: return count 제한 예외
+- **autoCorrect: true**: formatting 자동 적용 설정

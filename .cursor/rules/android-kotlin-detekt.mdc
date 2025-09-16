@@ -11,8 +11,10 @@ alwaysApply: true
 모든 Kotlin 코드 편집이 완료되면 반드시 다음 명령어를 실행하세요:
 
 ```bash
-./gradlew detektFormat
+./gradlew detekt
 ```
+
+**중요**: `detektFormat`은 존재하지 않는 task입니다!
 
 ## 📱 프로젝트 구성
 
@@ -35,12 +37,20 @@ alwaysApply: true
 - 들여쓰기: 4 spaces
 - 네이밍: camelCase (변수/함수), PascalCase (클래스)
 
-## 🔧 detekt 명령어
+## 🔧 detekt 사용법
 
 ```bash
-# 코드 검사
+# 기본 detekt 실행 (분석 + 자동 formatting)
 ./gradlew detekt
 
-# 자동 formatting (편집 후 필수!)
-./gradlew detektFormat
+# 기타 유용한 task들
+./gradlew detektMain     # production 코드만
+./gradlew detektTest     # test 코드만
 ```
+
+## ⚡ 최적화 설정 완료
+
+- **@Composable/@Preview**: complexity 검사 예외
+- **modifier**: unused parameter 예외
+- **fromXXX**: return count 제한 예외
+- **autoCorrect**: 자동 formatting 적용

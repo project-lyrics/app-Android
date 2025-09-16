@@ -48,5 +48,7 @@ fun myButton(text: String, onClick: () -> Unit) {  // modifier 누락
 ## 🚨 편집 완료 후 필수 실행
 
 ```bash
-./gradlew detektFormat
+./gradlew detekt
 ```
+
+**주의**: `detektFormat`은 존재하지 않는 task입니다!

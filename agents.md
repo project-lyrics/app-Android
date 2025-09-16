@@ -6,14 +6,16 @@
 
 ```bash
 # 모든 Kotlin 코드 편집이 완료되면 반드시 실행
-./gradlew detektFormat
+./gradlew detekt
 ```
+
+**중요:** `detektFormat`은 존재하지 않는 task입니다. `./gradlew detekt`를 사용하세요.
 
 **목적:**
 
-- 코드 스타일 자동 수정
-- ktlint formatting 규칙 적용
-- Compose 규칙 준수
+- 코드 분석 및 품질 검사
+- 자동 formatting 적용 (autoCorrect: true 설정)
+- ktlint 규칙 및 Compose 규칙 적용
 - 일관된 코드 품질 유지
 
 ## 📋 프로젝트 설정 정보
@@ -48,24 +50,33 @@
    - Composable에서 modifier는 첫 번째 선택적 매개변수
    - lambda는 마지막 매개변수
 
-## 🛠️ 에러 처리 가이드
+## 🛠️ detekt 사용법
 
-### detekt 실행 결과
+### 사용 가능한 task들
 
 ```bash
-# 코드 검사 (이슈 확인만)
+# 기본 detekt 실행 (분석 + 자동 formatting)
 ./gradlew detekt
 
-# 자동 수정 (formatting)
-./gradlew detektFormat
+# 다른 유용한 task들
+./gradlew detektMain        # production 코드만 분석
+./gradlew detektTest        # test 코드만 분석
+./gradlew detektBaseline    # baseline 파일 생성
 ```
 
 ### 주요 이슈 유형
 
-- **Formatting**: detektFormat으로 자동 수정 가능
+- **Formatting**: autoCorrect로 자동 수정됨
 - **Complexity**: 수동 리팩토링 필요 (함수 분할, 매개변수 축소)
 - **Naming**: 네이밍 컨벤션 수동 수정
 - **Compose**: Compose 규칙 준수 확인
+
+### 예외 처리 설정 완료
+
+- **@Composable**: complexity 규칙에서 제외
+- **@Preview**: UnusedPrivateMember에서 제외
+- **modifier**: UnusedParameter에서 제외
+- **fromXXX**: ReturnCount에서 제외
 
 ## 📚 참고 리소스
 

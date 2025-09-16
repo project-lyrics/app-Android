@@ -1,0 +1,46 @@
+---
+description: Android Kotlin 프로젝트의 detekt 코드 품질 관리 규칙
+globs: ["**/*.kt", "**/*.kts"]
+alwaysApply: true
+---
+
+# Android Kotlin Project - detekt 필수 규칙
+
+## ⚠️ **편집 완료 후 필수 실행**
+
+모든 Kotlin 코드 편집이 완료되면 반드시 다음 명령어를 실행하세요:
+
+```bash
+./gradlew detektFormat
+```
+
+## 📱 프로젝트 구성
+
+- **언어**: Kotlin (Android)
+- **UI 프레임워크**: Jetpack Compose
+- **의존성 주입**: Hilt
+- **코드 품질 도구**: detekt 1.23.7 + ktlint formatting + Compose Rules
+
+## 🎯 주요 코딩 규칙
+
+### Compose 규칙
+
+- 모든 Composable 함수에 `modifier: Modifier = Modifier` 매개변수 필수
+- Composable 함수명은 PascalCase로 시작
+- modifier는 첫 번째 선택적 매개변수 위치
+
+### 스타일 규칙
+
+- 최대 라인 길이: 120자
+- 들여쓰기: 4 spaces
+- 네이밍: camelCase (변수/함수), PascalCase (클래스)
+
+## 🔧 detekt 명령어
+
+```bash
+# 코드 검사
+./gradlew detekt
+
+# 자동 formatting (편집 후 필수!)
+./gradlew detektFormat
+```

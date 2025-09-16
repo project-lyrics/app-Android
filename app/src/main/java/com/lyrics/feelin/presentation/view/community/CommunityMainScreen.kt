@@ -1,3 +1,7 @@
+@file:Suppress("MagicNumber")
+// TODO(@이대근): 색상 관련한 매직 넘버는 이해가 안 가요.
+//  나중에 주석 달아주시거나 매직 넘버 아니게 해 주시면 감사하겠습니다. @최현정 2025.09.16.
+
 package com.lyrics.feelin.presentation.view.community
 
 import androidx.compose.foundation.background
@@ -65,6 +69,7 @@ import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 fun CommunityMainScreen(
     artistName: String,
     onBack: () -> Unit,
+    modifier: Modifier = Modifier,
     viewModel: CommunityViewModel = viewModel()
 ) {
     val listState = rememberLazyListState()
@@ -83,7 +88,7 @@ fun CommunityMainScreen(
     }
 
     Scaffold(
-        modifier = Modifier
+        modifier = modifier
             .then(
                 Modifier.windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
                     .takeIf { isCollapsed } ?: Modifier
@@ -167,6 +172,7 @@ fun CommunityMainScreen(
                                 .height(310.dp)
                         ) {
                             // TODO: 헤더 이미지
+                            @Suppress("MaxLineLength")
                             AsyncImage(
                                 model = "https://i.namu.wiki/i/whqmv7WsYtoH3bY7IdwldbHcrZPIsOdPZKNkEmSH6Pk5HqjYzVpBGtxYrJP5cA1LJx9VRg-jb1G319Glx_rAXnAK8-1FLn4qRiDQz2tU9bLfReoHbUxpZWZXHKbEf56okna-ycyi_fPtuuxaRTnZ4w.webp",
                                 contentDescription = "${communityViewState.artist.name}'s image",
@@ -218,12 +224,15 @@ fun CommunityMainScreen(
                                     ) {
                                         Icon(
                                             painter = painterResource(
-                                                if (communityViewState.artist.isLike)
+                                                if (communityViewState.artist.isLike) {
                                                     R.drawable.heart_light_active
-                                                else R.drawable.heart_light_inactive
+                                                } else {
+                                                    R.drawable.heart_light_inactive
+                                                }
                                             ),
                                             tint = LightGray03,
-                                            contentDescription = "are you like this artist: ${communityViewState.artist.isLike}",
+                                            contentDescription =
+                                            "are you like this artist: ${communityViewState.artist.isLike}",
                                         )
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
@@ -255,17 +264,21 @@ fun CommunityMainScreen(
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(R.drawable.check_icon),
-                                    tint = if (communityViewState.isViewNoteOnlyLyrics)
+                                    tint = if (communityViewState.isViewNoteOnlyLyrics) {
                                         MaterialTheme.colorScheme.primary
-                                    else feelinColors.gray03,
+                                    } else {
+                                        feelinColors.gray03
+                                    },
                                     contentDescription = "",
                                 )
                                 Text(
                                     text = "가사 포함된 노트만 보기",
                                     style = MaterialTheme.typography.labelMedium.copy(
-                                        color = if (communityViewState.isViewNoteOnlyLyrics)
+                                        color = if (communityViewState.isViewNoteOnlyLyrics) {
                                             MaterialTheme.colorScheme.primary
-                                        else feelinColors.gray03
+                                        } else {
+                                            feelinColors.gray03
+                                        }
                                     ),
                                 )
                             }

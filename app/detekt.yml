@@ -1,0 +1,1059 @@
+# Detekt 1.23.7 설정 파일
+# 기본 룰셋을 기반으로 하며, ktlint formatting과 Compose 규칙을 포함합니다.
+
+build:
+  maxIssues: 0
+  excludeCorrectable: false
+  weights:
+    # complexity: 2
+    # LongParameterList: 1
+    # style: 1
+    # comments: 1
+
+config:
+  validation: true
+  warningsAsErrors: false
+  checkExhaustiveness: false
+  # 커스텀 룰에 대한 validation 제외 설정
+  excludes: ""
+
+processors:
+  active: true
+  exclude:
+    - "DetektProgressListener"
+  # - "KtFileCountProcessor"
+  # - "PackageCountProcessor"
+  # - "ClassCountProcessor"
+  # - "FunctionCountProcessor"
+  # - "PropertyCountProcessor"
+  # - "ProjectComplexityProcessor"
+  # - "ProjectCognitiveComplexityProcessor"
+  # - "ProjectLLOCProcessor"
+  # - "ProjectCLOCProcessor"
+  # - "ProjectLOCProcessor"
+  # - "ProjectSLOCProcessor"
+  # - "LicenseHeaderLoaderExtension"
+
+console-reports:
+  active: true
+  exclude:
+    - "ProjectStatisticsReport"
+    - "ComplexityReport"
+    - "NotificationReport"
+    - "FindingsReport"
+    - "FileBasedFindingsReport"
+    - "LiteFindingsReport"
+
+output-reports:
+  active: true
+  exclude:
+  # - "TxtOutputReport"
+  # - "XmlOutputReport"
+  # - "HtmlOutputReport"
+  # - "MdOutputReport"
+  # - "SarifOutputReport"
+
+comments:
+  active: true
+  CommentOverPrivateFunction:
+    active: false
+  CommentOverPrivateProperty:
+    active: false
+  EndOfSentenceFormat:
+    active: false
+    endOfSentenceFormat: '([.?!][ \t\n\r\f<])|([.?!:]$)'
+  UndocumentedPublicClass:
+    active: false
+    searchInNestedClass: true
+    searchInInnerClass: true
+    searchInInnerObject: true
+    searchInInnerInterface: true
+  UndocumentedPublicFunction:
+    active: false
+  UndocumentedPublicProperty:
+    active: false
+
+complexity:
+  active: true
+  ComplexCondition:
+    active: true
+    threshold: 4
+  ComplexInterface:
+    active: false
+    threshold: 10
+    includeStaticDeclarations: false
+    includePrivateDeclarations: false
+  CyclomaticComplexMethod: # ComplexMethod에서 이름 변경됨
+    active: true
+    threshold: 15
+    ignoreSingleWhenExpression: false
+    ignoreSimpleWhenEntries: false
+    ignoreNestingFunctions: false
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 complexity 검사 제외
+    nestingFunctions:
+      - "also"
+      - "apply"
+      - "forEach"
+      - "isNotNull"
+      - "ifNull"
+      - "let"
+      - "run"
+      - "use"
+      - "with"
+  LabeledExpression:
+    active: false
+    ignoredLabels: []
+  LargeClass:
+    active: true
+    threshold: 600
+  LongMethod:
+    active: true
+    threshold: 60
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 긴 메서드 검사 제외
+  LongParameterList:
+    active: true
+    functionThreshold: 6
+    constructorThreshold: 7
+    ignoreDefaultParameters: true # Compose에서 기본값 파라미터 많이 사용
+    ignoreDataClasses: true
+    ignoreAnnotatedParameter: ["Composable"] # @Composable 함수의 파라미터 수 제한 완화
+    ignoreAnnotated: ["Composable", "Preview"] # Compose 함수는 파라미터 수 검사 제외
+  MethodOverloading:
+    active: false
+    threshold: 6
+  NamedArguments:
+    active: false
+    threshold: 3
+    ignoreArgumentsMatchingNames: false
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+  ReplaceSafeCallChainWithRun:
+    active: false
+  StringLiteralDuplication:
+    active: false
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    threshold: 3
+    ignoreAnnotation: true
+    excludeStringsWithLessThan5Characters: true
+    ignoreStringsRegex: "$^"
+  TooManyFunctions:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    thresholdInFiles: 11
+    thresholdInClasses: 11
+    thresholdInInterfaces: 11
+    thresholdInObjects: 11
+    thresholdInEnums: 11
+    ignoreDeprecated: false
+    ignorePrivate: false
+    ignoreOverridden: false
+    ignoreAnnotatedFunctions: ["Preview", "Composable"] # Preview와 Composable 함수는 함수 수 제한 제외
+
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: false
+  InjectDispatcher:
+    active: true
+    dispatcherNames:
+      - "IO"
+      - "Default"
+      - "Unconfined"
+  RedundantSuspendModifier:
+    active: true
+  SleepInsteadOfDelay:
+    active: true
+  SuspendFunSwallowedCancellation:
+    active: false
+  SuspendFunWithCoroutineScopeReceiver:
+    active: false
+  SuspendFunWithFlowReturnType:
+    active: true
+
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    active: true
+    allowedExceptionNameRegex: "_|(ignore|expected).*"
+  EmptyClassBlock:
+    active: true
+  EmptyDefaultConstructor:
+    active: true
+  EmptyDoWhileBlock:
+    active: true
+  EmptyElseBlock:
+    active: true
+  EmptyFinallyBlock:
+    active: true
+  EmptyForBlock:
+    active: true
+  EmptyFunctionBlock:
+    active: true
+    ignoreOverridden: false
+  EmptyIfBlock:
+    active: true
+  EmptyInitBlock:
+    active: true
+  EmptyKtFile:
+    active: true
+  EmptySecondaryConstructor:
+    active: true
+  EmptyTryBlock:
+    active: true
+  EmptyWhenBlock:
+    active: true
+  EmptyWhileBlock:
+    active: true
+
+exceptions:
+  active: true
+  ExceptionRaisedInUnexpectedLocation:
+    active: true
+    methodNames:
+      - "equals"
+      - "finalize"
+      - "hashCode"
+      - "toString"
+  InstanceOfCheckForException:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+  NotImplementedDeclaration:
+    active: false
+  ObjectExtendsThrowable:
+    active: false
+  PrintStackTrace:
+    active: true
+  RethrowCaughtException:
+    active: true
+  ReturnFromFinally:
+    active: true
+    ignoreLabeled: false
+  SwallowedException:
+    active: true
+    ignoredExceptionTypes:
+      - "InterruptedException"
+      - "MalformedURLException"
+      - "NumberFormatException"
+      - "ParseException"
+    allowedExceptionNameRegex: "_|(ignore|expected).*"
+  ThrowingExceptionFromFinally:
+    active: true
+  ThrowingExceptionInMain:
+    active: false
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    exceptions:
+      - "ArrayIndexOutOfBoundsException"
+      - "Exception"
+      - "IllegalArgumentException"
+      - "IllegalMonitorStateException"
+      - "IllegalStateException"
+      - "IndexOutOfBoundsException"
+      - "NullPointerException"
+      - "RuntimeException"
+      - "Throwable"
+  ThrowingNewInstanceOfSameException:
+    active: true
+  TooGenericExceptionCaught:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    exceptionNames:
+      - "ArrayIndexOutOfBoundsException"
+      - "Error"
+      - "Exception"
+      - "IllegalMonitorStateException"
+      - "NullPointerException"
+      - "IndexOutOfBoundsException"
+      - "RuntimeException"
+      - "Throwable"
+    allowedExceptionNameRegex: "_|(ignore|expected).*"
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+      - "Error"
+      - "Exception"
+      - "RuntimeException"
+      - "Throwable"
+
+# ktlint formatting 규칙 (detekt-formatting 플러그인을 통해 제공)
+formatting:
+  active: true
+  android: true # Android 프로젝트용 설정
+  autoCorrect: true
+  AnnotationOnSeparateLine:
+    active: false
+    autoCorrect: true
+  AnnotationSpacing:
+    active: true
+    autoCorrect: true
+  ArgumentListWrapping:
+    active: true
+    autoCorrect: true
+    indentSize: 4
+    maxLineLength: 120
+  ChainWrapping:
+    active: true
+    autoCorrect: true
+  CommentSpacing:
+    active: true
+    autoCorrect: true
+  CommentWrapping:
+    active: false
+    autoCorrect: true
+    indentSize: 4
+  EnumEntryNameCase:
+    active: false
+    autoCorrect: true
+  Filename:
+    active: true
+  FinalNewline:
+    active: true
+    autoCorrect: true
+    insertFinalNewLine: true
+  ImportOrdering:
+    active: true
+    autoCorrect: true
+    layout: "*"
+  Indentation:
+    active: true
+    autoCorrect: true
+    indentSize: 4
+    # continuationIndentSize는 deprecated되었으므로 제거
+  MaximumLineLength:
+    active: true
+    maxLineLength: 120
+    ignoreBackTickedIdentifier: false
+  ModifierOrdering:
+    active: true
+    autoCorrect: true
+  MultiLineIfElse:
+    active: true
+    autoCorrect: true
+  NoBlankLineBeforeRbrace:
+    active: true
+    autoCorrect: true
+  NoConsecutiveBlankLines:
+    active: true
+    autoCorrect: true
+  NoEmptyClassBody:
+    active: true
+    autoCorrect: true
+  NoLineBreakAfterElse:
+    active: true
+    autoCorrect: true
+  NoLineBreakBeforeAssignment:
+    active: true
+    autoCorrect: true
+  NoMultipleSpaces:
+    active: true
+    autoCorrect: true
+  NoSemicolons:
+    active: true
+    autoCorrect: true
+  NoTrailingSpaces:
+    active: true
+    autoCorrect: true
+  NoUnitReturn:
+    active: true
+    autoCorrect: true
+  NoUnusedImports:
+    active: true
+    autoCorrect: true
+  NoWildcardImports:
+    active: true
+  PackageName:
+    active: true
+    autoCorrect: true
+  ParameterListWrapping:
+    active: true
+    autoCorrect: true
+    indentSize: 4
+    maxLineLength: 120
+  SpacingAroundColon:
+    active: true
+    autoCorrect: true
+  SpacingAroundComma:
+    active: true
+    autoCorrect: true
+  SpacingAroundCurly:
+    active: true
+    autoCorrect: true
+  SpacingAroundDot:
+    active: true
+    autoCorrect: true
+  SpacingAroundDoubleColon:
+    active: false
+    autoCorrect: true
+  SpacingAroundKeyword:
+    active: true
+    autoCorrect: true
+  SpacingAroundOperators:
+    active: true
+    autoCorrect: true
+  SpacingAroundParens:
+    active: true
+    autoCorrect: true
+  SpacingAroundRangeOperator:
+    active: true
+    autoCorrect: true
+  SpacingBetweenDeclarationsWithAnnotations:
+    active: false
+    autoCorrect: true
+  SpacingBetweenDeclarationsWithComments:
+    active: false
+    autoCorrect: true
+  StringTemplate:
+    active: true
+    autoCorrect: true
+  TrailingCommaOnCallSite:
+    active: false # 호출 사이트에서는 선택적
+    autoCorrect: true
+    useTrailingCommaOnCallSite: true
+  TrailingCommaOnDeclarationSite:
+    active: false # 선언 사이트에서도 선택적 (Android 프로젝트에서는 보통 false)
+    autoCorrect: true
+    useTrailingCommaOnDeclarationSite: true
+  Wrapping:
+    active: true
+    autoCorrect: true
+    indentSize: 4
+    maxLineLength: 120
+
+naming:
+  active: true
+  BooleanPropertyNaming:
+    active: false
+    allowedPattern: "^(is|has|are)"
+  ClassNaming:
+    active: true
+    classPattern: "[A-Z][a-zA-Z0-9]*"
+  ConstructorParameterNaming:
+    active: true
+    parameterPattern: "[a-z][A-Za-z0-9]*"
+    privateParameterPattern: "[a-z][A-Za-z0-9]*"
+    excludeClassPattern: "$^"
+  EnumNaming:
+    active: true
+    enumEntryPattern: "[A-Z][_a-zA-Z0-9]*"
+  ForbiddenClassName:
+    active: false
+    forbiddenName: []
+  FunctionMaxLength:
+    active: false
+    maximumFunctionNameLength: 30
+  FunctionMinLength:
+    active: false
+    minimumFunctionNameLength: 3
+  FunctionNaming:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    functionPattern: "[a-z][a-zA-Z0-9]*"
+    excludeClassPattern: "$^"
+    ignoreAnnotated: ["Composable"]
+  FunctionParameterNaming:
+    active: true
+    parameterPattern: "[a-z][A-Za-z0-9]*"
+    excludeClassPattern: "$^"
+    # ignoreOverridden은 deprecated되었으므로 제거
+  InvalidPackageDeclaration:
+    active: true
+    rootPackage: ""
+    requireRootInDeclaration: false
+  LambdaParameterNaming:
+    active: false
+    parameterPattern: "[a-z][A-Za-z0-9]*|_"
+  MatchingDeclarationName:
+    active: true
+    mustBeFirst: true
+  MemberNameEqualsClassName:
+    active: true
+    ignoreOverridden: true
+  NoNameShadowing:
+    active: true
+  NonBooleanPropertyPrefixedWithIs:
+    active: false
+  ObjectPropertyNaming:
+    active: true
+    constantPattern: "[A-Za-z][_A-Za-z0-9]*"
+    propertyPattern: "[A-Za-z][_A-Za-z0-9]*"
+    privatePropertyPattern: "(_)?[A-Za-z][_A-Za-z0-9]*"
+  PackageNaming:
+    active: true
+    packagePattern: '[a-z]+(\.[a-z][A-Za-z0-9]*)*'
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: "[A-Z][_A-Z0-9]*"
+    propertyPattern: "[A-Za-z][_A-Za-z0-9]*"
+    privatePropertyPattern: "_?[A-Za-z][_A-Za-z0-9]*"
+  VariableMaxLength:
+    active: false
+    maximumVariableNameLength: 64
+  VariableMinLength:
+    active: false
+    minimumVariableNameLength: 1
+  VariableNaming:
+    active: true
+    variablePattern: "[a-z][A-Za-z0-9]*"
+    privateVariablePattern: "(_)?[a-z][A-Za-z0-9]*"
+    excludeClassPattern: "$^"
+    # ignoreOverridden은 deprecated되었으므로 제거
+
+performance:
+  active: true
+  ArrayPrimitive:
+    active: true
+  CouldBeSequence:
+    active: false
+    threshold: 3
+  ForEachOnRange:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+  SpreadOperator:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+  UnnecessaryPartOfBinaryExpression:
+    active: false
+  UnnecessaryTemporaryInstantiation:
+    active: true
+
+potential-bugs:
+  active: true
+  AvoidReferentialEquality:
+    active: true
+    forbiddenTypePatterns:
+      - "kotlin.String"
+  CastToNullableType:
+    active: false
+  Deprecation:
+    active: false
+  DontDowncastCollectionTypes:
+    active: false
+  DoubleMutabilityForCollection:
+    active: true
+    mutableTypes:
+      - "kotlin.collections.MutableList"
+      - "kotlin.collections.MutableMap"
+      - "kotlin.collections.MutableSet"
+      - "java.util.ArrayList"
+      - "java.util.LinkedHashSet"
+      - "java.util.HashSet"
+      - "java.util.LinkedHashMap"
+      - "java.util.HashMap"
+  # DuplicateCaseInWhenExpression은 deprecated되었으므로 제거
+  EqualsAlwaysReturnsTrueOrFalse:
+    active: true
+  EqualsWithHashCodeExist:
+    active: true
+  ExplicitGarbageCollectionCall:
+    active: true
+  HasPlatformType:
+    active: true
+  IgnoredReturnValue:
+    active: true
+    # restrictToAnnotatedMethods는 deprecated되었으므로 restrictToConfig로 변경
+    restrictToConfig: true
+    returnValueAnnotations:
+      - "CheckResult"
+      - "*.CheckResult"
+      - "CheckReturnValue"
+      - "*.CheckReturnValue"
+  ImplicitDefaultLocale:
+    active: true
+  ImplicitUnitReturnType:
+    active: false
+    allowExplicitReturnType: true
+  InvalidRange:
+    active: true
+  IteratorHasNextCallsNextMethod:
+    active: true
+  IteratorNotThrowingNoSuchElementException:
+    active: true
+  LateinitUsage:
+    active: false
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    ignoreOnClassesPattern: ""
+  MapGetWithNotNullAssertionOperator:
+    active: true
+  MissingPackageDeclaration:
+    active: false
+    excludes: ["**/*.kts"]
+  NullCheckOnMutableProperty:
+    active: false
+  NullableToStringCall:
+    active: false
+  PropertyUsedBeforeDeclaration:
+    active: false
+  UnconditionalJumpStatementInLoop:
+    active: false
+  UnnecessaryNotNullOperator:
+    active: true
+  UnnecessarySafeCall:
+    active: true
+  UnreachableCatchBlock:
+    active: true
+  UnreachableCode:
+    active: true
+  UnsafeCallOnNullableType:
+    active: true
+  UnsafeCast:
+    active: true
+  UnusedUnaryOperator:
+    active: true
+  UselessPostfixExpression:
+    active: true
+  WrongEqualsTypeParameter:
+    active: true
+
+# Compose Rules (from io.nlopez.compose.rules:detekt)
+# Based on: https://mrmans0n.github.io/compose-rules/detekt/
+Compose:
+  ComposableAnnotationNaming:
+    active: true
+  ComposableNaming:
+    active: true
+    # -- You can optionally disable the checks in this rule for regex matches against the composable name (e.g. molecule presenters)
+    # allowedComposableFunctionNames: .*Presenter,.*MoleculePresenter
+  ComposableParamOrder:
+    active: true
+    # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
+    # treatAsLambda: MyLambdaType
+  CompositionLocalAllowlist:
+    active: true
+    # -- You can optionally define a list of CompositionLocals that are allowed here
+    allowedCompositionLocals: LocalFeelinColors
+  CompositionLocalNaming:
+    active: true
+  ContentEmitterReturningValues:
+    active: true
+    # -- You can optionally add your own composables here
+    # contentEmitters: MyComposable,MyOtherComposable
+  ContentTrailingLambda:
+    active: true
+    # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
+    # treatAsLambda: MyLambdaType
+    # -- You can optionally have a list of types to be treated as composable lambdas (e.g. typedefs or fun interfaces not picked up automatically).
+    # -- The difference with treatAsLambda is that those need `@Composable` MyLambdaType in the definition, while these won't.
+    # treatAsComposableLambda: MyComposableLambdaType
+  ContentSlotReused:
+    active: true
+    # -- You can optionally have a list of types to be treated as composable lambdas (e.g. typedefs or fun interfaces not picked up automatically).
+    # -- The difference with treatAsLambda is that those need `@Composable` MyLambdaType in the definition, while these won't.
+    # treatAsComposableLambda: MyComposableLambdaType
+  DefaultsVisibility:
+    active: true
+  LambdaParameterEventTrailing:
+    active: true
+    # -- You can optionally add your own composables here
+    # contentEmitters: MyComposable,MyOtherComposable
+    # -- You can add composables here that you don't want to count as content emitters (e.g. custom dialogs or modals)
+    # contentEmittersDenylist: MyNonEmitterComposable
+  LambdaParameterInRestartableEffect:
+    active: true
+    # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
+    # treatAsLambda: MyLambdaType
+  Material2:
+    active: false # Opt-in, disabled by default. Turn on if you want to disallow Material 2 usages.
+    # -- You can optionally allow parts of it, if you are in the middle of a migration.
+    # allowedFromM2: icons.Icons,TopAppBar
+  ModifierClickableOrder:
+    active: true
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+  ModifierComposed:
+    active: true
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+  ModifierMissing:
+    active: true
+    # -- You can optionally control the visibility of which composables to check for here
+    # -- Possible values are: `only_public`, `public_and_internal` and `all` (default is `only_public`)
+    # checkModifiersForVisibility: only_public
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+    # -- You can suppress this check in functions annotated with these annotations
+    # ignoreAnnotated: ['Potato', 'Banana']
+  ModifierNaming:
+    active: true
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+  ModifierNotUsedAtRoot:
+    active: true
+    # -- You can optionally add your own composables here
+    contentEmitters: FeelinTransparentTopAppBar
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+  ModifierReused:
+    active: true
+    # -- You can optionally add your own Modifier types
+    # customModifiers: BananaModifier,PotatoModifier
+  ModifierWithoutDefault:
+    active: true
+  MultipleEmitters:
+    active: true
+    # -- You can optionally add your own composables here that will count as content emitters
+    # contentEmitters: MyComposable,MyOtherComposable
+    # -- You can add composables here that you don't want to count as content emitters (e.g. custom dialogs or modals)
+    # contentEmittersDenylist: MyNonEmitterComposable
+  MutableParams:
+    active: true
+  MutableStateAutoboxing:
+    active: true
+  MutableStateParam:
+    active: true
+  ParameterNaming:
+    active: true
+    # -- You can optionally have a list of types to be treated as lambdas (e.g. typedefs or fun interfaces not picked up automatically)
+    # treatAsLambda: MyLambdaType
+    # -- You can optionally add your allowed lambda names (e.g., usages from the past found in the official Compose code)
+    # allowedLambdaParameterNames: onSizeChanged, onGloballyPositioned
+  PreviewAnnotationNaming:
+    active: true
+  PreviewNaming:
+    active: false # Opt-in, disabled by default.
+    # -- You can optionally configure the naming strategy for previews.
+    # -- Possible values are: `suffix`, `prefix`, `anywhere`. By default, it will be `suffix`.
+    # previewNamingStrategy: suffix
+  PreviewPublic:
+    active: true
+  RememberMissing:
+    active: true
+  RememberContentMissing:
+    active: true
+  UnstableCollections:
+    active: false # Opt-in, disabled by default. Turn on if you want to enforce this (e.g. you have strong skipping disabled)
+  ViewModelForwarding:
+    active: true
+    # -- You can optionally use this rule on things other than types ending in "ViewModel" or "Presenter" (which are the defaults). You can add your own via a regex here:
+    # allowedStateHolderNames: .*ViewModel,.*Presenter
+    # -- You can optionally add an allowlist for Composable names that won't be affected by this rule
+    # allowedForwarding: .*Content,.*FancyStuff
+    # -- You can optionally add an allowlist for ViewModel/StateHolder names that won't be affected by this rule
+    # allowedForwardingOfTypes: PotatoViewModel,(Apple|Banana)ViewModel,.*FancyViewModel
+  ViewModelInjection:
+    active: true
+    # -- You can optionally add your own ViewModel factories here
+    # viewModelFactories: hiltViewModel,potatoViewModel
+
+style:
+  active: true
+  AlsoCouldBeApply:
+    active: false
+  BracesOnIfStatements:
+    active: false
+    singleLine: "never"
+    multiLine: "always"
+  BracesOnWhenStatements:
+    active: false
+    singleLine: "necessary"
+    multiLine: "necessary"
+  CanBeNonNullable:
+    active: false
+  CascadingCallWrapping:
+    active: false
+    includeElvis: true
+  ClassOrdering:
+    active: false
+  CollapsibleIfStatements:
+    active: false
+  # DataClassContainsFunction은 더 이상 존재하지 않으므로 제거
+  DataClassShouldBeImmutable:
+    active: false
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 3
+  EqualsNullCall:
+    active: true
+  EqualsOnSignatureLine:
+    active: false
+  ExplicitCollectionElementAccessMethod:
+    active: false
+  ExplicitItLambdaParameter:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+  ExpressionBodySyntax:
+    active: false
+    includeLineWrapping: false
+  ForbiddenComment:
+    active: false
+    # values는 deprecated되었으므로 comments로 변경
+    # comments:
+    #   - "FIXME:"
+    #   - "STOPSHIP:"
+    #   - "TODO:"
+    # allowedPatterns: ""
+  ForbiddenImport:
+    active: false
+    imports: []
+    forbiddenPatterns: ""
+  ForbiddenMethodCall:
+    active: false
+    methods:
+      - "kotlin.io.print"
+      - "kotlin.io.println"
+  # ForbiddenPublicDataClass는 libraries ruleset으로 이동되었으므로 제거
+  ForbiddenVoid:
+    active: true
+    ignoreOverridden: false
+    ignoreUsageInGenerics: false
+  FunctionOnlyReturningConstant:
+    active: true
+    ignoreOverridableFunction: true
+    ignoreActualFunction: true
+    excludedFunctions: []
+  # LibraryCodeMustSpecifyReturnType는 libraries ruleset으로 이동되었으므로 제거
+  # LibraryEntitiesShouldNotBePublic는 libraries ruleset으로 이동되었으므로 제거
+  LoopWithTooManyJumpStatements:
+    active: true
+    maxJumpCount: 1
+  MagicNumber:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    ignoreNumbers:
+      - "-1"
+      - "0"
+      - "1"
+      - "2"
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: false
+    ignoreLocalVariableDeclaration: false
+    ignoreConstantDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: false
+    ignoreNamedArgument: true
+    ignoreEnums: false
+    ignoreRanges: false
+    ignoreExtensionFunctions: true
+  MandatoryBracesLoops:
+    active: false
+  MaxChainedCallsOnSameLine:
+    active: false
+    maxChainedCalls: 5
+  MaxLineLength:
+    active: true
+    maxLineLength: 120
+    excludePackageStatements: true
+    excludeImportStatements: true
+    excludeCommentStatements: false
+  MayBeConst:
+    active: true
+  ModifierOrder:
+    active: true
+  MultilineLambdaItParameter:
+    active: false
+  NestedClassesVisibility:
+    active: true
+  NewLineAtEndOfFile:
+    active: false # formatting의 FinalNewline과 중복되므로 비활성화
+  NoTabs:
+    active: false
+  NullableBooleanCheck:
+    active: false
+  ObjectLiteralToLambda:
+    active: true
+  OptionalAbstractKeyword:
+    active: true
+  OptionalUnit:
+    active: false
+  PreferToOverPairSyntax:
+    active: false
+  ProtectedMemberInFinalClass:
+    active: true
+  RedundantExplicitType:
+    active: false
+  RedundantHigherOrderMapUsage:
+    active: true
+  RedundantVisibilityModifierRule:
+    active: false
+  ReturnCount:
+    active: true
+    max: 2
+    excludedFunctions:
+      - "equals"
+      - "fromProfileType" # ProfileComponentData.fromProfileType 함수 제외
+    excludeLabeled: false
+    excludeReturnFromLambda: true
+    excludeGuardClauses: false
+  SafeCast:
+    active: true
+  SerialVersionUIDInSerializableClass:
+    active: true
+  SpacingBetweenPackageAndImports:
+    active: false
+  ThrowsCount:
+    active: true
+    max: 2
+    excludeGuardClauses: false
+  TrailingWhitespace:
+    active: false
+  TrimMultilineRawString:
+    active: false
+  UnderscoresInNumericLiterals:
+    active: false
+    acceptableLength: 4
+    allowNonStandardGrouping: false
+  UnnecessaryAbstractClass:
+    active: true
+  UnnecessaryAnnotationUseSiteTarget:
+    active: false
+  UnnecessaryApply:
+    active: true
+  UnnecessaryFilter:
+    active: true
+  UnnecessaryInheritance:
+    active: true
+  UnnecessaryInnerClass:
+    active: false
+  UnnecessaryLet:
+    active: false
+  UnnecessaryParentheses:
+    active: false
+    allowForUnclearPrecedence: false
+  UntilInsteadOfRangeTo:
+    active: false
+  UnusedImports:
+    active: false # formatting의 NoUnusedImports와 중복되므로 비활성화
+  UnusedPrivateClass:
+    active: true
+  UnusedParameter:
+    active: true
+    allowedNames: "(_|ignored|expected|modifier)" # modifier 파라미터는 unused parameter 검사 제외
+  UnusedPrivateMember:
+    active: true
+    allowedNames: "(_|ignored|expected|serialVersionUID)"
+    ignoreAnnotated: ["Preview"] # @Preview 어노테이션이 붙은 함수는 unused private member 검사 제외
+  UseAnyOrNoneInsteadOfFind:
+    active: true
+  UseArrayLiteralsInAnnotations:
+    active: true
+  UseCheckNotNull:
+    active: true
+  UseCheckOrError:
+    active: true
+  UseDataClass:
+    active: false
+    allowVars: false
+  UseEmptyCounterpart:
+    active: false
+  UseIfEmptyOrIfBlank:
+    active: false
+  UseIfInsteadOfWhen:
+    active: false
+    ignoreWhenContainingVariableDeclaration: false
+  UseIsNullOrEmpty:
+    active: true
+  UseOrEmpty:
+    active: true
+  UseRequire:
+    active: true
+  UseRequireNotNull:
+    active: true
+  UselessCallOnNotNull:
+    active: true
+  UtilityClassWithPublicConstructor:
+    active: true
+  VarCouldBeVal:
+    active: true
+    ignoreLateinitVar: false
+  WildcardImport:
+    active: true
+    excludes:
+      [
+        "**/test/**",
+        "**/androidTest/**",
+        "**/commonTest/**",
+        "**/jvmTest/**",
+        "**/jsTest/**",
+        "**/iosTest/**",
+      ]
+    excludeImports:
+      - "java.util.*"

@@ -65,7 +65,7 @@ fun FeelinNavHost(
                 modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
                 items = bottomBarItems,
                 selectedIndex = selectedBottomBarIndex,
-                onItemSelected = { index ->
+                onItemSelect = { index ->
                     selectedBottomBarIndex = index
                     val destination = when (index) {
                         0 -> FeelinDestination.Home.route

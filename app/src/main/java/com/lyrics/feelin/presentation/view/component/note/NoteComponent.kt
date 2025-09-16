@@ -76,7 +76,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray09),
             modifier = Modifier.padding(vertical = 16.dp),
         )
-        if (noteData.lyrics != null)
+        if (noteData.lyrics != null) {
             Box(
                 modifier = Modifier.fillMaxWidth().height(132.dp).padding(bottom = 16.dp),
                 contentAlignment = Alignment.Center,
@@ -85,12 +85,13 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 Text(
                     text = noteData.lyrics.content,
                     style =
-                        MaterialTheme.typography.bodyLarge.copy(
-                            color = LightGray09, // 가사 텍스트는 다크모드 미 적용입니다.
-                            textAlign = TextAlign.Center,
-                        ),
+                    MaterialTheme.typography.bodyLarge.copy(
+                        color = LightGray09, // 가사 텍스트는 다크모드 미 적용입니다.
+                        textAlign = TextAlign.Center,
+                    ),
                 )
             }
+        }
         HorizontalDivider(color = feelinColors.gray01, thickness = 1.dp)
         Row(
             modifier = Modifier.fillMaxWidth().height(64.dp),
@@ -134,10 +135,13 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             ) {
                 Image(
                     painter =
-                        painterResource(
-                            if (noteData.isLiked) R.drawable.heart_light_active
-                            else R.drawable.heart_light_inactive
-                        ),
+                    painterResource(
+                        if (noteData.isLiked) {
+                            R.drawable.heart_light_active
+                        } else {
+                            R.drawable.heart_light_inactive
+                        }
+                    ),
                     contentDescription = "note like icon",
                     modifier = Modifier.size(24.dp).padding(end = 4.dp),
                     colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked },
@@ -160,12 +164,15 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             }
             Image(
                 painter =
-                    painterResource(
-                        if (noteData.isBookmarked) R.drawable.bookmark_light_active
-                        else R.drawable.bookmark_light_inactive
-                    ),
+                painterResource(
+                    if (noteData.isBookmarked) {
+                        R.drawable.bookmark_light_active
+                    } else {
+                        R.drawable.bookmark_light_inactive
+                    }
+                ),
                 contentDescription =
-                    "note is ${if(noteData.isBookmarked) "" else "not "}bookmarked",
+                "note is ${if (noteData.isBookmarked) "" else "not "}bookmarked",
                 modifier = Modifier.size(24.dp),
                 colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked }
             )
@@ -212,7 +219,11 @@ private fun NoteComponentPreview() {
     }
 }
 
-@Preview(name = "Note Component - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Note Component - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun NoteComponentDarkPreview() {
     FeelinTheme {

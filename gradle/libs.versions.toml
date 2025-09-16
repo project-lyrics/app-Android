@@ -1,6 +1,8 @@
 [versions]
 agp = "8.12.0"
 coil = "3.3.0"
+detekt = "1.23.7"
+detektCompose = "0.4.14"
 hilt = "2.57"
 kotlin = "2.2.0"
 kotlinxDatetime = "0.7.1"
@@ -40,8 +42,13 @@ retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = 
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version = "1.2.0" }
 
+# detekt plugins
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

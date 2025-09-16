@@ -11,6 +11,8 @@ import kotlinx.datetime.number
 import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
+private const val YEAR_100 = 100
+
 /**
  * 현재 시간과 비교하여 사용자에게 친화적인 시간 표현을 반환합니다.
  *
@@ -56,7 +58,7 @@ fun LocalDateTime.compareNowToUser(): String {
  * @return "YY.MM.DD HH:mm" 형식의 문자열 (예: "24.12.25 14:30")
  */
 fun LocalDateTime.toDisplayFormat(): String {
-    val yearShort = (year % 100).toString().padStart(2, '0')
+    val yearShort = (year % YEAR_100).toString().padStart(2, '0')
     val monthStr = month.number.toString().padStart(2, '0')
     val dayStr = day.toString().padStart(2, '0')
     val hourStr = hour.toString().padStart(2, '0')

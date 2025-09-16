@@ -30,6 +30,8 @@ import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
 
+private const val GOOGLE_BACKGROUND_WHITE = 0xFF1F1F1F
+
 @Composable
 fun GoogleLoginButton(
     onClick: () -> Unit,
@@ -37,13 +39,13 @@ fun GoogleLoginButton(
 ) {
     Box(
         modifier =
-            Modifier
-                .padding(horizontal = 20.dp)
-                .height(56.dp)
-                .fillMaxWidth()
-                .clip(shape = RoundedCornerShape(8.dp)) // 공식 가이드라인은 12px
-                .background(color = LightGray01)
-                .clickable(onClick = onClick),
+        Modifier
+            .padding(horizontal = 20.dp)
+            .height(56.dp)
+            .fillMaxWidth()
+            .clip(shape = RoundedCornerShape(8.dp)) // 공식 가이드라인은 12px
+            .background(color = LightGray01)
+            .clickable(onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
         Row(
@@ -55,31 +57,31 @@ fun GoogleLoginButton(
                 painter = painterResource(id = R.drawable.google_login_icon),
                 contentDescription = "kakao login button icon",
                 modifier =
-                    Modifier.padding(
-                        start = 2.5.dp,
-                        top = 2.5.dp,
-                        end = 2.5.dp,
-                        bottom = 2.5.dp,
-                    ),
+                Modifier.padding(
+                    start = 2.5.dp,
+                    top = 2.5.dp,
+                    end = 2.5.dp,
+                    bottom = 2.5.dp,
+                ),
             )
             Spacer(modifier = Modifier.width(8.dp))
             // TODO(@이대근): 살려줘요 아이콘이랑 텍스트가 중앙정렬이 안 맞아 2025.09.16.
             Text(
                 text = "Google 계정으로 로그인",
                 style =
-                    MaterialTheme.typography.titleMedium.copy(
-                        color = Color(0xFF1F1F1F),
-                        textAlign = TextAlign.Center,
-                        lineHeight = 1.2.em,
-                        platformStyle =
-                            PlatformTextStyle(
-                                includeFontPadding = false,
-                            ),
+                MaterialTheme.typography.titleMedium.copy(
+                    color = Color(GOOGLE_BACKGROUND_WHITE),
+                    textAlign = TextAlign.Center,
+                    lineHeight = 1.2.em,
+                    platformStyle =
+                    PlatformTextStyle(
+                        includeFontPadding = false,
                     ),
+                ),
                 modifier =
-                    Modifier
-                        .height(24.dp)
-                        .wrapContentHeight(),
+                Modifier
+                    .height(24.dp)
+                    .wrapContentHeight(),
             )
         }
     }

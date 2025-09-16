@@ -82,14 +82,16 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         Spacer(modifier = Modifier.height(73.dp))
 //        AppleLoginButton()
         Spacer(modifier = Modifier.height(12.dp))
-        KakaoLoginButton(
+        SocialLoginButton(
+            config = SocialLoginButtonConfigs.Kakao,
             isLastLogin = false,
             onClick = {}
         )
         Spacer(modifier = Modifier.height(12.dp))
-        GoogleLoginButton(
+        SocialLoginButton(
+            config = SocialLoginButtonConfigs.Google,
             isLastLogin = true,
-            onClick = {},
+            onClick = {}
         )
         Spacer(modifier = Modifier.height(12.dp))
         SignUpLaterTextButton(
@@ -118,72 +120,6 @@ private fun SignUpLaterTextButton(
         )
     }
 }
-
-// MARK(@이대근): 애플로그인은 사용하지 않을 가능성이 커, 버튼 구현만 하고 사용하지 않습니다. 2025.09.15.
-// private const val APPLE_BLACK = 0xFF000000
-// @Composable
-// private fun AppleLoginButton(
-//    onClick: () -> Unit,
-//    modifier: Modifier = Modifier,
-//    isLastLogin: Boolean = false,
-// ) {
-//    Box(contentAlignment = Alignment.TopCenter) {
-//        Box(
-//            modifier =
-//            Modifier
-//                .padding(horizontal = 20.dp)
-//                .height(56.dp)
-//                .fillMaxWidth()
-//                .clip(shape = RoundedCornerShape(8.dp)) // 공식 가이드라인은 15px
-//                .background(color = APPLE_BLACK)
-//                .clickable(onClick = onClick),
-//            contentAlignment = Alignment.Center,
-//        ) {
-//            Row(
-//                modifier = Modifier.height(24.dp),
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.Center,
-//            ) {
-//                Image(
-//                    painter = painterResource(id = new resource needed),
-//                    contentDescription = "kakao login button icon",
-//                    modifier =
-//                    Modifier.padding(
-//                        start = 2.5.dp,
-//                        top = 2.5.dp,
-//                        end = 2.5.dp,
-//                        bottom = 2.5.dp,
-//                    ),
-//                )
-//                Spacer(modifier = Modifier.width(8.dp))
-//                Text(
-//                    text = "Apple로 시작하기",
-//                    style =
-//                    MaterialTheme.typography.titleMedium.copy(
-//                        color = LightGray00,
-//                        textAlign = TextAlign.Center,
-//                        lineHeight = 1.2.em,
-//                        platformStyle =
-//                        PlatformTextStyle(
-//                            includeFontPadding = false,
-//                        ),
-//                    ),
-//                    modifier =
-//                    Modifier
-//                        .height(24.dp)
-//                        .wrapContentHeight(),
-//                )
-//            }
-//        }
-//        if (isLastLogin) {
-//            Image(
-//                painter = painterResource(R.drawable.last_login_info),
-//                contentDescription = "Your last log in is google",
-//                modifier = Modifier.offset(x = 97.dp, y = (-22).dp),
-//            )
-//        }
-//    }
-// }
 
 @Preview
 @Composable

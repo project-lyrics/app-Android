@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -45,7 +44,7 @@ data class BottomNavItem(
 fun FeelinBottomNavigation(
     items: List<BottomNavItem>,
     selectedIndex: Int,
-    onItemSelected: (Int) -> Unit,
+    onItemSelect: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -74,7 +73,7 @@ fun FeelinBottomNavigation(
                 FeelinBottomNavItem(
                     item = item,
                     isSelected = selectedIndex == index,
-                    onClick = { onItemSelected(index) },
+                    onClick = { onItemSelect(index) },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -133,12 +132,16 @@ private fun FeelinNavigationRailPreview() {
         FeelinBottomNavigation(
             items = items,
             selectedIndex = 0,
-            onItemSelected = {}
+            onItemSelect = {}
         )
     }
 }
 
-@Preview(name = "Bottom Navigation - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Bottom Navigation - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinNavigationRailDarkPreview() {
     val items = listOf(
@@ -160,7 +163,7 @@ private fun FeelinNavigationRailDarkPreview() {
         FeelinBottomNavigation(
             items = items,
             selectedIndex = 0,
-            onItemSelected = {}
+            onItemSelect = {}
         )
     }
 }

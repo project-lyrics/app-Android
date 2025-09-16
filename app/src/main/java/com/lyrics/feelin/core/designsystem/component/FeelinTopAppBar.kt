@@ -1,3 +1,6 @@
+@file:Suppress("UnusedParameter")
+// TODO(@이대근): 추후 앱바 수정하면서도 파라미터 불필요하면 삭제하겠습니다 2025.09.16.
+
 package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.background
@@ -22,7 +25,6 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Black
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,11 +39,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
 fun FeelinTransparentTopAppBar(
-    title: () -> Unit = {},
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    title: () -> Unit = {},
     colors: FeelinTopAppBarColors = FeelinTopAppBarDefaults.topAppBarColors(),
     navigationIcon: (@Composable () -> Unit)? = null,
-    onBackClick: () -> Unit,
     actions: @Composable RowScope.() -> Unit = {},
     paddingValues: PaddingValues = PaddingValues(
         horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
@@ -181,13 +183,12 @@ private fun TopAppBarBase(
     }
 }
 
-
 @Composable
 fun TopBarIconButton(
     imageVector: ImageVector,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     contentDescription: String,
+    modifier: Modifier = Modifier,
     tint: Color = LocalContentColor.current,
 ) {
     Box(
@@ -228,7 +229,11 @@ private fun FeelinTransparentTopAppBarPreview() {
     }
 }
 
-@Preview(name = "Transparent TopBar - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "Transparent TopBar - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinTransparentTopAppBarDarkPreview() {
     FeelinTheme {
@@ -260,7 +265,11 @@ private fun FeelinTopAppBarWithBackPreview() {
     }
 }
 
-@Preview(name = "TopBar with Back - Dark", showBackground = true, uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
+@Preview(
+    name = "TopBar with Back - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinTopAppBarWithBackDarkPreview() {
     FeelinTheme {

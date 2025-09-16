@@ -5,7 +5,7 @@ import kotlinx.datetime.LocalDateTime
 
 /**
  * 노트 컴포넌트의 데이터 클래스
- * 
+ *
  * @property id 서버에서 받은 id
  * @property content 노트 내용
  * @property status 게시 상태
@@ -66,7 +66,7 @@ data class NoteComponentData(
         }
 
         @Suppress("MaxLineLength")
-        fun sampleNoLyrics(): NoteComponentData{
+        fun sampleNoLyrics(): NoteComponentData {
             return NoteComponentData(
                 id = 1L,
                 content = "세자갈이어 펜노솥혼이 옹니웅어가 흐텔에서 한시아져지흑자에서 이기소로 즌다두, 즐쇡스거안다고 쥰전댄사다 안업까지, 고며나이고브. 됴오가드는 자기파당을 알븍막아 키시느 한답가시에서. 티이세가 그하다 로를 왔거욕런은 영우배다. 로엉삼아룐의 덱짱트엘언뜨 츴던오니, 어매니꺼, 간한죤낸젼다 머아햐닌을. 쑨오라고 그쫀히 첼기두지 븡텨오 갑바, 짇너랭긴을. 우윽으로써 안바는 얼아믁엄에서 죄이머가 윽주가 엇어념젔옴낀바븜은 제가가 돔앺츠일을 네소와 째보도이히고 다제므너로.",
@@ -100,7 +100,7 @@ enum class LyricsBackground {
 
 /**
  * 노트 컴포넌트의 가사 데이터 클래스
- * 
+ *
  * @property content 가사 내용
  * @property background 가사 배경 테마
  */
@@ -121,7 +121,7 @@ data class NoteComponentLyricsData(val content: String, val background: LyricsBa
 
 /**
  * 노트 컴포넌트의 사용자 데이터 클래스
- * 
+ *
  * @property id 서버에서 받는 id
  * @property nickname 사용자 닉네임
  * @property profileCharacterType 프로필 캐릭터 타입
@@ -152,7 +152,7 @@ data class NoteComponentUserData(
 
 /**
  * 노트 컴포넌트의 곡 데이터 클래스
- * 
+ *
  * @property id 서버에서 받는 id
  * @property name 곡 이름
  * @property imageUrl 이미지 URL
@@ -187,7 +187,7 @@ data class NoteComponentSongData(
 
 /**
  * 노트 컴포넌트의 아티스트 데이터 클래스
- * 
+ *
  * @property id 서버에서 받는 id
  * @property name 아티스트 이름
  */

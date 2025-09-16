@@ -87,31 +87,32 @@ data class FeelinColors(
 )
 
 /** [FeelinColors]를 제공/소비하기 위한 CompositionLocal. */
-val LocalFeelinColors = staticCompositionLocalOf {
-    FeelinColors(
-        modal = LightSystemModal,
-        inputField = LightSystemInputField,
-        point = CommonPoint,
-        border = LightSystemBorder,
-        dim = CommonSystemDim,
-        gray00 = LightGray00,
-        gray01 = LightGray01,
-        gray02 = LightGray02,
-        gray03 = LightGray03,
-        gray04 = LightGray04,
-        gray05 = LightGray05,
-        gray06 = LightGray06,
-        gray07 = LightGray07,
-        gray08 = LightGray08,
-        gray09 = LightGray09,
-        systemActivate = LightSystemActivate,
-        systemDisable = LightSystemDisable,
-        systemPressedBrand = LightSystemPressedBrand,
-        systemPressedGreyScale = LightSystemPressedGreyScale,
-        alertWarning = CommonAlertWarning,
-        alertSuccess = LightAlertSuccess,
-    )
-}
+val LocalFeelinColors =
+    staticCompositionLocalOf {
+        FeelinColors(
+            modal = LightSystemModal,
+            inputField = LightSystemInputField,
+            point = CommonPoint,
+            border = LightSystemBorder,
+            dim = CommonSystemDim,
+            gray00 = LightGray00,
+            gray01 = LightGray01,
+            gray02 = LightGray02,
+            gray03 = LightGray03,
+            gray04 = LightGray04,
+            gray05 = LightGray05,
+            gray06 = LightGray06,
+            gray07 = LightGray07,
+            gray08 = LightGray08,
+            gray09 = LightGray09,
+            systemActivate = LightSystemActivate,
+            systemDisable = LightSystemDisable,
+            systemPressedBrand = LightSystemPressedBrand,
+            systemPressedGreyScale = LightSystemPressedGreyScale,
+            alertWarning = CommonAlertWarning,
+            alertSuccess = LightAlertSuccess,
+        )
+    }
 
 /**
  * 시스템/동적 팔레트를 베이스로 받고, 브랜드·표면 역할을 오버라이드해 최종 ColorScheme을 만든다.
@@ -136,7 +137,10 @@ val LocalFeelinColors = staticCompositionLocalOf {
  * @return 오버라이드가 반영된 최종 ColorScheme
  */
 @Composable
-private fun resolvedColorScheme(darkTheme: Boolean, dynamicColor: Boolean): ColorScheme {
+private fun resolvedColorScheme(
+    darkTheme: Boolean,
+    dynamicColor: Boolean,
+): ColorScheme {
     val base =
         when {
             dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {

@@ -37,84 +37,84 @@ val pretendardFamily =
 val Typography =
     Typography(
         headlineLarge =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 24.sp,
-                lineHeight = 32.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 24.sp,
+            lineHeight = 32.sp,
+        ),
         headlineMedium =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 20.sp,
+            lineHeight = 28.sp,
+        ),
         headlineSmall =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 18.sp,
-                lineHeight = 24.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Bold,
+            fontSize = 18.sp,
+            lineHeight = 24.sp,
+        ),
         titleLarge =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-                lineHeight = 28.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 20.sp,
+            lineHeight = 28.sp,
+        ),
         titleMedium =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+        ),
         titleSmall =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 14.sp,
-                lineHeight = 30.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp,
+            lineHeight = 30.sp,
+        ),
         bodyLarge =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 16.sp,
-                lineHeight = 24.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+        ),
         bodyMedium =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+        ),
         bodySmall =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 14.sp,
-                lineHeight = 20.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+        ),
         // caption1 대응(가장 작은 레이블)
         labelSmall =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Normal,
-                fontSize = 11.sp,
-                lineHeight = 16.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Normal,
+            fontSize = 11.sp,
+            lineHeight = 16.sp,
+        ),
         // caption2 대응(그 다음 크기 레이블)
         labelMedium =
-            TextStyle(
-                fontFamily = pretendardFamily,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp,
-                lineHeight = 16.sp,
-            ),
+        TextStyle(
+            fontFamily = pretendardFamily,
+            fontWeight = FontWeight.Medium,
+            fontSize = 12.sp,
+            lineHeight = 16.sp,
+        ),
     )
 
 /**

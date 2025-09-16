@@ -131,10 +131,13 @@ data class CommunityViewNoteState(
             return CommunityViewNoteState(
                 status = CommunityViewNoteStatus.SUCCESS_LOAD,
                 notes =
-                    List(10) {
-                        if (it % 2 == 0) NoteComponentData.sample()
-                        else NoteComponentData.sampleNoLyrics()
-                    },
+                List(10) {
+                    if (it % 2 == 0) {
+                        NoteComponentData.sample()
+                    } else {
+                        NoteComponentData.sampleNoLyrics()
+                    }
+                },
             )
         }
 
@@ -143,10 +146,13 @@ data class CommunityViewNoteState(
             return CommunityViewNoteState(
                 status = CommunityViewNoteStatus.NEW_PAGE_LOADING,
                 notes =
-                    List(19) {
-                        if (it % 2 == 0) NoteComponentData.sample()
-                        else NoteComponentData.sampleNoLyrics()
-                    },
+                List(19) {
+                    if (it % 2 == 0) {
+                        NoteComponentData.sample()
+                    } else {
+                        NoteComponentData.sampleNoLyrics()
+                    }
+                },
             )
         }
 

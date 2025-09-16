@@ -30,6 +30,7 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
+import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
 
@@ -37,7 +38,7 @@ import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
 fun FeelinNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = FeelinDestination.Home.route,
+    startDestination: String = FeelinDestination.Login.route,
 ) {
     var selectedBottomBarIndex by remember { mutableIntStateOf(0) }
 
@@ -61,27 +62,30 @@ fun FeelinNavHost(
     Scaffold(
         modifier = modifier.fillMaxSize(),
         bottomBar = {
-            FeelinBottomNavigation(
-                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
-                items = bottomBarItems,
-                selectedIndex = selectedBottomBarIndex,
-                onItemSelect = { index ->
-                    selectedBottomBarIndex = index
-                    val destination = when (index) {
-                        0 -> FeelinDestination.Home.route
-                        1 -> FeelinDestination.NoteSearch.route
-                        2 -> FeelinDestination.MyPage.route
-                        else -> FeelinDestination.Home.route
-                    }
-                    navController.navigate(destination) {
-                        popUpTo(navController.graph.startDestinationId) {
-                            saveState = true
+            if (selectedBottomBarIndex != -1) {
+                FeelinBottomNavigation(
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
+                    items = bottomBarItems,
+                    selectedIndex = selectedBottomBarIndex,
+                    onItemSelect = { index ->
+                        selectedBottomBarIndex = index
+                        val destination =
+                            when (index) {
+                                0 -> FeelinDestination.Home.route
+                                1 -> FeelinDestination.NoteSearch.route
+                                2 -> FeelinDestination.MyPage.route
+                                else -> FeelinDestination.Home.route
+                            }
+                        navController.navigate(destination) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                }
-            )
+                    },
+                )
+            }
         },
         contentWindowInsets = WindowInsets(0)
     ) { paddingValues ->
@@ -122,6 +126,11 @@ fun FeelinNavHost(
             composable(FeelinDestination.MyPage.route) {
                 selectedBottomBarIndex = 2
                 MyPageScreen()
+            }
+
+            composable(FeelinDestination.Login.route) {
+                selectedBottomBarIndex = -1
+                LoginScreen()
             }
         }
     }

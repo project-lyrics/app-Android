@@ -1,5 +1,6 @@
 package com.lyrics.feelin.presentation.view.login
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -36,45 +38,62 @@ private const val KAKAO_TEXT_BLACK = 0xFF000000
 fun KakaoLoginButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isLastLogin: Boolean = false
 ) {
     Box(
-        modifier =
-        Modifier
-            .padding(horizontal = 20.dp)
-            .height(56.dp)
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(8.dp)) // 공식 가이드라인은 12px
-            .background(color = Color(KAKAO_YELLOW))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.TopCenter
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center,
+        Box(
+            modifier =
+            Modifier
+                .padding(horizontal = 20.dp)
+                .height(56.dp)
+                .fillMaxWidth()
+                .clip(shape = RoundedCornerShape(8.dp)) // 공식 가이드라인은 12px
+                .background(color = Color(KAKAO_YELLOW))
+                .clickable(onClick = onClick),
+            contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.kakao_login_icon),
-                contentDescription = "kakao login button icon",
-                modifier = Modifier.padding(start = 4.dp, top = 4.dp, end = 3.dp, bottom = 4.dp),
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            // TODO(@이대근): 살려줘요 아이콘이랑 텍스트가 중앙정렬이 안 맞아 2025.09.15.
-            Text(
-                text = "카카오 로그인",
-                style =
-                MaterialTheme.typography.titleMedium.copy(
-                    color = Color(KAKAO_TEXT_BLACK),
-                    textAlign = TextAlign.Center,
-                    lineHeight = 1.2.em,
-                    platformStyle =
-                    PlatformTextStyle(
-                        includeFontPadding = false,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.kakao_login_icon),
+                    contentDescription = "kakao login button icon",
+                    modifier = Modifier.padding(
+                        start = 4.dp,
+                        top = 4.dp,
+                        end = 3.dp,
+                        bottom = 4.dp
                     ),
-                ),
-                modifier =
-                Modifier
-                    .height(24.dp)
-                    .wrapContentHeight(),
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                // TODO(@이대근): 살려줘요 아이콘이랑 텍스트가 중앙정렬이 안 맞아 2025.09.15.
+                Text(
+                    text = "카카오 로그인",
+                    style =
+                    MaterialTheme.typography.titleMedium.copy(
+                        color = Color(KAKAO_TEXT_BLACK),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 1.2.em,
+                        platformStyle =
+                        PlatformTextStyle(
+                            includeFontPadding = false,
+                        ),
+                    ),
+                    modifier =
+                    Modifier
+                        .height(24.dp)
+                        .wrapContentHeight(),
+                )
+            }
+        }
+        if (isLastLogin) {
+            Image(
+                painter = painterResource(R.drawable.last_login_info),
+                contentDescription = "Your last log in is kakao",
+                modifier = Modifier.offset(x = 97.dp, y = (-22).dp),
             )
         }
     }
@@ -84,6 +103,6 @@ fun KakaoLoginButton(
 @Composable
 private fun KakaoLoginButtonPreview() {
     FeelinTheme {
-        KakaoLoginButton(onClick = {})
+        KakaoLoginButton(isLastLogin = true, onClick = {})
     }
 }

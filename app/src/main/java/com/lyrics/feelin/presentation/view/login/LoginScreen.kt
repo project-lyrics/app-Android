@@ -16,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -23,8 +25,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.icon.FeelinTextIcon
+import com.lyrics.feelin.core.domain.model.OAuthProvider
 import com.lyrics.feelin.presentation.designsystem.theme.CaptionActiveTextStyle
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LightBackgroundPrimary
@@ -34,7 +38,14 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
 // 로그인 화면은 테마 미 적용입니다. @이대근 2025.09.15.
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier) {
+fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = viewModel()) {
+    val loginErrorCode by loginViewModel.loginErrorCode.collectAsState(initial = null)
+    val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
+
+    if (loginErrorCode != null) {
+        // TODO(@이대근): 로그인 에러 다이얼로그 표시 2025.09.27.
+    }
+
     Column(
         modifier =
         Modifier
@@ -81,21 +92,21 @@ fun LoginScreen(modifier: Modifier = Modifier) {
         }
         Spacer(modifier = Modifier.height(73.dp))
 //        AppleLoginButton()
-        Spacer(modifier = Modifier.height(12.dp))
+//        Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Kakao,
-            isLastLogin = false,
-            onClick = {}
+            isLastLogin = (lastOAuthProvider == OAuthProvider.KAKAO),
+            onClick = { loginViewModel.kakaoLogin() }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Google,
-            isLastLogin = true,
-            onClick = {}
+            isLastLogin = (lastOAuthProvider == OAuthProvider.GOOGLE),
+            onClick = { loginViewModel.googleLogin() }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SignUpLaterTextButton(
-            onClick = {},
+            onClick = { loginViewModel.continueWithoutLogin() },
         )
     }
 }

@@ -16,6 +16,7 @@ activityCompose = "1.10.1"
 composeBom = "2025.07.00"
 retrofit = "3.0.0"
 navigationCompose = "2.9.0"
+kakao = "2.22.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -45,6 +46,9 @@ androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navig
 # detekt plugins
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 detekt-compose = { module = "io.nlopez.compose.rules:detekt", version.ref = "detektCompose" }
+
+# kakao SDK
+kakao-user = { group = "com.kakao.sdk", name = "v2-user", version.ref = "kakao" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

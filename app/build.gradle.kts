@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
@@ -6,6 +7,14 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+}
+
+// local.properties 읽기
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { load(it) }
+    }
 }
 
 android {
@@ -20,6 +29,12 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Application 클래스에서 사용할 BuildConfig 생성
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${localProperties["kakao.native.app.key.dev"]}\"")
+
+        // AndroidManifest.xml에서 사용할 placeholder
+        manifestPlaceholders["kakaoNativeAppKey"] = localProperties["kakao.native.app.key.dev"] ?: ""
     }
 
     buildTypes {
@@ -37,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -90,6 +106,9 @@ dependencies {
 
 //    time (kotlinx.datetime)
     implementation(libs.kotlinx.datetime)
+
+    // kakao SDK
+    implementation(libs.kakao.user) // 카카오 로그인 API 모듈
 
     // detekt plugins
     detektPlugins(libs.detekt.formatting)

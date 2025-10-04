@@ -2,13 +2,16 @@ package com.lyrics.feelin.core.data.datasource.sdk
 
 import android.content.Context
 import android.util.Log
-import com.kakao.sdk.auth.model.OAuthToken
+import com.kakao.sdk.auth.model.OAuthToken as KakaoOAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import com.lyrics.feelin.core.domain.model.OAuthToken
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import kotlin.coroutines.resume
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 
@@ -127,7 +130,8 @@ class KakaoAuthDataSource @Inject constructor(
                     }
                 }
                 token != null -> {
-                    continuation.resume(Result.success(token))
+                    // 카카오 SDK 토큰 → 도메인 모델로 변환해 반환
+                    continuation.resume(Result.success(token.toDomainModel()))
                 }
             }
         }
@@ -164,10 +168,24 @@ class KakaoAuthDataSource @Inject constructor(
                     continuation.resume(Result.failure(error))
                 }
                 token != null -> {
-                    continuation.resume(Result.success(token))
+                    // 카카오 SDK 토큰 → 도메인 모델로 변환해 반환
+                    continuation.resume(Result.success(token.toDomainModel()))
                 }
             }
         }
+    }
+
+    /** 카카오 SDK의 OAuthToken을 도메인 모델로 변환 */
+    @OptIn(ExperimentalTime::class)
+    private fun KakaoOAuthToken.toDomainModel(): OAuthToken {
+        return OAuthToken(
+            accessToken = this.accessToken,
+            refreshToken = this.refreshToken,
+            expiresAt = this.accessTokenExpiresAt.let { expiresAt ->
+                Instant.fromEpochMilliseconds(expiresAt.time)
+            },
+            scopes = this.scopes
+        )
     }
 
     companion object {

@@ -155,6 +155,7 @@ complexity:
         "**/jvmTest/**",
         "**/jsTest/**",
         "**/iosTest/**",
+        "**/datasource/**", # DataSource 클래스는 함수 수 제한 제외 (CRUD 메서드 다수 포함)
       ]
     thresholdInFiles: 11
     thresholdInClasses: 11

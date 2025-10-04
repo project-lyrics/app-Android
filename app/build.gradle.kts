@@ -107,6 +107,9 @@ dependencies {
 //    time (kotlinx.datetime)
     implementation(libs.kotlinx.datetime)
 
+    // DataStore
+    implementation(libs.androidx.datastore.preferences)
+
     // kakao SDK
     implementation(libs.kakao.user) // 카카오 로그인 API 모듈
 

@@ -1,0 +1,248 @@
+---
+description: Git commit message guidelines for AI agents and developers
+---
+
+# Git Commit Message Guidelines
+
+## Core Principle
+
+Good Git commit messages are the most effective way to communicate the **context** of code changes. While diffs show **what** changed, only commit messages can explain **why** the change was made.
+
+## ⚠️ CRITICAL: English Only
+
+**All commit messages MUST be written in English.**
+
+- Ensures international collaboration compatibility
+- Clear communication of technical terminology
+- Standardizes Git history across the codebase
+
+## Team Commit Prefix Convention
+
+Use the following prefixes to clarify the type of change:
+
+- `init:` - Initial setup
+- `feat:` - New feature
+- `docs:` - Documentation changes
+- `build:` - Build system or dependency changes
+- `design:` - UI/UX design changes
+- `fix:` - Bug fixes
+- `chore:` - Other minor changes (cleanup, formatting, etc.)
+- `refactor:` - Code refactoring (no functionality change)
+- `ci:` - CI configuration changes (e.g., detekt.yml, GitHub Actions)
+- `test:` - Test code changes
+
+**Format**: `prefix: message` (lowercase prefix + colon + space + message)
+
+**Examples**:
+
+```
+feat: Add Kakao login feature
+fix: Resolve token refresh error
+ci: Optimize detekt rules
+design: Update main screen layout
+refactor: Extract authentication logic to separate class
+```
+
+## The 7 Essential Rules
+
+### 1. Separate Subject from Body with a Blank Line
+
+```
+Subject: Summary of changes
+
+Body: Detailed explanation (if needed)
+```
+
+The subject line and body should be separated by a blank line. Some Git commands (like `git log --oneline`) only show the subject line.
+
+### 2. Limit Subject Line to 50 Characters
+
+- **Recommended**: Within 50 characters
+- **Hard limit**: 72 characters
+
+This ensures readability in various Git tools and interfaces.
+
+### 3. Capitalize the First Letter of Subject
+
+```
+✅ feat: Add user authentication
+✅ fix: Resolve login validation bug
+
+❌ feat: add user authentication
+❌ fix: resolved login validation bug
+```
+
+### 4. Do Not End Subject Line with a Period
+
+```
+✅ fix: Resolve login validation bug
+❌ fix: Resolve login validation bug.
+```
+
+The subject line is a title, not a sentence.
+
+### 5. Use Imperative Mood in Subject Line
+
+```
+✅ feat: Add new feature
+✅ fix: Fix critical bug
+✅ refactor: Remove deprecated code
+
+❌ feat: Added new feature
+❌ fix: Fixed critical bug
+❌ refactor: Removing deprecated code
+```
+
+**Test**: "If applied, this commit will [subject]" should read naturally.
+
+Examples:
+
+- "If applied, this commit will **Add new feature**" ✅
+- "If applied, this commit will **Added new feature**" ❌
+
+### 6. Wrap Body at 72 Characters
+
+Git does not automatically wrap text, so you need to manually insert line breaks to ensure readability in all Git tools.
+
+### 7. Use Body to Explain What and Why, Not How
+
+- ✅ Explain **why** the change is needed
+- ✅ Describe **what problem** it solves
+- ✅ Note any **side effects** or **considerations**
+- ❌ Don't explain **how** (the code shows that)
+
+The code itself shows how the change works. The commit message should explain the reasoning and context.
+
+## Commit Message Template
+
+```
+prefix: Subject line within 50 characters
+
+Body (if needed):
+- Why is this change necessary?
+- What problem does it solve?
+- Are there any side effects or considerations?
+
+Issue references:
+Resolves: #123
+See also: #456
+```
+
+## Real-World Examples
+
+### Good Commit Messages
+
+**Feature Addition:**
+
+```
+feat: Add user session timeout feature
+
+Implement automatic logout after 30 minutes of inactivity
+to enhance security. Users receive a warning 5 minutes before
+timeout with an option to extend the session.
+
+- Add session monitoring service
+- Implement warning modal component
+- Update authentication middleware
+
+Resolves: #234
+```
+
+**Bug Fix:**
+
+```
+fix: Resolve token refresh infinite loop
+
+Token refresh was triggering multiple simultaneous requests
+causing race conditions and duplicate API calls. Add mutex
+lock to ensure only one refresh attempt at a time.
+
+This fixes the issue where users were logged out randomly
+during active sessions.
+
+Resolves: #456
+```
+
+**CI Configuration:**
+
+```
+ci: Update detekt configuration
+
+Enable autoCorrect and add exception rules for Composable
+functions to improve code quality automation and reduce
+false positives.
+
+Changes:
+- Set autoCorrect: true for automatic formatting
+- Add Composable complexity exception
+- Add modifier unused parameter exception
+
+Resolves: #789
+```
+
+**Refactoring:**
+
+```
+refactor: Extract auth logic to AuthManager
+
+Move authentication logic from repository to dedicated
+manager class to improve separation of concerns and
+make the code more testable.
+
+- Create AuthManager with token management
+- Update AuthRepository to delegate to manager
+- Add unit tests for new manager class
+```
+
+### Bad Commit Messages
+
+```
+❌ fixed stuff
+❌ updated files
+❌ minor changes
+❌ bug fix
+❌ update code
+❌ WIP
+❌ feat: 카카오 로그인 추가 (Korean - must be English)
+❌ Fix login. (period at end)
+❌ feat: Added feature (past tense)
+```
+
+## Atomic Commits
+
+Follow the atomic commit principle:
+
+- **One logical change per commit**: Each commit should represent a single, cohesive change
+- **Independently buildable**: Each commit should compile and pass tests on its own
+- **Separate unrelated changes**: Split unrelated modifications into separate commits
+
+**Good practice:**
+
+```
+Commit 1: feat: Add AuthManager class
+Commit 2: refactor: Update AuthRepository to use AuthManager
+Commit 3: test: Add unit tests for AuthManager
+```
+
+**Bad practice:**
+
+```
+Commit 1: Update auth system, fix typos, and refactor UI components
+```
+
+## AI Agent Instructions
+
+When creating commits:
+
+1. **Always write in English** - No exceptions
+2. **Use appropriate prefix** - Select from the team convention list
+3. **Write clear subject lines** - Concise, imperative mood, under 50 chars
+4. **Add body when needed** - Explain why for non-trivial changes
+5. **Reference issues** - Use "Resolves: #123" format when applicable
+6. **Keep commits atomic** - One logical change per commit
+
+## References
+
+- [How to Write a Git Commit Message](https://cbea.ms/git-commit/)
+- [Conventional Commits](https://www.conventionalcommits.org/)
+- [Git Best Practices](https://git-scm.com/book)

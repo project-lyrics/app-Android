@@ -78,8 +78,51 @@
 - **modifier**: UnusedParameter에서 제외
 - **fromXXX**: ReturnCount에서 제외
 
+## 🧪 Kotlin Experimental API 사용 규칙
+
+### ⚠️ @OptIn 및 Experimental Import 보호
+
+**개발자가 수동으로 추가한 `@OptIn` 어노테이션 및 관련 Experimental import는 절대 삭제하지 마세요.**
+
+#### 핵심 원칙
+
+```kotlin
+// ✅ 올바른 패턴 - Experimental import 유지
+import kotlin.time.ExperimentalTime  // @OptIn에서 사용 - 삭제 금지!
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
+data class OAuthToken(val expiresAt: Instant? = null)
+```
+
+#### AI Agent 필수 체크사항
+
+1. **파일 수정 전:**
+
+   - `@OptIn` 어노테이션이 있는지 확인
+   - `@OptIn(...)`에 전달된 클래스의 import 식별
+   - 해당 import를 "보호 목록"에 추가
+
+2. **Import 정리 시:**
+
+   - `@OptIn`에 사용된 import는 **"unused"로 표시되어도 절대 삭제 금지**
+   - detekt가 경고를 표시해도 무시하고 유지
+   - 개발자가 명시적으로 제거를 요청하기 전까지 보존
+
+3. **일반적인 Experimental API:**
+   ```kotlin
+   import kotlin.time.ExperimentalTime
+   import kotlinx.coroutines.ExperimentalCoroutinesApi
+   import androidx.compose.ui.ExperimentalComposeUiApi
+   import androidx.compose.foundation.ExperimentalFoundationApi
+   import androidx.compose.material3.ExperimentalMaterial3Api
+   ```
+
+> **Golden Rule**: `@OptIn` 어노테이션과 함께 사용되는 Experimental import는 **코드에서 직접 참조되지 않아도 컴파일에 필수적**입니다. 절대 자동으로 삭제하지 마세요!
+
 ## 📚 참고 리소스
 
 - [Compose Rules](https://mrmans0n.github.io/compose-rules/detekt/)
 - [detekt Documentation](https://detekt.dev/)
 - [Android Coding Style](https://developer.android.com/kotlin/style-guide)
+- [Kotlin Opt-in Requirements](https://kotlinlang.org/docs/opt-in-requirements.html)

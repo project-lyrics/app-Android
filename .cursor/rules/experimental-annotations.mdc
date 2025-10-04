@@ -1,0 +1,104 @@
+# Kotlin Experimental API 사용 규칙
+
+## ⚠️ **@OptIn 및 Experimental Import 보호**
+
+### 핵심 원칙
+
+**개발자가 수동으로 추가한 `@OptIn` 어노테이션 및 관련 Experimental import는 절대 삭제하지 마세요.**
+
+### 배경
+
+- Kotlin의 실험적(Experimental) API를 사용할 때는 `@OptIn` 어노테이션이 필요합니다
+- `@OptIn`에 전달된 Experimental 클래스는 반드시 import 되어야 합니다
+- IDE나 도구가 "unused import"로 표시하더라도, 이는 어노테이션에서 사용되므로 **필수 import**입니다
+
+### 예시
+
+```kotlin
+// ✅ 올바른 패턴 - Experimental import와 @OptIn 함께 사용
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+import kotlin.time.Clock
+
+@OptIn(ExperimentalTime::class)  // ExperimentalTime import 필요!
+data class OAuthToken(
+    val expiresAt: Instant? = null
+) {
+    fun isExpired(now: Instant = Clock.System.now()): Boolean {
+        return expiresAt?.let { it < now } ?: false
+    }
+}
+```
+
+```kotlin
+// ❌ 잘못된 패턴 - import 삭제하면 컴파일 에러
+// import kotlin.time.ExperimentalTime  // ← 삭제하지 마세요!
+import kotlin.time.Instant
+import kotlin.time.Clock
+
+@OptIn(ExperimentalTime::class)  // ❌ ERROR: Unresolved reference: ExperimentalTime
+data class OAuthToken(...)
+```
+
+### AI Agent 지침
+
+1. **Import 분석 시:**
+
+   - `@OptIn(...)` 어노테이션에 사용된 클래스의 import는 **절대 삭제 금지**
+   - 다음 패턴들을 주의깊게 확인:
+     ```kotlin
+     import kotlin.time.ExperimentalTime
+     import kotlinx.coroutines.ExperimentalCoroutinesApi
+     import androidx.compose.ui.ExperimentalComposeUiApi
+     import androidx.compose.foundation.ExperimentalFoundationApi
+     import androidx.compose.material3.ExperimentalMaterial3Api
+     ```
+
+2. **코드 수정 시:**
+
+   - `@OptIn` 어노테이션이 있는 파일을 수정할 때는 관련 import를 유지하세요
+   - detekt나 IDE가 "unused import" 경고를 표시해도 무시하세요
+   - 개발자가 명시적으로 제거를 요청하기 전까지는 유지하세요
+
+3. **Import 정리 시:**
+   - `@OptIn` 스캔 먼저 수행
+   - 어노테이션에 사용된 모든 클래스 import 보존
+   - 기타 import만 정리
+
+### 일반적인 Experimental API 목록
+
+#### Kotlin 표준 라이브러리
+
+- `kotlin.time.ExperimentalTime` - Time API (일부는 안정화됨)
+- `kotlin.ExperimentalStdlibApi` - 표준 라이브러리 실험적 기능
+- `kotlin.ExperimentalUnsignedTypes` - 부호 없는 타입
+
+#### Coroutines
+
+- `kotlinx.coroutines.ExperimentalCoroutinesApi` - 코루틴 실험적 API
+- `kotlinx.coroutines.FlowPreview` - Flow 미리보기 기능
+
+#### Compose
+
+- `androidx.compose.ui.ExperimentalComposeUiApi`
+- `androidx.compose.foundation.ExperimentalFoundationApi`
+- `androidx.compose.material3.ExperimentalMaterial3Api`
+- `androidx.compose.animation.ExperimentalAnimationApi`
+
+#### kotlinx 라이브러리
+
+- `kotlinx.serialization.ExperimentalSerializationApi`
+- `kotlinx.datetime.ExperimentalDateTimeApi` (현재는 대부분 안정화)
+
+### 체크리스트
+
+코드 수정 전에 다음을 확인하세요:
+
+- [ ] 파일에 `@OptIn` 어노테이션이 있는가?
+- [ ] `@OptIn`에 전달된 클래스가 import 되어 있는가?
+- [ ] import 정리 시 Experimental import를 보존했는가?
+- [ ] detekt 실행 시 `UnusedImport` 경고가 있더라도 `@OptIn` 관련 import는 유지했는가?
+
+## 📌 요약
+
+> **Golden Rule**: `@OptIn` 어노테이션과 함께 사용되는 Experimental import는 **코드에서 보이지 않아도 필수적**입니다. 절대 삭제하지 마세요!

@@ -961,6 +961,7 @@ style:
     excludedFunctions:
       - "equals"
       - "fromProfileType" # ProfileComponentData.fromProfileType 함수 제외
+      - "authenticate" # OkHttp Authenticator RTR 전략에서 조기 리턴 활용
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: false

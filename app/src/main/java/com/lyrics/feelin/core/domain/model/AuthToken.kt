@@ -1,5 +1,7 @@
 package com.lyrics.feelin.core.domain.model
 
+import kotlinx.serialization.Serializable
+
 /**
  * 자체 백엔드 서버 계정 인증 토큰 데이터 모델
  *
@@ -12,6 +14,7 @@ package com.lyrics.feelin.core.domain.model
  * }
  * ```
  */
+@Serializable
 data class AuthToken(
     val accessToken: String,
     val refreshToken: String,

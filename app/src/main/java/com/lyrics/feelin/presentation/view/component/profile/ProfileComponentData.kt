@@ -2,13 +2,7 @@ package com.lyrics.feelin.presentation.view.component.profile
 
 import androidx.annotation.DrawableRes
 import com.lyrics.feelin.R
-
-enum class ProfileType {
-    SHORT_HAIR,
-    BRAIDED_HAIR,
-    PARTED_HAIR,
-    POOP_HAIR,
-}
+import com.lyrics.feelin.core.domain.model.ProfileType
 
 /**
  * 프로파일 컴포넌트의 데이터 클래스

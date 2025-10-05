@@ -2,6 +2,7 @@ package com.lyrics.feelin.core.data.interceptor
 
 import android.util.Log
 import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
+import com.lyrics.feelin.core.data.datasource.remote.dto.RefreshTokenRequestDto
 import com.lyrics.feelin.core.data.manager.AuthManager
 import dagger.Lazy
 import kotlinx.coroutines.runBlocking
@@ -74,11 +75,12 @@ class TokenAuthenticator @Inject constructor(
 
         // Refresh Token으로 갱신 시도
         val refreshToken = authManager.refreshToken.value ?: return null
+        val dto = RefreshTokenRequestDto(refreshToken)
 
         return runBlocking {
             try {
                 // 토큰 재발급 API 호출
-                val tokenResponse = authApiService.get().reIssueToken(refreshToken).body()
+                val tokenResponse = authApiService.get().reIssueToken(dto).body()
                     ?: return@runBlocking null
 
                 // 새 토큰 저장

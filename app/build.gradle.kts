@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 // local.properties 읽기
@@ -94,6 +95,11 @@ dependencies {
 
 //    Network (Retrofit3 + okhttp4)
     implementation(libs.retrofit)
+    implementation(libs.okhttp.logging.interceptor)
+
+    // Serializer (kotlinx.serialization)
+    implementation(libs.kotlinx.serialization)
+    implementation(libs.retrofit.kotlinx.serialization)
 
 //    ui image (coil)
     implementation(libs.coil.compose)

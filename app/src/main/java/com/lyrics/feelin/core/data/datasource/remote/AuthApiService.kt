@@ -9,6 +9,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface AuthApiService {
@@ -16,13 +17,13 @@ interface AuthApiService {
     suspend fun deleteAccount(): Response<ServerStatusResponseDto>
 
     @POST("api/v1/auth/sign-in")
-    suspend fun signIn(@Body body: SignInRequestDto): Response<AuthToken>
+    suspend fun signIn(@Header("Device-Id") deviceId: String, @Body body: SignInRequestDto): Response<AuthToken>
 
     @DELETE("api/v1/auth/sign-out")
     suspend fun signOut(): Response<ServerStatusResponseDto>
 
     @POST("api/v1/auth/sign-up")
-    suspend fun signUp(@Body body: SignUpData): Response<AuthToken>
+    suspend fun signUp(@Header("Device-Id") deviceId: String, @Body body: SignUpData): Response<AuthToken>
 
     @POST("api/v1/auth/token")
     suspend fun reIssueToken(@Body refreshTokenDto: RefreshTokenRequestDto): Response<AuthToken>

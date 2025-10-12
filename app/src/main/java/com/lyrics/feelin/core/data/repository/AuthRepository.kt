@@ -33,7 +33,6 @@ class AuthRepository @Inject constructor(
     private val kakaoAuthDataSource: KakaoAuthDataSource,
     @Suppress("UnusedPrivateMember") // TODO(@이대근): 구글 로그인 구현 중 어노테이션 제거할 것. 2025.10.02.
     private val googleAuthDataSource: GoogleAuthDataSource,
-    @Suppress("UnusedPrivateMember") // TODO(@이대근): Backend API 연동 후 어노테이션 제거할 것. 2025.10.04.
     private val authRemoteDataSource: AuthRemoteDataSource,
     private val authManager: AuthManager
 ) {

@@ -107,7 +107,7 @@ class AuthManager @Inject constructor(
      * @param oauthAccessToken OAuth SDK 액세스 토큰 (옵션)
      * @param oauthRefreshToken OAuth SDK 리프레시 토큰 (옵션)
      */
-    suspend fun saveToken(
+    suspend fun saveAllToken(
         accessToken: String,
         refreshToken: String,
         userId: Long? = null,
@@ -135,6 +135,23 @@ class AuthManager @Inject constructor(
         oauthProvider?.let { authLocalDataSource.saveOAuthProvider(it.name) }
         oauthAccessToken?.let { authLocalDataSource.saveOAuthAccessToken(it) }
         oauthRefreshToken?.let { authLocalDataSource.saveOAuthRefreshToken(it) }
+    }
+
+    suspend fun saveServerToken(
+        accessToken: String,
+        refreshToken: String,
+        userId: Long? = null
+    ) {
+        // 1. 메모리 캐시 업데이트 - Backend JWT
+        _accessToken.value = accessToken
+        _refreshToken.value = refreshToken
+        _userId.value = userId
+        _isLoggedIn.value = true
+
+        // 2. 영속성 저장 - Backend JWT
+        authLocalDataSource.saveAccessToken(accessToken)
+        authLocalDataSource.saveRefreshToken(refreshToken)
+        userId?.let { authLocalDataSource.saveUserId(it) }
     }
 
     /**
@@ -183,7 +200,11 @@ class AuthManager @Inject constructor(
     // ========== OAuth 토큰 관리 ==========
 
     /**
-     * OAuth 토큰만 업데이트 (SDK 토큰 갱신 시 사용)
+     * OAuth 토큰만 업데이트
+     *
+     * 아래 상황에서 사용합니다.
+     * - SDK 토큰 갱신 시
+     * - 우리 서버에 회원가입 하지 않은 유저가 소셜 로그인 시
      *
      * @param oauthAccessToken 새로운 OAuth 액세스 토큰
      * @param oauthRefreshToken 새로운 OAuth 리프레시 토큰 (옵션)

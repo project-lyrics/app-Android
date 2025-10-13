@@ -7,20 +7,20 @@ import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
 import com.lyrics.feelin.core.domain.model.OAuthToken
-import dagger.hilt.android.qualifiers.ApplicationContext
-import javax.inject.Inject
+import dagger.hilt.android.qualifiers.ActivityContext
+import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 
-class KakaoAuthDataSource @Inject constructor(
-    @param:ApplicationContext private val context: Context,
-    private val kakaoSdkClient: UserApiClient = UserApiClient.instance
+@Singleton
+class KakaoAuthDataSource(
+    @param:ActivityContext private val context: Context
 ) {
     suspend fun login(): Result<OAuthToken> = suspendCancellableCoroutine { continuation ->
-        if (kakaoSdkClient.isKakaoTalkLoginAvailable(context)) {
+        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
             loginWithKakaoTalk(continuation)
         } else {
             loginWithKakaoAccount(continuation)
@@ -28,7 +28,7 @@ class KakaoAuthDataSource @Inject constructor(
     }
 
     suspend fun logout(): Result<Unit> = suspendCancellableCoroutine { continuation ->
-        kakaoSdkClient.logout { error ->
+        UserApiClient.instance.logout { error ->
             when {
                 error != null -> {
                     // 에러 타입별 로깅
@@ -59,7 +59,7 @@ class KakaoAuthDataSource @Inject constructor(
 
     /** 카카오 계정을 Feelin과 언링크합니다. 회원 탈퇴 시 호출할 수 있도록 합니다. */
     suspend fun unlink(): Result<Unit> = suspendCancellableCoroutine { continuation ->
-        kakaoSdkClient.unlink { error ->
+        UserApiClient.instance.unlink { error ->
             when {
                 error != null -> {
                     // 에러 타입별 로깅
@@ -92,7 +92,7 @@ class KakaoAuthDataSource @Inject constructor(
     private fun loginWithKakaoTalk(
         continuation: CancellableContinuation<Result<OAuthToken>>
     ) {
-        kakaoSdkClient.loginWithKakaoTalk(context) { token, error ->
+        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
             when {
                 error != null -> {
                     // ClientError가 아닌 경우 (서버 에러, 네트워크 에러 등)
@@ -140,7 +140,7 @@ class KakaoAuthDataSource @Inject constructor(
     private fun loginWithKakaoAccount(
         continuation: CancellableContinuation<Result<OAuthToken>>
     ) {
-        kakaoSdkClient.loginWithKakaoAccount(context) { token, error ->
+        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
             when {
                 error != null -> {
                     // ClientError 타입별 로깅

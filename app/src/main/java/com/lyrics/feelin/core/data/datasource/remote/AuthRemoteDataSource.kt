@@ -7,8 +7,11 @@ import com.lyrics.feelin.core.domain.model.AuthToken
 import com.lyrics.feelin.core.domain.model.OAuthProvider
 import com.lyrics.feelin.core.domain.model.OAuthToken
 import com.lyrics.feelin.core.domain.model.SignUpData
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class AuthRemoteDataSource(
+@Singleton
+class AuthRemoteDataSource @Inject constructor(
     private val authApiService: AuthApiService
 ) {
     suspend fun signIn(provider: OAuthProvider, oAuthToken: OAuthToken, deviceId: String): Result<AuthToken> {

@@ -1,12 +1,12 @@
 package com.lyrics.feelin.core.data.di
 
-import com.lyrics.feelin.core.data.datasource.local.AuthLocalDataSource
-import com.lyrics.feelin.core.data.manager.AuthManager
+import android.content.Context
+import com.lyrics.feelin.core.data.datasource.sdk.KakaoAuthDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
 
 /**
  * Data Layer 의존성 주입 모듈
@@ -23,14 +23,7 @@ import javax.inject.Singleton
 object DataModule {
 
     @Provides
-    @Singleton
-    fun provideAuthLocalDataSource(
-        authLocalDataSource: AuthLocalDataSource
-    ): AuthLocalDataSource = authLocalDataSource
-
-    @Provides
-    @Singleton
-    fun provideAuthManager(
-        authLocalDataSource: AuthLocalDataSource
-    ): AuthManager = AuthManager(authLocalDataSource)
+    fun provideKakaoAuthDataSource(
+        @ApplicationContext context: Context
+    ): KakaoAuthDataSource = KakaoAuthDataSource(context)
 }

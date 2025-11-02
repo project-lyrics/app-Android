@@ -5,17 +5,17 @@ import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
 import com.lyrics.feelin.core.data.datasource.remote.dto.RefreshTokenRequestDto
 import com.lyrics.feelin.core.data.manager.AuthManager
 import dagger.Lazy
+import java.io.IOException
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.Response
 import retrofit2.HttpException
-import java.io.IOException
-import javax.inject.Inject
-import javax.inject.Singleton
 
 /**
- * OkHttp Interceptor: 모든 API 요청에 Access Token 자동 추가
+ * 모든 API 요청에 Access Token을 자동으로 추가합니다.
  *
  * **동작:**
  * - AuthManager에서 Access Token 조회

@@ -2,19 +2,19 @@ package com.lyrics.feelin.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
+import com.lyrics.feelin.core.data.interceptor.AppVersionInterceptor
 import com.lyrics.feelin.core.data.interceptor.AuthInterceptor
 import com.lyrics.feelin.core.data.interceptor.TokenAuthenticator
-import com.lyrics.feelin.core.data.manager.AuthManager
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import retrofit2.create
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -23,11 +23,17 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(
+        appVersionInterceptor: AppVersionInterceptor,
         authInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
+        val httpLoggingInterceptor =
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
         return OkHttpClient.Builder()
+            .addInterceptor(appVersionInterceptor)
             .addInterceptor(authInterceptor)
+            .addInterceptor(httpLoggingInterceptor)
             .authenticator(tokenAuthenticator)
             .build()
     }

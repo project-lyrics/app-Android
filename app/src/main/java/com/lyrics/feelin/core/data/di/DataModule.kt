@@ -1,11 +1,9 @@
 package com.lyrics.feelin.core.data.di
 
-import android.content.Context
 import com.lyrics.feelin.core.data.datasource.sdk.KakaoAuthDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 
 /**
@@ -23,7 +21,5 @@ import dagger.hilt.components.SingletonComponent
 object DataModule {
 
     @Provides
-    fun provideKakaoAuthDataSource(
-        @ApplicationContext context: Context
-    ): KakaoAuthDataSource = KakaoAuthDataSource(context)
+    fun provideKakaoAuthDataSource(): KakaoAuthDataSource = KakaoAuthDataSource()
 }

@@ -1,32 +1,15 @@
 package com.lyrics.feelin.core.data.datasource.sdk
 
-import android.content.Context
 import android.util.Log
-import com.kakao.sdk.auth.model.OAuthToken as KakaoOAuthToken
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
-import com.lyrics.feelin.core.domain.model.OAuthToken
-import dagger.hilt.android.qualifiers.ActivityContext
 import javax.inject.Singleton
 import kotlin.coroutines.resume
-import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
-import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 @Singleton
-class KakaoAuthDataSource(
-    @param:ActivityContext private val context: Context
-) {
-    suspend fun login(): Result<OAuthToken> = suspendCancellableCoroutine { continuation ->
-        if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
-            loginWithKakaoTalk(continuation)
-        } else {
-            loginWithKakaoAccount(continuation)
-        }
-    }
-
+class KakaoAuthDataSource {
     suspend fun logout(): Result<Unit> = suspendCancellableCoroutine { continuation ->
         UserApiClient.instance.logout { error ->
             when {
@@ -87,105 +70,6 @@ class KakaoAuthDataSource(
                 }
             }
         }
-    }
-
-    private fun loginWithKakaoTalk(
-        continuation: CancellableContinuation<Result<OAuthToken>>
-    ) {
-        UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
-            when {
-                error != null -> {
-                    // ClientError가 아닌 경우 (서버 에러, 네트워크 에러 등)
-                    if (error !is ClientError) {
-                        continuation.resume(Result.failure(error))
-                        return@loginWithKakaoTalk
-                    }
-
-                    // ClientError 타입별 처리
-                    when (error.reason) {
-                        // 사용자가 명시적으로 취소한 경우 - 폴백 없이 실패 반환
-                        ClientErrorCause.Cancelled -> {
-                            continuation.resume(Result.failure(error))
-                        }
-
-                        // 지원하지 않는 기능 - 폴백 없이 실패 반환
-                        ClientErrorCause.NotSupported -> {
-                            continuation.resume(Result.failure(error))
-                        }
-
-                        // 잘못된 파라미터 - 폴백 없이 실패 반환 (코드 수정 필요)
-                        ClientErrorCause.BadParameter -> {
-                            Log.e(
-                                TAG,
-                                "loginWithKakaoTalk: kakao login failure with wrong param",
-                                error
-                            )
-                            continuation.resume(Result.failure(error))
-                        }
-
-                        // 그 외의 경우 (Unknown, TokenNotFound, IllegalState 등) - 카카오계정으로 폴백
-                        else -> {
-                            loginWithKakaoAccount(continuation)
-                        }
-                    }
-                }
-                token != null -> {
-                    // 카카오 SDK 토큰 → 도메인 모델로 변환해 반환
-                    continuation.resume(Result.success(token.toDomainModel()))
-                }
-            }
-        }
-    }
-
-    private fun loginWithKakaoAccount(
-        continuation: CancellableContinuation<Result<OAuthToken>>
-    ) {
-        UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
-            when {
-                error != null -> {
-                    // ClientError 타입별 로깅
-                    if (error is ClientError) {
-                        when (error.reason) {
-                            ClientErrorCause.Cancelled -> {
-                                Log.d(TAG, "loginWithKakaoAccount: User cancelled login")
-                            }
-
-                            ClientErrorCause.BadParameter -> {
-                                Log.e(
-                                    TAG,
-                                    "loginWithKakaoAccount: kakao login failure with wrong param",
-                                    error
-                                )
-                            }
-
-                            else -> {
-                                Log.w(TAG, "loginWithKakaoAccount: Client error - ${error.reason}", error)
-                            }
-                        }
-                    } else {
-                        Log.e(TAG, "loginWithKakaoAccount: Server or network error", error)
-                    }
-                    continuation.resume(Result.failure(error))
-                }
-                token != null -> {
-                    // 카카오 SDK 토큰 → 도메인 모델로 변환해 반환
-                    continuation.resume(Result.success(token.toDomainModel()))
-                }
-            }
-        }
-    }
-
-    /** 카카오 SDK의 OAuthToken을 도메인 모델로 변환 */
-    @OptIn(ExperimentalTime::class)
-    private fun KakaoOAuthToken.toDomainModel(): OAuthToken {
-        return OAuthToken(
-            accessToken = this.accessToken,
-            refreshToken = this.refreshToken,
-            expiresAt = this.accessTokenExpiresAt.let { expiresAt ->
-                Instant.fromEpochMilliseconds(expiresAt.time)
-            },
-            scopes = this.scopes
-        )
     }
 
     companion object {

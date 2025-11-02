@@ -1,5 +1,7 @@
 package com.lyrics.feelin.presentation.view.login
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +30,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.kakao.sdk.common.model.ClientError
+import com.kakao.sdk.common.model.ClientErrorCause
+import com.kakao.sdk.user.UserApiClient
 import com.lyrics.feelin.R
+import com.lyrics.feelin.core.data.datasource.sdk.util.toDomainModel
 import com.lyrics.feelin.core.designsystem.icon.FeelinTextIcon
 import com.lyrics.feelin.core.domain.model.OAuthProvider
 import com.lyrics.feelin.presentation.designsystem.theme.CaptionActiveTextStyle
@@ -37,10 +43,15 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightBackgroundPrimary
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
 
+private const val TAG = "LoginScreen"
+
 // 로그인 화면은 테마 미 적용입니다. @이대근 2025.09.15.
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()) {
+fun LoginScreen(
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
+) {
     val loginErrorCode by loginViewModel.loginErrorCode.collectAsState(initial = null)
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
 
@@ -48,7 +59,7 @@ fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = 
         // TODO(@이대근): 로그인 에러 다이얼로그 표시 2025.09.27.
     }
 
-    LocalContext.current
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         loginViewModel.getLastOAuthProvider()
@@ -104,19 +115,86 @@ fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = 
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Kakao,
             isLastLogin = (lastOAuthProvider == OAuthProvider.KAKAO),
-            onClick = { loginViewModel.kakaoLogin() }
+            onClick = { kakaoLogin(context, loginViewModel) }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Google,
             isLastLogin = (lastOAuthProvider == OAuthProvider.GOOGLE),
-            onClick = { loginViewModel.googleLogin() }
+            onClick = { googleLogin(context, loginViewModel) }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SignUpLaterTextButton(
             onClick = { loginViewModel.continueWithoutLogin() },
         )
     }
+}
+
+private fun loginWithKakaoTalk(context: Context, viewModel: LoginViewModel) {
+    UserApiClient.instance.loginWithKakaoTalk(context) { token, error ->
+        when {
+            error != null -> {
+                // ClientError가 아닌 경우 (서버 에러, 네트워크 에러 등)
+                if (error !is ClientError) {
+                    Log.e(TAG, "loginWithKakaoTalk: Server or network error", error)
+                    // TODO: UI에 에러 표시
+                }
+
+                // ClientError 타입별 처리
+                when ((error as ClientError).reason) {
+                    // 사용자가 명시적으로 취소한 경우, 지원하지 않는 기능, 잘못된 파라미터
+                    ClientErrorCause.Cancelled, ClientErrorCause.NotSupported, ClientErrorCause.BadParameter -> {
+                        Log.e(TAG, "loginWithKakaoTalk: kakao login failure with ${error.reason}", error)
+                        // TODO: UI에 에러 표시
+                    }
+
+                    // 그 외의 경우 (Unknown, TokenNotFound, IllegalState 등) - 카카오계정으로 폴백
+                    else -> {
+                        loginWithKakaoAccount(context, viewModel)
+                    }
+                }
+            }
+
+            token != null -> {
+                // 자체 서버 로그인 시작
+                viewModel.login(oAuthProvider = OAuthProvider.KAKAO, token = token.toDomainModel())
+            }
+        }
+    }
+}
+
+private fun loginWithKakaoAccount(context: Context, viewModel: LoginViewModel) {
+    UserApiClient.instance.loginWithKakaoAccount(context) { token, error ->
+        when {
+            error != null -> {
+                // ClientError 타입별 로깅
+                if (error is ClientError) {
+                    Log.e(TAG, "loginWithKakaoAccount: kakao login failure with ${error.reason}", error)
+                } else {
+                    Log.e(TAG, "loginWithKakaoAccount: Server or network error", error)
+                }
+                // TODO: UI에 에러 표시
+            }
+
+            token != null -> {
+                // 자체 서버 로그인 시작
+                viewModel.login(oAuthProvider = OAuthProvider.KAKAO, token = token.toDomainModel())
+            }
+        }
+    }
+}
+
+private fun kakaoLogin(context: Context, viewModel: LoginViewModel) {
+    if (UserApiClient.instance.isKakaoTalkLoginAvailable(context)) {
+        loginWithKakaoTalk(context, viewModel)
+    } else {
+        loginWithKakaoAccount(context, viewModel)
+    }
+}
+
+@Suppress("UnusedParameter") // TODO(@이대근): 구글 로그인 연동 시 어노테이션 삭제 2025.11.02.
+private fun googleLogin(context: Context, viewModel: LoginViewModel) {
+    // TODO(@이대근): Google Credential Manager 연동 2025.11.02.
 }
 
 @Composable

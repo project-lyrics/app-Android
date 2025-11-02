@@ -45,55 +45,14 @@ class AuthRepository @Inject constructor(
     // ========== 로그인 ==========
 
     /**
-     * 소셜 로그인 (OAuth Provider)
-     *
-     * **플로우:**
-     * 1. SDK를 통해 OAuth 토큰 획득 (Kakao/Google)
-     * 2. Backend에 OAuth 토큰 전달 → 자체 JWT 토큰 발급
-     * 3. AuthManager에 JWT 토큰 저장
-     *
-     * @param provider 로그인 제공자 (KAKAO, GOOGLE)
-     * @return Result<Unit> 성공/실패
-     */
-    suspend fun login(provider: OAuthProvider): Result<Unit> {
-        // 1. OAuth 토큰 획득
-        val oauthToken = getOAuthToken(provider).getOrElse { error ->
-            return Result.failure(exception = error)
-        }
-
-        // 2. Backend 인증 및 JWT 토큰 발급
-        val authToken = authenticateWithBackend(provider, oauthToken).getOrElse { error ->
-            return Result.failure(exception = error)
-        }
-
-        // 3. 토큰 저장
-        saveAllTokens(authToken, oauthToken, provider)
-
-        return Result.success(value = Unit)
-    }
-
-    /**
-     * OAuth 토큰 획득
-     */
-    private suspend fun getOAuthToken(provider: OAuthProvider): Result<OAuthToken> {
-        return when (provider) {
-            OAuthProvider.KAKAO -> kakaoAuthDataSource.login()
-            OAuthProvider.GOOGLE -> {
-                // TODO(@이대근): Google 로그인 구현 필요. 2025.10.04.
-                Result.failure(exception = NotImplementedError("Google login not implemented yet"))
-            }
-        }
-    }
-
-    /**
-     * Backend 인증 및 JWT 토큰 발급
+     * 백엔드 서버 로그인을 수행하고 JWT 토큰을 발급받습니다.
      *
      * HTTP_NOT_FOUND(404): 회원가입이 필요한 경우 OAuth 토큰을 임시 저장하고 예외 발생
      */
-    private suspend fun authenticateWithBackend(
+    suspend fun authenticateWithBackend(
         provider: OAuthProvider,
         oauthToken: OAuthToken
-    ): Result<AuthToken> {
+    ): Result<Unit> {
         val result = authRemoteDataSource.signIn(
             provider = provider,
             oAuthToken = oauthToken,
@@ -117,13 +76,17 @@ class AuthRepository @Inject constructor(
         }
 
         val response = result.getOrThrow()
-        return Result.success(
-            AuthToken(
-                accessToken = response.accessToken,
-                refreshToken = response.refreshToken,
-                userId = response.userId
-            )
+
+        val authToken = AuthToken(
+            accessToken = response.accessToken,
+            refreshToken = response.refreshToken,
+            userId = response.userId
         )
+
+        // 토큰 저장
+        saveAllTokens(authToken, oauthToken, provider)
+
+        return Result.success(Unit)
     }
 
     /** 회원가입이 필요한 경우 OAuth 토큰 임시 저장 */

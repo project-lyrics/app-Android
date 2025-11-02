@@ -7,6 +7,7 @@ import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerE
 import com.lyrics.feelin.core.data.manager.AuthManager
 import com.lyrics.feelin.core.data.repository.AuthRepository
 import com.lyrics.feelin.core.domain.model.OAuthProvider
+import com.lyrics.feelin.core.domain.model.OAuthToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,27 +32,26 @@ class LoginViewModel @Inject constructor(
         _lastOAuthProvider.value = authManager.oauthProvider.value
     }
 
-    fun kakaoLogin() {
+    fun login(oAuthProvider: OAuthProvider, token: OAuthToken) {
         viewModelScope.launch {
-            authRepository.login(provider = OAuthProvider.KAKAO).onSuccess {
-                // TODO(@이대근): 메인 화면 내비게이션 신호를 뷰로 전송 2025.10.13.
-            }.onFailure {
-                Log.d(TAG, "kakaoLogin: ${it.message}", it)
-                when (it) {
-                    is FeelinServerException -> {
-                        // TODO(@이대근): loginErrorCode TODO 참조 2025.10.13.
-                    }
-
-                    else -> {
-                        // 로그 기록하고 간단한 다이얼로그만 던지기??? (예외 타입을 너무 크게 잡은 것 같다)
-                    }
+            authRepository.authenticateWithBackend(provider = oAuthProvider, oauthToken = token)
+                .onSuccess {
+                    Log.d(TAG, "login success, provider: $oAuthProvider")
+                    // TODO(@이대근): 홈 화면에 대한 라우팅 신호 전달
                 }
-            }
-        }
-    }
+                .onFailure {
+                    Log.e(TAG, "login failure", it)
 
-    fun googleLogin() {
-        TODO("Not yet implemented")
+                    if (it is FeelinServerException) {
+                        if (it.description.errorCode == "02000") {
+                            // TODO(@이대근): 회원가입 화면에 대한 라우팅 신호 전달
+                            return@onFailure
+                        }
+                    }
+
+                    _loginErrorCode.value = -1 // 임의값, 프로퍼티 주석 참고
+                }
+        }
     }
 
     fun continueWithoutLogin() {

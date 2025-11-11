@@ -42,3 +42,11 @@ val NotificationIcon: ImageVector
 val FeelinTextIcon: Painter
     @Composable
     get() = painterResource(id = R.drawable.feelin_text_logo)
+
+val SettingsIconLight: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_light)
+
+val SettingsIconDark: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_dark)

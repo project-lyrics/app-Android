@@ -1,5 +1,6 @@
 package com.lyrics.feelin.presentation.view.onboarding.terms
 
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,121 +29,123 @@ import com.lyrics.feelin.presentation.designsystem.theme.Typography
 
 @Composable
 fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
-    val feelinColors = LocalFeelinColors.current
+    FeelinTheme(darkTheme = false) {
+        val feelinColors = LocalFeelinColors.current
 
-    // 체크박스 상태 관리
-    var allChecked by remember { mutableStateOf(false) }
-    var ageChecked by remember { mutableStateOf(false) }
-    var serviceChecked by remember { mutableStateOf(false) }
-    var privacyChecked by remember { mutableStateOf(false) }
+        // 체크박스 상태 관리
+        var allChecked by remember { mutableStateOf(false) }
+        var ageChecked by remember { mutableStateOf(false) }
+        var serviceChecked by remember { mutableStateOf(false) }
+        var privacyChecked by remember { mutableStateOf(false) }
 
-    // 전체동의 체크시 모두 체크
-    val updateAllChecks = { checked: Boolean ->
-        allChecked = checked
-        ageChecked = checked
-        serviceChecked = checked
-        privacyChecked = checked
-    }
+        // 전체동의 체크시 모두 체크
+        val updateAllChecks = { checked: Boolean ->
+            allChecked = checked
+            ageChecked = checked
+            serviceChecked = checked
+            privacyChecked = checked
+        }
 
-    // 개별 항목 체크시 전체동의 상태 업데이트
-    val updateIndividualCheck = {
-        allChecked = ageChecked && serviceChecked && privacyChecked
-    }
+        // 개별 항목 체크시 전체동의 상태 업데이트
+        val updateIndividualCheck = {
+            allChecked = ageChecked && serviceChecked && privacyChecked
+        }
 
-    // 버튼 활성화 조건: 필수 항목(나이, 서비스, 개인정보) 모두 체크
-    val isButtonEnabled = ageChecked && serviceChecked && privacyChecked
-
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(color = feelinColors.gray00)
-    ) {
-        FeelinTopAppBarWithBack(
-            title = "",
-            onBackClick = {},
-            showDivider = false
-        )
-
-        Spacer(modifier = Modifier.height(28.dp))
+        // 버튼 활성화 조건: 필수 항목(나이, 서비스, 개인정보) 모두 체크
+        val isButtonEnabled = ageChecked && serviceChecked && privacyChecked
 
         Column(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
+            modifier = modifier
+                .fillMaxSize()
+                .background(color = feelinColors.gray00)
         ) {
-            Text(
-                text = "Feelin 이용을 위해 약관을\n동의해주세요",
-                style = Typography.headlineLarge
+            FeelinTopAppBarWithBack(
+                title = "",
+                onBackClick = {},
+                showDivider = false
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
-            FeelinCheckboxAllAgree(
-                checked = allChecked,
-                onCheckedChange = updateAllChecks,
-                text = "전체동의",
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            FeelinCheckboxItem(
-                checked = ageChecked,
-                onCheckedChange = { checked ->
-                    ageChecked = checked
-                    updateIndividualCheck()
-                },
-                text = "만 14세 이상 가입 동의",
-                required = true
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FeelinCheckboxItem(
-                checked = serviceChecked,
-                onCheckedChange = { checked ->
-                    serviceChecked = checked
-                    updateIndividualCheck()
-                },
-                text = "서비스 이용약관 동의",
-                required = true,
-                detailText = "보기",
-                onDetailClick = {}
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FeelinCheckboxItem(
-                checked = privacyChecked,
-                onCheckedChange = { checked ->
-                    privacyChecked = checked
-                    updateIndividualCheck()
-                },
-                text = "개인정보처리방침 동의",
-                required = true,
-                detailText = "보기",
-                onDetailClick = {}
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            Button(
-                onClick = { /* 시작하기 */ },
-                enabled = isButtonEnabled,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp)
-                    .height(56.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = feelinColors.systemActivate,
-                    disabledContainerColor = feelinColors.systemDisable
-                ),
-                shape = RoundedCornerShape(12.dp)
+                    .padding(horizontal = 20.dp)
             ) {
                 Text(
-                    text = "시작하기",
-                    style = Typography.titleMedium,
-                    color = feelinColors.gray00
+                    text = "Feelin 이용을 위해 약관을\n동의해주세요",
+                    style = Typography.headlineLarge
                 )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                FeelinCheckboxAllAgree(
+                    checked = allChecked,
+                    onCheckedChange = updateAllChecks,
+                    text = "전체동의",
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                FeelinCheckboxItem(
+                    checked = ageChecked,
+                    onCheckedChange = { checked ->
+                        ageChecked = checked
+                        updateIndividualCheck()
+                    },
+                    text = "만 14세 이상 가입 동의",
+                    required = true
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FeelinCheckboxItem(
+                    checked = serviceChecked,
+                    onCheckedChange = { checked ->
+                        serviceChecked = checked
+                        updateIndividualCheck()
+                    },
+                    text = "서비스 이용약관 동의",
+                    required = true,
+                    detailText = "보기",
+                    onDetailClick = {}
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FeelinCheckboxItem(
+                    checked = privacyChecked,
+                    onCheckedChange = { checked ->
+                        privacyChecked = checked
+                        updateIndividualCheck()
+                    },
+                    text = "개인정보처리방침 동의",
+                    required = true,
+                    detailText = "보기",
+                    onDetailClick = {}
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Button(
+                    onClick = { /* 시작하기 */ },
+                    enabled = isButtonEnabled,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 24.dp)
+                        .height(56.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = feelinColors.systemActivate,
+                        disabledContainerColor = feelinColors.systemDisable
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = "시작하기",
+                        style = Typography.titleMedium,
+                        color = feelinColors.gray00
+                    )
+                }
             }
         }
     }
@@ -151,6 +154,14 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 private fun OnboardingTermsScreenPreview() {
+    FeelinTheme {
+        OnboardingTermsScreen()
+    }
+}
+
+@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
+@Composable
+private fun OnboardingTermsScreenDarkModePreview() {
     FeelinTheme {
         OnboardingTermsScreen()
     }

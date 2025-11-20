@@ -66,3 +66,11 @@ val caretDarkIcon: Painter
 val caretLightIcon: Painter
     @Composable
     get() = painterResource(id = R.drawable.caret_light)
+
+val emptyImageDarkIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.empty_image_dark)
+
+val emptyImageLightIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.empty_image_light)

@@ -84,7 +84,7 @@ fun FeelinCheckboxAllAgree(
 fun FeelinCheckboxItem(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
-    label: String,
+    text: String,
     modifier: Modifier = Modifier,
     required: Boolean = false,
     detailText: String? = null,
@@ -94,7 +94,8 @@ fun FeelinCheckboxItem(
 
     Row(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .padding(horizontal = 18.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Row(
@@ -133,7 +134,7 @@ fun FeelinCheckboxItem(
             }
 
             Text(
-                text = label,
+                text = text,
                 style = Typography.titleMedium,
                 color = feelinColors.gray04,
                 modifier = Modifier.padding(start = 8.dp)
@@ -187,7 +188,7 @@ private fun FeelinCheckboxItemPreview() {
             FeelinCheckboxItem(
                 checked = false,
                 onCheckedChange = {},
-                label = "만 14세 이상 가입 동의",
+                text = "만 14세 이상 가입 동의",
                 required = true
             )
 
@@ -195,7 +196,7 @@ private fun FeelinCheckboxItemPreview() {
             FeelinCheckboxItem(
                 checked = false,
                 onCheckedChange = {},
-                label = "서비스 이용약관 동의",
+                text = "서비스 이용약관 동의",
                 required = true,
                 detailText = "보기",
                 onDetailClick = {}
@@ -205,14 +206,14 @@ private fun FeelinCheckboxItemPreview() {
             FeelinCheckboxItem(
                 checked = true,
                 onCheckedChange = {},
-                label = "마케팅 수신 동의"
+                text = "마케팅 수신 동의"
             )
 
             // 라벨 + 상세보기
             FeelinCheckboxItem(
                 checked = true,
                 onCheckedChange = {},
-                label = "개인정보처리방침 동의",
+                text = "개인정보처리방침 동의",
                 detailText = "보기",
                 onDetailClick = {}
             )

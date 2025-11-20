@@ -184,7 +184,6 @@ private fun FeelinCheckboxItemPreview() {
             modifier = Modifier.padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
-            // 필수
             FeelinCheckboxItem(
                 checked = false,
                 onCheckedChange = {},
@@ -192,7 +191,6 @@ private fun FeelinCheckboxItemPreview() {
                 required = true
             )
 
-            // 필수 + 상세보기
             FeelinCheckboxItem(
                 checked = false,
                 onCheckedChange = {},
@@ -202,14 +200,12 @@ private fun FeelinCheckboxItemPreview() {
                 onDetailClick = {}
             )
 
-            // 라벨
             FeelinCheckboxItem(
                 checked = true,
                 onCheckedChange = {},
                 text = "마케팅 수신 동의"
             )
 
-            // 라벨 + 상세보기
             FeelinCheckboxItem(
                 checked = true,
                 onCheckedChange = {},

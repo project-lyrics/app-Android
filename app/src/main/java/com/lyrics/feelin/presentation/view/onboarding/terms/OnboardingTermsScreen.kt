@@ -17,7 +17,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinCheckboxAllAgree
@@ -56,7 +55,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(color = Color.White)
+            .background(color = feelinColors.gray00)
     ) {
         FeelinTopAppBarWithBack(
             title = "",
@@ -142,7 +141,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = "시작하기",
                     style = Typography.titleMedium,
-                    color = Color.White
+                    color = feelinColors.gray00
                 )
             }
         }

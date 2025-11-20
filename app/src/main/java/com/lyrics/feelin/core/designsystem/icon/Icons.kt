@@ -50,3 +50,11 @@ val CheckBoxIconDisabled: ImageVector
 val CheckBoxIconEnabled: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_check_box_enabled)
+
+val SettingsIconLight: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_light)
+
+val SettingsIconDark: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_dark)

@@ -138,6 +138,7 @@ fun FeelinTopAppBarNoBack(
         vertical = FeelinTopAppBarDefaults.VerticalPadding,
     ),
     centeredTitle: Boolean = false,
+    showDivider: Boolean = false,
 ) {
     val feelinColors = LocalFeelinColors.current
 
@@ -156,12 +157,14 @@ fun FeelinTopAppBarNoBack(
             navigationIcon = null,
             modifier = modifier,
         )
-        Spacer(
-            Modifier
-                .fillMaxWidth()
-                .size(1.dp)
-                .background(feelinColors.gray01)
-        )
+        if (showDivider) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(feelinColors.gray01)
+            )
+        }
     }
 }
 

@@ -121,8 +121,7 @@ fun FeelinCheckboxItem(
                             shape = RoundedCornerShape(size = 100.dp)
                         ),
                     verticalAlignment = Alignment.CenterVertically
-                )
-                {
+                ) {
                     Text(
                         modifier = Modifier
                             .padding(horizontal = 12.dp, vertical = 4.dp),

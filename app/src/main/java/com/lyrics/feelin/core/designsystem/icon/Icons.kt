@@ -42,3 +42,11 @@ val NotificationIcon: ImageVector
 val FeelinTextIcon: Painter
     @Composable
     get() = painterResource(id = R.drawable.feelin_text_logo)
+
+val CheckBoxIconDisabled: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_check_box_disabled)
+
+val CheckBoxIconEnabled: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_check_box_enabled)

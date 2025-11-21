@@ -2,6 +2,7 @@ package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,13 +27,12 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 // MARK(@이대근): 다크 모드 디자인이 완성될 때 관련 색상을 사용하도록 변경해야 합니다. 2025.11.19.
 
 @Composable
-fun FilterButton(data: FilterButtonData, modifier: Modifier = Modifier) {
+fun FilterButton(data: FilterButtonData, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
 
     Row(
         modifier = modifier
             .height(32.dp)
-            .clip(shape = RoundedCornerShape(8.dp))
             .then(
                 modifier.border(
                     width = 1.dp,
@@ -40,7 +40,9 @@ fun FilterButton(data: FilterButtonData, modifier: Modifier = Modifier) {
                     shape = RoundedCornerShape(corner = CornerSize(8.dp))
                 ).takeIf { !(data.isSelect) } ?: modifier
             )
+            .clip(shape = RoundedCornerShape(8.dp))
             .background(color = if (data.isSelect) feelinColors.gray09 else feelinColors.gray00)
+            .clickable(enabled = true, onClick = onClick::invoke)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -51,7 +53,7 @@ fun FilterButton(data: FilterButtonData, modifier: Modifier = Modifier) {
                 contentDescription = data.name,
                 modifier = Modifier
                     .size(16.dp)
-                    .clip(shape = RoundedCornerShape(4.dp)),
+                    .clip(shape = RoundedCornerShape(10.dp)),
             )
             Spacer(modifier = Modifier.width(4.dp))
         }
@@ -89,11 +91,12 @@ data class FilterButtonData(
 private fun FilterButtonNonSelectPreview() {
     FeelinTheme {
         FilterButton(
-            FilterButtonData(
+            data = FilterButtonData(
                 id = 15,
                 name = "쏜애플",
                 imageUrl = "https://i.scdn.co/image/ab6761610000e5eb4506d70c02763753b03fd07b",
-            )
+            ),
+            onClick = {}
         )
     }
 }
@@ -103,12 +106,13 @@ private fun FilterButtonNonSelectPreview() {
 private fun FilterButtonSelectPreview() {
     FeelinTheme {
         FilterButton(
-            FilterButtonData(
+            data = FilterButtonData(
                 isSelect = true,
                 id = 15,
                 name = "쏜애플",
                 imageUrl = "https://i.scdn.co/image/ab6761610000e5eb4506d70c02763753b03fd07b",
-            )
+            ),
+            onClick = {}
         )
     }
 }
@@ -117,7 +121,10 @@ private fun FilterButtonSelectPreview() {
 @Composable
 private fun FilterButtonViewAllNonSelectPreview() {
     FeelinTheme {
-        FilterButton(FilterButtonData(id = null, name = "전체", imageUrl = null))
+        FilterButton(
+            FilterButtonData(id = null, name = "전체", imageUrl = null),
+            onClick = {}
+        )
     }
 }
 
@@ -125,6 +132,9 @@ private fun FilterButtonViewAllNonSelectPreview() {
 @Composable
 private fun FilterButtonViewAllSelectPreview() {
     FeelinTheme {
-        FilterButton(FilterButtonData(isSelect = true, id = null, name = "전체", imageUrl = null))
+        FilterButton(
+            FilterButtonData(isSelect = true, id = null, name = "전체", imageUrl = null),
+            onClick = {}
+        )
     }
 }

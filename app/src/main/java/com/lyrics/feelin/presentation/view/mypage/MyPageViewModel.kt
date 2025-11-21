@@ -19,7 +19,7 @@ class MyPageViewModel : ViewModel() {
         viewModelScope.launch {
             @Suppress("MagicNumber")
             delay(1500L)
-            _myPageScreenStatus.value = _loginWithNoteErrorSample
+            _myPageScreenStatus.value = _dataSample
         }
     }
 

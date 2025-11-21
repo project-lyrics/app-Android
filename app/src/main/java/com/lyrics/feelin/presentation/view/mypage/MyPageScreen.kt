@@ -1,6 +1,5 @@
 package com.lyrics.feelin.presentation.view.mypage
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,6 +23,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -125,12 +126,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                     modifier = modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.primaryContainer)
-                        .padding(
-                            paddingValues = PaddingValues(
-                                top = contentPadding.calculateTopPadding(),
-                                bottom = contentPadding.calculateBottomPadding()
-                            )
-                        ),
+                        .padding(paddingValues = contentPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
                 ) {
@@ -267,31 +263,23 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                             modifier = Modifier
                                                 .fillMaxWidth()
                                                 .padding(top = 16.dp),
-                                            horizontalArrangement = Arrangement.Start,
+                                            contentPadding = PaddingValues(horizontal = 20.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                                             verticalAlignment = Alignment.CenterVertically
                                         ) {
-                                            myPageState.filterArtists.forEachIndexed { index, item ->
-
-                                                item {
-                                                    if (index == 0) {
-                                                        Spacer(modifier = Modifier.width(20.dp))
-                                                    }
-                                                    FilterButton(
-                                                        data = item,
-                                                        isSelect = (selectButtonIndex == index),
-                                                        onClick = { selectButtonIndex = index }
-                                                    )
-                                                    Spacer(
-                                                        modifier = Modifier.width(
-                                                            width = 20.dp.takeIf { index == myPageState.filterArtists.lastIndex } ?: 8.dp
-                                                        )
-                                                    )
-                                                }
+                                            itemsIndexed(items = myPageState.filterArtists) { index, item ->
+                                                FilterButton(
+                                                    data = item,
+                                                    isSelect = (selectButtonIndex == index),
+                                                    onClick = { selectButtonIndex = index }
+                                                )
                                             }
                                         }
                                     }
 
-                                    myPageState.notes!!.forEach { item { NoteComponent(noteData = it) } }
+                                    items(items = myPageState.notes!!) {
+                                        NoteComponent(noteData = it)
+                                    }
                                 }
                             }
                         }

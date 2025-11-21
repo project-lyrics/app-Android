@@ -27,7 +27,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 // MARK(@이대근): 다크 모드 디자인이 완성될 때 관련 색상을 사용하도록 변경해야 합니다. 2025.11.19.
 
 @Composable
-fun FilterButton(data: FilterButtonData, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun FilterButton(data: FilterButtonData, isSelect: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
 
     Row(
@@ -38,10 +38,10 @@ fun FilterButton(data: FilterButtonData, onClick: () -> Unit, modifier: Modifier
                     width = 1.dp,
                     color = feelinColors.gray01,
                     shape = RoundedCornerShape(corner = CornerSize(8.dp))
-                ).takeIf { !(data.isSelect) } ?: modifier
+                ).takeIf { !isSelect } ?: modifier
             )
             .clip(shape = RoundedCornerShape(8.dp))
-            .background(color = if (data.isSelect) feelinColors.gray09 else feelinColors.gray00)
+            .background(color = if (isSelect) feelinColors.gray09 else feelinColors.gray00)
             .clickable(enabled = true, onClick = onClick::invoke)
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -60,7 +60,7 @@ fun FilterButton(data: FilterButtonData, onClick: () -> Unit, modifier: Modifier
         Text(
             data.name,
             style = MaterialTheme.typography.labelMedium.copy(
-                color = if (data.isSelect) feelinColors.gray00 else feelinColors.gray05
+                color = if (isSelect) feelinColors.gray00 else feelinColors.gray05
             )
         )
     }
@@ -74,7 +74,6 @@ fun FilterButton(data: FilterButtonData, onClick: () -> Unit, modifier: Modifier
  * @property imageUrl 버튼에 표시할 이미지 URL, 전체보기의 경우는 없을 수 있음
  */
 data class FilterButtonData(
-    val isSelect: Boolean = false,
     val id: Long?,
     val name: String,
     val imageUrl: String?,
@@ -96,6 +95,7 @@ private fun FilterButtonNonSelectPreview() {
                 name = "쏜애플",
                 imageUrl = "https://i.scdn.co/image/ab6761610000e5eb4506d70c02763753b03fd07b",
             ),
+            isSelect = false,
             onClick = {}
         )
     }
@@ -107,11 +107,11 @@ private fun FilterButtonSelectPreview() {
     FeelinTheme {
         FilterButton(
             data = FilterButtonData(
-                isSelect = true,
                 id = 15,
                 name = "쏜애플",
                 imageUrl = "https://i.scdn.co/image/ab6761610000e5eb4506d70c02763753b03fd07b",
             ),
+            isSelect = true,
             onClick = {}
         )
     }
@@ -123,6 +123,7 @@ private fun FilterButtonViewAllNonSelectPreview() {
     FeelinTheme {
         FilterButton(
             FilterButtonData(id = null, name = "전체", imageUrl = null),
+            isSelect = false,
             onClick = {}
         )
     }
@@ -133,7 +134,8 @@ private fun FilterButtonViewAllNonSelectPreview() {
 private fun FilterButtonViewAllSelectPreview() {
     FeelinTheme {
         FilterButton(
-            FilterButtonData(isSelect = true, id = null, name = "전체", imageUrl = null),
+            FilterButtonData(id = null, name = "전체", imageUrl = null),
+            isSelect = true,
             onClick = {}
         )
     }

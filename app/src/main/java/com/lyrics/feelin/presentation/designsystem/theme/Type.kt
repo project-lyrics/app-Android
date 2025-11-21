@@ -24,11 +24,13 @@ val pretendardFamily =
         Font(R.font.pretendard_black, FontWeight.Black),
     )
 
-// FIXME(@이대근): 타이포그래피에 임의로 px-sp를 1:1로 대응함 2025.08.11.
+// MARK(@이대근): 타이포그래피에 임의로 px-sp를 1:1로 대응함 2025.08.11.
 // 기준 합의가 있으면 1:1로 둬도 됨:
 // 디자인이 기본 스케일(폰트 크기 1.0, mdpi 기준)을 가정했다면,
 // 예를 들어 16px → 16.sp처럼 그대로 두는 것이 일반적이고 권장됩니다.
 // 런타임에서 기기마다 적절히 스케일됩니다.
+
+private val letterSpacing = (-0.006).em
 
 /**
  * M3 Typography에 피그마 디자인 중 Typography를 대응한 것입니다.
@@ -43,7 +45,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             lineHeight = 32.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         headlineMedium =
         TextStyle(
@@ -51,7 +53,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             lineHeight = 28.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         headlineSmall =
         TextStyle(
@@ -59,7 +61,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             lineHeight = 24.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         titleLarge =
         TextStyle(
@@ -67,7 +69,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
             lineHeight = 28.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         titleMedium =
         TextStyle(
@@ -75,7 +77,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         titleSmall =
         TextStyle(
@@ -83,7 +85,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             lineHeight = 30.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         bodyLarge =
         TextStyle(
@@ -91,7 +93,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         bodyMedium =
         TextStyle(
@@ -99,7 +101,7 @@ val Typography =
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         bodySmall =
         TextStyle(
@@ -115,7 +117,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 11.sp,
             lineHeight = 16.sp,
-            letterSpacing = (-0.006).em,
+            letterSpacing = letterSpacing,
         ),
         // caption2 대응(그 다음 크기 레이블)
         labelMedium =

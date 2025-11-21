@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -52,7 +51,7 @@ import com.lyrics.feelin.core.designsystem.component.FeelinTabRow
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarNoBack
 import com.lyrics.feelin.core.designsystem.component.FilterButton
 import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
-import com.lyrics.feelin.core.designsystem.icon.CaretDarkIcon
+import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.core.designsystem.icon.EmptyImageDarkIcon
 import com.lyrics.feelin.core.designsystem.icon.EmptyImageLightIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
@@ -62,6 +61,8 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.presentation.view.component.profile.ProfileType
+
+private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -123,7 +124,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
 
             MyPageScreenStatus.SUCCESS_LOAD -> {
                 Column(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .background(color = MaterialTheme.colorScheme.primaryContainer)
                         .padding(paddingValues = contentPadding),
@@ -146,10 +147,10 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                             textAlign = TextAlign.Center
                         )
                         Icon(
-                            painter = CaretDarkIcon,
+                            painter = CaretIcon,
                             contentDescription = "change nickname",
                             tint = feelinColors.gray09,
-                            modifier = Modifier.rotate(270f)
+                            modifier = Modifier.rotate(NICKNAME_CARET_ROTATION_DEGREES)
                         )
                     }
                     Spacer(modifier = Modifier.height(20.dp))
@@ -231,6 +232,11 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                             // MARK: 로그인 + 노트 없음 상태
                             myPageState.user?.takeIf { myPageState.notes.isNullOrEmpty() }?.let {
                                 // MARK(@이대근): iOS 앱에 구현된 아이콘과 텍스트 색상을 사용했습니다. 2025.11.20.
+                                val emptyImageIcon = if (isSystemInDarkTheme()) {
+                                    EmptyImageDarkIcon
+                                } else {
+                                    EmptyImageLightIcon
+                                }
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -239,7 +245,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Image(
-                                        painter = if (isSystemInDarkTheme()) EmptyImageDarkIcon else EmptyImageLightIcon,
+                                        painter = emptyImageIcon,
                                         contentDescription = "No notes",
                                         modifier = Modifier.size(width = 78.dp, height = 48.dp)
                                     )
@@ -285,7 +291,9 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                         }
                         MyPageTabScreenStatus.ERROR -> {
                             Box(
-                                modifier = Modifier.fillMaxSize().weight(1f)
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .weight(1f)
                             ) {
                                 // TODO(@이대근): 에러 다이얼로그 표시 2025.11.21.
                                 Text(
@@ -300,7 +308,9 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
 
             MyPageScreenStatus.ERROR -> {
                 Box(
-                    modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.primaryContainer)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.primaryContainer)
                 ) {
                     // TODO(@이대근): 에러 다이얼로그 표시 2025.11.19.
                     Text(

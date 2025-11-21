@@ -59,13 +59,9 @@ val SettingsIconDark: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.settings_dark)
 
-val CaretDarkIcon: Painter
+val CaretIcon: Painter
     @Composable
-    get() = painterResource(id = R.drawable.caret_dark)
-
-val CaretLightIcon: Painter
-    @Composable
-    get() = painterResource(id = R.drawable.caret_light)
+    get() = painterResource(id = R.drawable.caret)
 
 val EmptyImageDarkIcon: Painter
     @Composable

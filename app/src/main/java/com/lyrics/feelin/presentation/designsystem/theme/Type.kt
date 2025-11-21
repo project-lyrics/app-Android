@@ -6,8 +6,8 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.sp
 import com.lyrics.feelin.R
 
 /** [프리텐다드 폰트](https://cactus.tistory.com/306) 패밀리 설정입니다. */

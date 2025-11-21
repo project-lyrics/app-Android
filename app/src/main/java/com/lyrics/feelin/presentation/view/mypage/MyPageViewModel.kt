@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+@Suppress("UnusedPrivateProperty") // TODO(@이대근): 실제 기능 구현시 제거할 것 2025.11.21.
 class MyPageViewModel : ViewModel() {
     private val _myPageScreenStatus: MutableStateFlow<MyPageScreenState> = MutableStateFlow(MyPageScreenState.initial())
     val myPageScreenState: StateFlow<MyPageScreenState> = _myPageScreenStatus.asStateFlow()

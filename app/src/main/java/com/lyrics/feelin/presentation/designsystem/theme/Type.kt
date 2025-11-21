@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.em
 import com.lyrics.feelin.R
 
 /** [프리텐다드 폰트](https://cactus.tistory.com/306) 패밀리 설정입니다. */
@@ -42,6 +43,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 24.sp,
             lineHeight = 32.sp,
+            letterSpacing = (-0.006).em,
         ),
         headlineMedium =
         TextStyle(
@@ -49,6 +51,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             lineHeight = 28.sp,
+            letterSpacing = (-0.006).em,
         ),
         headlineSmall =
         TextStyle(
@@ -56,6 +59,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 18.sp,
             lineHeight = 24.sp,
+            letterSpacing = (-0.006).em,
         ),
         titleLarge =
         TextStyle(
@@ -63,6 +67,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp,
             lineHeight = 28.sp,
+            letterSpacing = (-0.006).em,
         ),
         titleMedium =
         TextStyle(
@@ -70,6 +75,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 16.sp,
             lineHeight = 24.sp,
+            letterSpacing = (-0.006).em,
         ),
         titleSmall =
         TextStyle(
@@ -77,6 +83,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
             lineHeight = 30.sp,
+            letterSpacing = (-0.006).em,
         ),
         bodyLarge =
         TextStyle(
@@ -84,6 +91,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 24.sp,
+            letterSpacing = (-0.006).em,
         ),
         bodyMedium =
         TextStyle(
@@ -91,6 +99,7 @@ val Typography =
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
             lineHeight = 20.sp,
+            letterSpacing = (-0.006).em,
         ),
         bodySmall =
         TextStyle(
@@ -106,6 +115,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 11.sp,
             lineHeight = 16.sp,
+            letterSpacing = (-0.006).em,
         ),
         // caption2 대응(그 다음 크기 레이블)
         labelMedium =

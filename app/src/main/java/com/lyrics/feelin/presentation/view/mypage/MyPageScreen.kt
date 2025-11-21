@@ -237,6 +237,10 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                 } else {
                                     EmptyImageLightIcon
                                 }
+
+
+                                val noNoteText = if (tabIndex == 0) "작성한" else "북마크한"
+
                                 Column(
                                     modifier = Modifier
                                         .fillMaxSize()
@@ -250,7 +254,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                         modifier = Modifier.size(width = 78.dp, height = 48.dp)
                                     )
                                     Text(
-                                        text = "작성한 노트가 없어요",
+                                        text = "$noNoteText 노트가 없어요",
                                         style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray04),
                                         modifier = Modifier.padding(top = 8.dp)
                                     )

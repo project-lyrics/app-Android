@@ -238,7 +238,6 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                     EmptyImageLightIcon
                                 }
 
-
                                 val noNoteText = if (tabIndex == 0) "작성한" else "북마크한"
 
                                 Column(

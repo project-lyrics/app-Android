@@ -897,6 +897,7 @@ style:
         "**/jvmTest/**",
         "**/jsTest/**",
         "**/iosTest/**",
+        "**/designsystem/theme/**",
       ]
     ignoreNumbers:
       - "-1"

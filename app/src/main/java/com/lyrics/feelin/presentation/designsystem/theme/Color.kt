@@ -37,7 +37,7 @@ val LightSystemPressedGreyScale = Color(0xFFF3F4F8)
 val DarkSystemPressedGreyScale = Color(0xFF6B6B79)
 
 val CommonAlertWarning = Color(0xFFF24242)
-val LightAlertSuccess = Color(0xFF2B69FF)
+val LightAlertSuccess = Color(0xFF3C75FF)
 val DarkAlertSuccess = Color(0xFF3C75FF)
 
 val LightSystemBorder = Color(0xFF101223)

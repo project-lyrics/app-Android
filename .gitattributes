@@ -1,0 +1,6 @@
+# Shell scripts - LF line endings and preserve executable permission
+gradlew text eol=lf
+*.sh text eol=lf
+
+# Batch scripts - CRLF line endings for Windows
+*.bat text eol=crlf

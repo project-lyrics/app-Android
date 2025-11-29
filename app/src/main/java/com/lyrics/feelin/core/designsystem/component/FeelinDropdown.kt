@@ -68,7 +68,7 @@ fun FeelinDropdown(
                 .fillMaxWidth()
                 .height(56.dp)
                 .background(
-                    color = if (isActivated) feelinColors.brandSecondary else feelinColors.gray00,
+                    color = if (isActivated) feelinColors.systemPressedBrand else feelinColors.gray00,
                     shape = RoundedCornerShape(12.dp)
                 )
                 .border(

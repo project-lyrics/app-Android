@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.designsystem.theme.Typography
 import com.lyrics.feelin.presentation.designsystem.theme.pretendardFamily
 
 @Composable
@@ -50,16 +51,6 @@ fun FeelinModalDialog(
     val confirmInteractionSource = remember { MutableInteractionSource() }
     val isConfirmPressed by confirmInteractionSource.collectIsPressedAsState()
 
-    // 모달 다이얼로그 제목만 디자인시스템 적용을 안 하네요?
-    val titleTextStyle = TextStyle(
-        fontFamily = pretendardFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 16.sp,
-        lineHeight = 22.sp,
-        letterSpacing = (-0.006).em,
-        color = feelinColors.gray09
-    )
-
     Dialog(onDismissRequest = {}) {
         Column(
             modifier = modifier.width(280.dp)
@@ -68,7 +59,11 @@ fun FeelinModalDialog(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Text(text = title, style = titleTextStyle, modifier = Modifier.padding(top = 24.dp))
+            Text(
+                text = title,
+                style = Typography.titleMedium.copy(color = feelinColors.gray09),
+                modifier = Modifier.padding(top = 24.dp)
+            )
             Text(
                 text = description,
                 style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray05),

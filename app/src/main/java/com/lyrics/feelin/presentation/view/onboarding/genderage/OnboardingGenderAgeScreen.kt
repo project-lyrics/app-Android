@@ -1,6 +1,4 @@
-@file:Suppress("PackageName", "PackageNaming")
-
-package com.lyrics.feelin.presentation.view.onboarding.gender_age
+package com.lyrics.feelin.presentation.view.onboarding.genderage
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background

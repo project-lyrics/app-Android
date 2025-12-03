@@ -39,16 +39,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
         var selectedGender by remember { mutableStateOf<String?>(null) }
         var selectedYear by remember { mutableStateOf("") }
 
-        // 버튼 활성화 조건: 성별과 출생 연도 모두 선택
         val isButtonEnabled = selectedGender != null && selectedYear.isNotEmpty()
-
-        // 출생 연도 목록
-        @Suppress("MagicNumber")
-        val startYear = 1950
-
-        @Suppress("MagicNumber")
-        val endYear = 2010
-        val birthYears = (startYear..endYear).map { it.toString() }.reversed()
 
         Column(
             modifier = modifier
@@ -211,16 +202,7 @@ private fun OnboardingGenderAgeScreenWithState(
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
 
-        // 버튼 활성화 조건: 성별과 출생 연도 모두 선택
         val isButtonEnabled = selectedGender.isNotEmpty() && selectedYear.isNotEmpty()
-
-        // 출생 연도 목록
-        @Suppress("MagicNumber")
-        val startYear = 1950
-
-        @Suppress("MagicNumber")
-        val endYear = 2010
-        val birthYears = (startYear..endYear).map { it.toString() }.reversed()
 
         Column(
             modifier = modifier

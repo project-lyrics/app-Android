@@ -67,7 +67,7 @@ fun FeelinCheckboxAllAgree(
         )
         Text(
             text = text,
-            style = FeelinTypography.body2,
+            style = FeelinTypography.title2,
             color = if (checked) feelinColors.systemActivate else feelinColors.gray04,
             modifier = Modifier.padding(start = 8.dp)
         )

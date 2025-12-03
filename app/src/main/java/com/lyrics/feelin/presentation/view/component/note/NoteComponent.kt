@@ -59,7 +59,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = noteData.createdAt.compareNowToUser(),
-                    style = FeelinTypography.caption1.copy(color = feelinColors.gray03),
+                    style = FeelinTypography.caption2.copy(color = feelinColors.gray03),
                 )
             }
             Image(

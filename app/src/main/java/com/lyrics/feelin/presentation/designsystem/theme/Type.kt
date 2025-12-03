@@ -143,7 +143,7 @@ val FeelinTypography = FeelinTypographyCollection(
 )
 
 /**
- * M3 Typography에 피그마 디자인 중 Typography를 대응한 것입니다.
+ * 머티리얼 기반의 컴포저블 호환성을 위해 M3 Typography에 피그마 디자인시스템의 타이포그래피를 대응합니다.
  *
  * M3에 바로 대응되지 않는 Caption1, Caption2는 각각 LabelSmall, LabelMedium에 대입했습니다.
  */

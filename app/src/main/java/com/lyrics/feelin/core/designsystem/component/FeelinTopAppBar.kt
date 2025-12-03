@@ -216,9 +216,7 @@ private fun TopAppBarBase(
         }
 
         Box(modifier = Modifier.align(Alignment.CenterEnd)) {
-            CompositionLocalProvider(
-                content = actionsRow
-            )
+            CompositionLocalProvider(content = actionsRow)
         }
     }
 }
@@ -310,7 +308,7 @@ private fun FeelinTopAppBarDoubleIconPreview() {
                 actions = {
                     TopBarIconButton(
                         imageVector = if (isSystemInDarkTheme()) SettingsIconDark else SettingsIconLight,
-                        contentDescription = "알림",
+                        contentDescription = "설정",
                         tint = LocalFeelinColors.current.gray09,
                         onClick = {}
                     )

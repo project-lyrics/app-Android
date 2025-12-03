@@ -274,7 +274,6 @@ private fun FeelinTransparentTopAppBarPreview() {
     }
 }
 
-
 @Preview(name = "TopBar with Back - Light", showBackground = true)
 @Preview(
     name = "TopBar with Back - Dark",

@@ -84,6 +84,8 @@ data class FeelinColors(
     val systemPressedGreyScale: Color,
     val alertWarning: Color,
     val alertSuccess: Color,
+    // 브랜드 색상들
+    val brandSecondary: Color,
 )
 
 /** [FeelinColors]를 제공/소비하기 위한 CompositionLocal. */
@@ -111,6 +113,7 @@ val LocalFeelinColors =
             systemPressedGreyScale = LightSystemPressedGreyScale,
             alertWarning = CommonAlertWarning,
             alertSuccess = LightAlertSuccess,
+            brandSecondary = LightBrandSecondary,
         )
     }
 
@@ -204,6 +207,7 @@ fun FeelinTheme(
                 systemPressedGreyScale = DarkSystemPressedGreyScale,
                 alertWarning = CommonAlertWarning,
                 alertSuccess = DarkAlertSuccess,
+                brandSecondary = DarkBrandSecondary,
             )
         } else {
             FeelinColors(
@@ -228,6 +232,7 @@ fun FeelinTheme(
                 systemPressedGreyScale = LightSystemPressedGreyScale,
                 alertWarning = CommonAlertWarning,
                 alertSuccess = LightAlertSuccess,
+                brandSecondary = LightBrandSecondary,
             )
         }
 

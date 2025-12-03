@@ -61,7 +61,7 @@ fun FeelinBottomNavigation(
                     strokeWidth = 2f
                 )
             },
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = feelinColors.backgroundPrimary,
         tonalElevation = 12.dp
     ) {
         Row(

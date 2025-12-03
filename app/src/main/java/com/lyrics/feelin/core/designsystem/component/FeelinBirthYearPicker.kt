@@ -119,6 +119,7 @@ fun FeelinBirthYearPicker(
                                     maxValue = years.size - 1
                                     displayedValues = years.map { it.toString() }.toTypedArray()
                                     wrapSelectorWheel = false
+                                    descendantFocusability = NumberPicker.FOCUS_BLOCK_DESCENDANTS
                                     setOnValueChangedListener { _, _, newVal ->
                                         selectedYearIndex = newVal
                                     }

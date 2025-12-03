@@ -38,10 +38,9 @@ import com.lyrics.feelin.presentation.designsystem.theme.Typography
 import java.util.Calendar
 
 @Composable
-fun FeelinDropdown(
+fun FeelinBirthYearPicker(
     value: String,
     placeholder: String,
-    @Suppress("UnusedParameter") items: List<String>,
     onValueChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -168,12 +167,11 @@ fun FeelinDropdown(
 
 @Preview(showBackground = true)
 @Composable
-private fun FeelinDropdownPreview() {
+private fun FeelinBirthYearPickerPreview() {
     FeelinTheme {
-        FeelinDropdown(
+        FeelinBirthYearPicker(
             value = "",
             placeholder = "출생 연도를 입력해주세요",
-            items = listOf("1990", "1991", "1992", "1993", "1994", "1995"),
             onValueChange = {},
             modifier = Modifier.padding(20.dp)
         )

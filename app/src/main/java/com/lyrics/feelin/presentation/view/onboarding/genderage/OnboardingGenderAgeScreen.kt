@@ -23,7 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.R
-import com.lyrics.feelin.core.designsystem.component.FeelinDropdown
+import com.lyrics.feelin.core.designsystem.component.FeelinBirthYearPicker
 import com.lyrics.feelin.core.designsystem.component.FeelinGenderButton
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -136,10 +136,9 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                FeelinDropdown(
+                FeelinBirthYearPicker(
                     value = if (selectedYear.isNotEmpty()) "${selectedYear}년" else "",
                     placeholder = "출생 연도를 입력해주세요",
-                    items = birthYears.map { "${it}년" },
                     onValueChange = {
                         selectedYear = it.removeSuffix("년")
                     }
@@ -310,10 +309,9 @@ private fun OnboardingGenderAgeScreenWithState(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                FeelinDropdown(
+                FeelinBirthYearPicker(
                     value = if (selectedYear.isNotEmpty()) "${selectedYear}년" else "",
                     placeholder = "출생 연도를 입력해주세요",
-                    items = birthYears.map { "${it}년" },
                     onValueChange = { }
                 )
 

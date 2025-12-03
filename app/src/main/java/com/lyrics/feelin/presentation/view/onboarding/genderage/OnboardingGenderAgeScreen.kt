@@ -27,8 +27,8 @@ import com.lyrics.feelin.core.designsystem.component.FeelinBirthYearPicker
 import com.lyrics.feelin.core.designsystem.component.FeelinGenderButton
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
 
 @Composable
 fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
@@ -53,7 +53,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
                 actions = {
                     Text(
                         text = "건너뛰기",
-                        style = Typography.bodyLarge,
+                        style = FeelinTypography.body1,
                         color = feelinColors.gray05
                     )
                 }
@@ -67,7 +67,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = "추가 정보를 입력해주세요",
-                    style = Typography.headlineLarge,
+                    style = FeelinTypography.heading1,
                     color = feelinColors.gray08
                 )
 
@@ -75,7 +75,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "서비스 이용 현황 분석을 위해서만 활용되며\n다른 곳엔 사용되지 않아요",
-                    style = Typography.bodySmall,
+                    style = FeelinTypography.body3,
                     color = feelinColors.gray04
                 )
 
@@ -83,7 +83,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "성별",
-                    style = Typography.titleMedium,
+                    style = FeelinTypography.title2,
                     color = feelinColors.gray05
                 )
 
@@ -121,7 +121,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
 
                 Text(
                     text = "출생 연도",
-                    style = Typography.titleMedium,
+                    style = FeelinTypography.title2,
                     color = feelinColors.gray05
                 )
 
@@ -152,7 +152,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = "다음",
-                        style = Typography.titleMedium,
+                        style = FeelinTypography.title2,
                         color = feelinColors.gray00
                     )
                 }
@@ -161,17 +161,17 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Gender age selection screen",
+    showBackground = true
+)
+@Preview(
+    name = "Gender age selection screen - Dark Theme",
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
 private fun OnboardingGenderAgeScreenPreview() {
-    FeelinTheme {
-        OnboardingGenderAgeScreen()
-    }
-}
-
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun OnboardingGenderAgeScreenDarkModePreview() {
     FeelinTheme {
         OnboardingGenderAgeScreen()
     }
@@ -216,7 +216,7 @@ private fun OnboardingGenderAgeScreenWithState(
                 actions = {
                     Text(
                         text = "건너뛰기",
-                        style = Typography.bodyMedium,
+                        style = FeelinTypography.body2,
                         color = feelinColors.gray05,
                         modifier = Modifier.padding(end = 20.dp)
                     )
@@ -231,7 +231,7 @@ private fun OnboardingGenderAgeScreenWithState(
             ) {
                 Text(
                     text = "추가 정보를 입력해주세요",
-                    style = Typography.headlineLarge,
+                    style = FeelinTypography.heading1,
                     color = feelinColors.gray08
                 )
 
@@ -239,7 +239,7 @@ private fun OnboardingGenderAgeScreenWithState(
 
                 Text(
                     text = "서비스 이용 현황 분석을 위해서만 활용되며\n다른 곳엔 사용되지 않아요",
-                    style = Typography.bodySmall,
+                    style = FeelinTypography.body3,
                     color = feelinColors.gray04
                 )
 
@@ -247,7 +247,7 @@ private fun OnboardingGenderAgeScreenWithState(
 
                 Text(
                     text = "성별",
-                    style = Typography.titleMedium,
+                    style = FeelinTypography.title2,
                     color = feelinColors.gray05
                 )
 
@@ -285,7 +285,7 @@ private fun OnboardingGenderAgeScreenWithState(
 
                 Text(
                     text = "출생 연도",
-                    style = Typography.titleMedium,
+                    style = FeelinTypography.title2,
                     color = feelinColors.gray05
                 )
 
@@ -314,7 +314,7 @@ private fun OnboardingGenderAgeScreenWithState(
                 ) {
                     Text(
                         text = "다음",
-                        style = Typography.titleMedium,
+                        style = FeelinTypography.title2,
                         color = feelinColors.gray00
                     )
                 }

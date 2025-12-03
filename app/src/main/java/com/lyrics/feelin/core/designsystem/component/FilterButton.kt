@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 // MARK(@이대근): 다크 모드 디자인이 완성될 때 관련 색상을 사용하도록 변경해야 합니다. 2025.11.19.
@@ -59,7 +59,7 @@ fun FilterButton(data: FilterButtonData, isSelect: Boolean, onClick: () -> Unit,
         }
         Text(
             data.name,
-            style = MaterialTheme.typography.labelMedium.copy(
+            style = FeelinTypography.caption2.copy(
                 color = if (isSelect) feelinColors.gray00 else feelinColors.gray05
             )
         )

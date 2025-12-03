@@ -23,8 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
+import com.lyrics.feelin.presentation.designsystem.theme.MaterialCompatibleTypography
 
 @Composable
 fun FeelinGenderButton(
@@ -64,7 +65,7 @@ fun FeelinGenderButton(
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = text,
-            style = Typography.titleMedium,
+            style = FeelinTypography.title2,
             color = if (selected) feelinColors.alertSuccess else feelinColors.gray03
         )
     }

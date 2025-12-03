@@ -1,6 +1,5 @@
 package com.lyrics.feelin.core.designsystem.component
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Tab
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -20,7 +19,7 @@ fun FeelinTab(
         selected = selected,
         onClick = onClick::invoke,
         enabled = enabled,
-        selectedContentColor = MaterialTheme.colorScheme.primary,
+        selectedContentColor = feelinColors.brandPrimary,
         unselectedContentColor = feelinColors.gray03,
         text = text
     )

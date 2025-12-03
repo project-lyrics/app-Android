@@ -33,7 +33,6 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -58,6 +57,7 @@ import com.lyrics.feelin.core.designsystem.component.FeelinTransparentTopAppBar
 import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray03
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
@@ -125,7 +125,7 @@ fun CommunityMainScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                containerColor = MaterialTheme.colorScheme.primary,
+                containerColor = feelinColors.brandPrimary,
                 shape = CircleShape,
                 modifier = Modifier
                     .padding(bottom = 4.dp, end = 4.dp),
@@ -203,7 +203,7 @@ fun CommunityMainScreen(
                             ) {
                                 Text(
                                     text = "$artistName 레코드",
-                                    style = MaterialTheme.typography.headlineLarge.copy(
+                                    style = FeelinTypography.heading1.copy(
                                         color = LightGray00
                                     ),
                                 )
@@ -237,9 +237,7 @@ fun CommunityMainScreen(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = "관심 아티스트",
-                                            style = MaterialTheme.typography.labelMedium.copy(
-                                                color = LightGray00
-                                            ),
+                                            style = FeelinTypography.caption2.copy(color = LightGray00),
                                         )
                                     }
                                 }
@@ -259,13 +257,13 @@ fun CommunityMainScreen(
                         ) {
                             Text(
                                 text = "노트",
-                                style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
+                                style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
                                     painter = painterResource(R.drawable.check_icon),
                                     tint = if (communityViewState.isViewNoteOnlyLyrics) {
-                                        MaterialTheme.colorScheme.primary
+                                        feelinColors.brandPrimary
                                     } else {
                                         feelinColors.gray03
                                     },
@@ -273,9 +271,9 @@ fun CommunityMainScreen(
                                 )
                                 Text(
                                     text = "가사 포함된 노트만 보기",
-                                    style = MaterialTheme.typography.labelMedium.copy(
+                                    style = FeelinTypography.caption2.copy(
                                         color = if (communityViewState.isViewNoteOnlyLyrics) {
-                                            MaterialTheme.colorScheme.primary
+                                            feelinColors.brandPrimary
                                         } else {
                                             feelinColors.gray03
                                         }
@@ -307,19 +305,9 @@ fun CommunityMainScreen(
 }
 
 @Preview(name = "Light Mode")
-@Composable
-private fun CommunityMainScreenPreview() {
-    FeelinTheme {
-        CommunityMainScreen(
-            artistName = "실리카겔",
-            onBack = {}
-        )
-    }
-}
-
 @Preview(name = "Dark Mode", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES)
 @Composable
-private fun CommunityMainScreenDarkPreview() {
+private fun CommunityMainScreenPreview() {
     FeelinTheme {
         CommunityMainScreen(
             artistName = "실리카겔",

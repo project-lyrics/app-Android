@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -37,6 +36,7 @@ import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconDark
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
@@ -98,7 +98,7 @@ fun FeelinTopAppBarWithBack(
             title = {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
                 )
             },
             actions = actions,
@@ -147,7 +147,7 @@ fun FeelinTopAppBarNoBack(
             title = {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
                 )
             },
             actions = actions,
@@ -196,13 +196,8 @@ private fun TopAppBarBase(
             .padding(paddingValues),
     ) {
         if (navigationIcon != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-            ) {
-                CompositionLocalProvider(
-                    content = navigationIcon
-                )
+            Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                CompositionLocalProvider(content = navigationIcon)
             }
         }
 
@@ -220,10 +215,7 @@ private fun TopAppBarBase(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-        ) {
+        Box(modifier = Modifier.align(Alignment.CenterEnd)) {
             CompositionLocalProvider(
                 content = actionsRow
             )
@@ -259,6 +251,11 @@ fun TopBarIconButton(
 }
 
 @Preview(name = "Transparent TopBar - Light", showBackground = true)
+@Preview(
+    name = "Transparent TopBar - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinTransparentTopAppBarPreview() {
     FeelinTheme {
@@ -277,49 +274,15 @@ private fun FeelinTransparentTopAppBarPreview() {
     }
 }
 
-@Preview(
-    name = "Transparent TopBar - Dark",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-private fun FeelinTransparentTopAppBarDarkPreview() {
-    FeelinTheme {
-        Box {
-            FeelinTransparentTopAppBar(
-                onBackClick = {},
-                actions = {
-                    TopBarIconButton(
-                        imageVector = NotificationIcon,
-                        contentDescription = "알림",
-                        onClick = {}
-                    )
-                }
-            )
-        }
-    }
-}
 
 @Preview(name = "TopBar with Back - Light", showBackground = true)
-@Composable
-private fun FeelinTopAppBarWithBackPreview() {
-    FeelinTheme {
-        Box {
-            FeelinTopAppBarWithBack(
-                title = "필릭스 레코드",
-                onBackClick = {}
-            )
-        }
-    }
-}
-
 @Preview(
     name = "TopBar with Back - Dark",
     showBackground = true,
     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun FeelinTopAppBarWithBackDarkPreview() {
+private fun FeelinTopAppBarWithBackPreview() {
     FeelinTheme {
         Box {
             FeelinTopAppBarWithBack(
@@ -334,6 +297,11 @@ private fun FeelinTopAppBarWithBackDarkPreview() {
     name = "TopBar no back with double icon - Light",
     showBackground = true
 )
+@Preview(
+    name = "TopBar no back with double icon - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinTopAppBarDoubleIconPreview() {
     FeelinTheme {
@@ -344,36 +312,6 @@ private fun FeelinTopAppBarDoubleIconPreview() {
                     TopBarIconButton(
                         imageVector = if (isSystemInDarkTheme()) SettingsIconDark else SettingsIconLight,
                         contentDescription = "알림",
-                        tint = LocalFeelinColors.current.gray09,
-                        onClick = {}
-                    )
-                    TopBarIconButton(
-                        imageVector = NotificationIcon,
-                        contentDescription = "알림",
-                        tint = LocalFeelinColors.current.gray09,
-                        onClick = {}
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Preview(
-    name = "TopBar no back with double icon - Dark",
-    showBackground = true,
-    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
-)
-@Composable
-private fun FeelinTopAppBarDoubleIconDarkPreview() {
-    FeelinTheme {
-        Box {
-            FeelinTopAppBarNoBack(
-                title = "마이페이지",
-                actions = {
-                    TopBarIconButton(
-                        imageVector = if (isSystemInDarkTheme()) SettingsIconDark else SettingsIconLight,
-                        contentDescription = "설정",
                         tint = LocalFeelinColors.current.gray09,
                         onClick = {}
                     )

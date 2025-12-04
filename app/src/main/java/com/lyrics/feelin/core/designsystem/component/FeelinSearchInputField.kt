@@ -5,7 +5,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -49,7 +48,6 @@ fun FeelinSearchInputField(
     placeholder: String = "",
     onClearClick: () -> Unit = {},
 ) {
-    val isDarkTheme = isSystemInDarkTheme()
     val feelinColors = LocalFeelinColors.current
 
     val backgroundColor = feelinColors.inputField
@@ -99,10 +97,11 @@ fun FeelinSearchInputField(
                 if (state.text.isNotEmpty()) {
                     Spacer(modifier = Modifier.width(8.dp))
 
+                    val clearButtonColor = feelinColors.gray03
                     Image(
                         painter = XCircleIcon,
                         contentDescription = "입력 내용 지우기",
-                        colorFilter = ColorFilter.tint(feelinColors.gray03),
+                        colorFilter = ColorFilter.tint(clearButtonColor),
                         modifier = Modifier
                             .size(20.dp)
                             .clickable(
@@ -117,7 +116,7 @@ fun FeelinSearchInputField(
     )
 }
 
-@Preview(name = "Light mode", showBackground = true)
+@Preview(name = "Light mode", showBackground = true, backgroundColor = 0xff000000)
 @Preview(name = "Dark mode", showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Composable
 private fun FeelinSearchInputFieldPreview() {

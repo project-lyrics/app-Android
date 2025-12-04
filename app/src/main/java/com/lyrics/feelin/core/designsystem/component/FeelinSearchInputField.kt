@@ -88,7 +88,7 @@ fun FeelinSearchInputField(
                     if (state.text.isEmpty()) {
                         Text(
                             text = placeholder,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.bodySmall,
                             color = placeholderColor,
                         )
                     }

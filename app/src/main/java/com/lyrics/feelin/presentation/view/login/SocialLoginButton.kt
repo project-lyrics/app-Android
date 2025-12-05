@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
 
 /**
@@ -103,10 +103,10 @@ fun SocialLoginButton(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                // TODO(@이대근): 살려줘요 아이콘이랑 텍스트가 중앙정렬이 안 맞아 2025.09.16.
+                // TODO(@이대근 @최현정): Issue #9 2025.12.03.
                 Text(
                     text = config.text,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = FeelinTypography.title2.copy(
                         color = config.textColor,
                         textAlign = TextAlign.Center,
                         lineHeight = 1.2.em,

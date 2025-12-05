@@ -27,18 +27,15 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-
-// 아이콘 붙는 버전, 아이콘 안 붙는 아이템 버전 있음
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -118,7 +115,7 @@ fun FeelinModalBottomSheetAction(
                 modifier = Modifier.padding(end = 12.dp)
             )
         }
-        Text(text = text, style = MaterialTheme.typography.bodyLarge.copy(color = feelinColors.gray09))
+        Text(text = text, style = FeelinTypography.body1.copy(color = feelinColors.gray09))
     }
 }
 

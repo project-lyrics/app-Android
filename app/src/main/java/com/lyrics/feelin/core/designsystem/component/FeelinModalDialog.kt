@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,8 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
 
 @Composable
 fun FeelinModalDialog(
@@ -56,12 +55,12 @@ fun FeelinModalDialog(
         ) {
             Text(
                 text = title,
-                style = Typography.titleMedium.copy(color = feelinColors.gray09),
+                style = FeelinTypography.title2.copy(color = feelinColors.gray09),
                 modifier = Modifier.padding(top = 24.dp)
             )
             Text(
                 text = description,
-                style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray05),
+                style = FeelinTypography.body3.copy(color = feelinColors.gray05),
                 modifier = Modifier.padding(top = 10.dp, bottom = 12.dp)
             )
             Row(
@@ -87,7 +86,7 @@ fun FeelinModalDialog(
                     ) {
                         Text(
                             text = dismissButtonText,
-                            style = MaterialTheme.typography.titleMedium.copy(
+                            style = FeelinTypography.title2.copy(
                                 color = if (isSystemInDarkTheme()) feelinColors.gray06 else feelinColors.gray02
                             )
                         )
@@ -107,9 +106,7 @@ fun FeelinModalDialog(
                 ) {
                     Text(
                         text = confirmButtonText,
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            color = MaterialTheme.colorScheme.primary
-                        )
+                        style = FeelinTypography.title2.copy(color = feelinColors.brandPrimary)
                     )
                 }
             }

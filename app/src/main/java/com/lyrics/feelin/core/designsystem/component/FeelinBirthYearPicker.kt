@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
 import java.util.Calendar
 
 @Composable
@@ -82,7 +82,7 @@ fun FeelinBirthYearPicker(
             Text(
                 text = displayText,
                 textAlign = TextAlign.Center,
-                style = Typography.titleMedium,
+                style = FeelinTypography.title2,
                 color = if (isActivated) feelinColors.alertSuccess else feelinColors.gray03,
                 modifier = Modifier.weight(1f)
             )
@@ -103,7 +103,7 @@ fun FeelinBirthYearPicker(
                 title = {
                     Text(
                         text = "출생 연도 선택",
-                        style = Typography.titleLarge,
+                        style = FeelinTypography.title1,
                         color = feelinColors.gray09
                     )
                 },
@@ -143,7 +143,7 @@ fun FeelinBirthYearPicker(
                     ) {
                         Text(
                             text = "확인",
-                            style = Typography.bodyLarge,
+                            style = FeelinTypography.body1,
                             color = feelinColors.systemActivate
                         )
                     }
@@ -154,7 +154,7 @@ fun FeelinBirthYearPicker(
                     ) {
                         Text(
                             text = "취소",
-                            style = Typography.bodyLarge,
+                            style = FeelinTypography.body1,
                             color = feelinColors.gray05
                         )
                     }

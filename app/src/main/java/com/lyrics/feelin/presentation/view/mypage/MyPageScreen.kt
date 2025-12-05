@@ -28,7 +28,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -57,6 +56,7 @@ import com.lyrics.feelin.core.designsystem.icon.EmptyImageLightIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
@@ -86,7 +86,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
     Scaffold(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-            .background(color = MaterialTheme.colorScheme.primaryContainer),
+            .background(color = feelinColors.backgroundPrimary),
         topBar = {
             FeelinTopAppBarNoBack(
                 title = "마이페이지",
@@ -94,13 +94,13 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                     TopBarIconButton(
                         imageVector = SettingsIconLight,
                         contentDescription = "설정",
-                        tint = LocalFeelinColors.current.gray09,
+                        tint = feelinColors.gray09,
                         onClick = {}
                     )
                     TopBarIconButton(
                         imageVector = NotificationIcon,
                         contentDescription = "알림",
-                        tint = LocalFeelinColors.current.gray09,
+                        tint = feelinColors.gray09,
                         onClick = {}
                     )
                 }
@@ -114,7 +114,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                     modifier = Modifier
                         .padding(paddingValues = contentPadding)
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(feelinColors.backgroundPrimary)
                 ) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(alignment = Alignment.Center)
@@ -126,7 +126,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(color = MaterialTheme.colorScheme.primaryContainer)
+                        .background(color = feelinColors.backgroundPrimary)
                         .padding(paddingValues = contentPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Top
@@ -143,7 +143,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                     ) {
                         Text(
                             text = myPageState.user?.nickname ?: "로그인",
-                            style = MaterialTheme.typography.headlineSmall,
+                            style = FeelinTypography.heading3,
                             textAlign = TextAlign.Center
                         )
                         Icon(
@@ -159,20 +159,14 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                             selected = (tabIndex == 0),
                             onClick = { onTabChange(0) },
                             text = {
-                                Text(
-                                    "작성글",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                Text("작성글", style = FeelinTypography.title2)
                             }
                         )
                         FeelinTab(
                             selected = (tabIndex == 1),
                             onClick = { onTabChange(1) },
                             text = {
-                                Text(
-                                    "북마크",
-                                    style = MaterialTheme.typography.titleMedium
-                                )
+                                Text("북마크", style = FeelinTypography.title2)
                             }
                         )
                     }
@@ -188,9 +182,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                         ) {
                             Text(
                                 text = "로그인 후 이용하실 수 있어요",
-                                style = MaterialTheme.typography.bodySmall.copy(
-                                    color = feelinColors.gray09,
-                                ),
+                                style = FeelinTypography.body3.copy(color = feelinColors.gray09),
                                 textAlign = TextAlign.Center
                             )
 
@@ -205,9 +197,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                             ) {
                                 Text(
                                     text = "로그인하러 가기",
-                                    style = MaterialTheme.typography.bodyMedium.copy(
-                                        color = feelinColors.gray09
-                                    )
+                                    style = FeelinTypography.body2.copy(color = feelinColors.gray09)
                                 )
                             }
                         }
@@ -220,7 +210,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                 modifier = Modifier
                                     .padding(paddingValues = contentPadding)
                                     .fillMaxSize()
-                                    .background(MaterialTheme.colorScheme.primaryContainer)
+                                    .background(feelinColors.backgroundPrimary)
                                     .weight(1f)
                             ) {
                                 CircularProgressIndicator(
@@ -254,7 +244,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                     )
                                     Text(
                                         text = "$noNoteText 노트가 없어요",
-                                        style = MaterialTheme.typography.bodySmall.copy(color = feelinColors.gray04),
+                                        style = FeelinTypography.body3.copy(color = feelinColors.gray04),
                                         modifier = Modifier.padding(top = 8.dp)
                                     )
                                 }
@@ -313,7 +303,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.primaryContainer)
+                        .background(feelinColors.backgroundPrimary)
                 ) {
                     // TODO(@이대근): 에러 다이얼로그 표시 2025.11.19.
                     Text(

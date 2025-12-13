@@ -27,7 +27,8 @@ fun RowScope.InnerTextFieldComponent(
     clearIconColor: Color,
     innerTextField: @Composable (() -> Unit),
     onClearButtonClick: () -> Unit,
-    clearButtonInteractionSource: MutableInteractionSource?
+    clearButtonInteractionSource: MutableInteractionSource?,
+    modifier: Modifier = Modifier
 ) {
     Box(modifier = Modifier.weight(1f)) {
         if (isTextEmpty) {

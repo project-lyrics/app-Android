@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconDisabled
 import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconEnabled
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
 
 /**
  * Feelin 전체동의 체크박스
@@ -67,7 +67,7 @@ fun FeelinCheckboxAllAgree(
         )
         Text(
             text = text,
-            style = Typography.titleMedium,
+            style = FeelinTypography.title2,
             color = if (checked) feelinColors.systemActivate else feelinColors.gray04,
             modifier = Modifier.padding(start = 8.dp)
         )
@@ -126,7 +126,7 @@ fun FeelinCheckboxItem(
                         modifier = Modifier
                             .padding(horizontal = 12.dp, vertical = 4.dp),
                         text = "필수",
-                        style = Typography.bodyMedium,
+                        style = FeelinTypography.body2,
                         color = feelinColors.gray05,
                     )
                 }
@@ -134,7 +134,7 @@ fun FeelinCheckboxItem(
 
             Text(
                 text = text,
-                style = Typography.titleMedium,
+                style = FeelinTypography.title2,
                 color = feelinColors.gray04,
                 modifier = Modifier.padding(start = 8.dp)
             )
@@ -143,7 +143,7 @@ fun FeelinCheckboxItem(
         if (detailText != null && onDetailClick != null) {
             Text(
                 text = detailText,
-                style = Typography.bodyMedium,
+                style = FeelinTypography.body2,
                 color = feelinColors.gray04,
                 modifier = Modifier
                     .clickable { onDetailClick() }

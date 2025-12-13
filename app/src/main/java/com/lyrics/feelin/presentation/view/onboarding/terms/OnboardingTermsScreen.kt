@@ -24,8 +24,8 @@ import com.lyrics.feelin.core.designsystem.component.FeelinCheckboxAllAgree
 import com.lyrics.feelin.core.designsystem.component.FeelinCheckboxItem
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
-import com.lyrics.feelin.presentation.designsystem.theme.Typography
 
 @Composable
 fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
@@ -73,7 +73,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
             ) {
                 Text(
                     text = "Feelin 이용을 위해 약관을\n동의해주세요",
-                    style = Typography.headlineLarge
+                    style = FeelinTypography.heading1
                 )
 
                 Spacer(modifier = Modifier.height(32.dp))
@@ -142,7 +142,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
                 ) {
                     Text(
                         text = "시작하기",
-                        style = Typography.titleMedium,
+                        style = FeelinTypography.title2,
                         color = feelinColors.gray00
                     )
                 }
@@ -151,17 +151,17 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview(
+    name = "Onboarding term check screen",
+    showBackground = true
+)
+@Preview(
+    name = "Onboarding term check screen - Dark Mode",
+    showBackground = true,
+    uiMode = UI_MODE_NIGHT_YES
+)
 @Composable
 private fun OnboardingTermsScreenPreview() {
-    FeelinTheme {
-        OnboardingTermsScreen()
-    }
-}
-
-@Preview(showBackground = true, uiMode = UI_MODE_NIGHT_YES)
-@Composable
-private fun OnboardingTermsScreenDarkModePreview() {
     FeelinTheme {
         OnboardingTermsScreen()
     }

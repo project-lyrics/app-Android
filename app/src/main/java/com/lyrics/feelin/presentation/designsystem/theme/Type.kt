@@ -1,6 +1,7 @@
 package com.lyrics.feelin.presentation.designsystem.theme
 
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -33,106 +34,132 @@ val pretendardFamily =
 private val letterSpacing = (-0.006).em
 
 /**
- * M3 Typography에 피그마 디자인 중 Typography를 대응한 것입니다.
+ * Feelin 디자인시스템의 타이포그래피 토큰입니다.
+ *
+ * M3와 독립되게 자체 디자인시스템의 타이포그래피를 관리합니다.
+ *
+ * @property active 활성화 상태 텍스트
+ */
+@Stable
+data class FeelinTypographyCollection(
+    val heading1: TextStyle,
+    val heading2: TextStyle,
+    val heading3: TextStyle,
+    val title1: TextStyle,
+    val title2: TextStyle,
+    val title3: TextStyle,
+    val body1: TextStyle,
+    val body2: TextStyle,
+    val body3: TextStyle,
+    val caption1: TextStyle,
+    val caption2: TextStyle,
+    val active: TextStyle
+)
+
+val FeelinTypography = FeelinTypographyCollection(
+    heading1 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 32.sp,
+        letterSpacing = letterSpacing,
+    ),
+    heading2 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
+        letterSpacing = letterSpacing,
+    ),
+    heading3 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
+        lineHeight = 24.sp,
+        letterSpacing = letterSpacing,
+    ),
+    title1 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 20.sp,
+        lineHeight = 28.sp,
+        letterSpacing = letterSpacing,
+    ),
+    title2 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = letterSpacing,
+    ),
+    title3 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 30.sp,
+        letterSpacing = letterSpacing,
+    ),
+    body1 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 16.sp,
+        lineHeight = 24.sp,
+        letterSpacing = letterSpacing,
+    ),
+    body2 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+        letterSpacing = letterSpacing,
+    ),
+    body3 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
+    caption1 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 11.sp,
+        lineHeight = 16.sp,
+        letterSpacing = letterSpacing,
+    ),
+    caption2 = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 16.sp,
+    ),
+    active = TextStyle(
+        fontFamily = pretendardFamily,
+        fontWeight = FontWeight.Normal,
+        fontSize = 12.sp,
+        lineHeight = 20.sp,
+        letterSpacing = letterSpacing,
+        textDecoration = TextDecoration.Underline
+    )
+)
+
+/**
+ * 머티리얼 기반의 컴포저블 호환성을 위해 M3 Typography에 피그마 디자인시스템의 타이포그래피를 대응합니다.
  *
  * M3에 바로 대응되지 않는 Caption1, Caption2는 각각 LabelSmall, LabelMedium에 대입했습니다.
  */
-val Typography =
+val MaterialCompatibleTypography =
     Typography(
-        headlineLarge =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 24.sp,
-            lineHeight = 32.sp,
-            letterSpacing = letterSpacing,
-        ),
-        headlineMedium =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            letterSpacing = letterSpacing,
-        ),
-        headlineSmall =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 18.sp,
-            lineHeight = 24.sp,
-            letterSpacing = letterSpacing,
-        ),
-        titleLarge =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 20.sp,
-            lineHeight = 28.sp,
-            letterSpacing = letterSpacing,
-        ),
-        titleMedium =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = letterSpacing,
-        ),
-        titleSmall =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.SemiBold,
-            fontSize = 14.sp,
-            lineHeight = 30.sp,
-            letterSpacing = letterSpacing,
-        ),
-        bodyLarge =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 16.sp,
-            lineHeight = 24.sp,
-            letterSpacing = letterSpacing,
-        ),
-        bodyMedium =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-            letterSpacing = letterSpacing,
-        ),
-        bodySmall =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 14.sp,
-            lineHeight = 20.sp,
-        ),
+        headlineLarge = FeelinTypography.heading1,
+        headlineMedium = FeelinTypography.heading2,
+        headlineSmall = FeelinTypography.heading3,
+        titleLarge = FeelinTypography.title1,
+        titleMedium = FeelinTypography.title2,
+        titleSmall = FeelinTypography.title3,
+        bodyLarge = FeelinTypography.body1,
+        bodyMedium = FeelinTypography.body2,
+        bodySmall = FeelinTypography.body3,
         // caption1 대응(가장 작은 레이블)
-        labelSmall =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Normal,
-            fontSize = 11.sp,
-            lineHeight = 16.sp,
-            letterSpacing = letterSpacing,
-        ),
+        labelSmall = FeelinTypography.caption1,
         // caption2 대응(그 다음 크기 레이블)
-        labelMedium =
-        TextStyle(
-            fontFamily = pretendardFamily,
-            fontWeight = FontWeight.Medium,
-            fontSize = 12.sp,
-            lineHeight = 16.sp,
-        ),
+        labelMedium = FeelinTypography.caption2,
     )
-
-/**
- * 피그마 Typography의 Active 설정입니다.
- *
- * M3에 대응되지 않아 별도의 최상위 변수로 선언합니다.
- */
-val CaptionActiveTextStyle =
-    Typography.labelSmall.copy(textDecoration = TextDecoration.Underline, lineHeight = 20.sp)

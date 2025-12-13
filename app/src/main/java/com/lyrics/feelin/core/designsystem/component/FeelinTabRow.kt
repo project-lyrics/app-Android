@@ -2,7 +2,6 @@ package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SecondaryTabRow
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,7 +15,7 @@ fun FeelinTabRow(selectedTabIndex: Int, modifier: Modifier = Modifier, tabs: @Co
 
     SecondaryTabRow(
         selectedTabIndex = selectedTabIndex,
-        containerColor = MaterialTheme.colorScheme.primaryContainer,
+        containerColor = feelinColors.backgroundPrimary,
         divider = @Composable {
             HorizontalDivider(
                 thickness = 4.dp,

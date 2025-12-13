@@ -14,8 +14,8 @@ import com.lyrics.feelin.core.designsystem.icon.XCircleIcon
 fun InputClearButton(
     color: Color,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier,
     interactionSource: MutableInteractionSource?,
+    modifier: Modifier = Modifier,
 ) {
     Icon(
         painter = XCircleIcon,

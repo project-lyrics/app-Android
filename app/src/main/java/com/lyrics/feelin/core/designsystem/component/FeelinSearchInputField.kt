@@ -34,6 +34,8 @@ import com.lyrics.feelin.core.designsystem.icon.SearchIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
+private const val MAX_INPUT_LENGTH: Int = 100
+
 /**
  * Feelin 앱의 검색 입력 필드 컴포넌트입니다.
  *
@@ -66,7 +68,7 @@ fun FeelinSearchInputField(
         state = state,
         modifier = modifier,
         lineLimits = TextFieldLineLimits.SingleLine,
-        inputTransformation = InputTransformation.maxLength(100),
+        inputTransformation = InputTransformation.maxLength(MAX_INPUT_LENGTH),
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Search,
             keyboardType = KeyboardType.Text,

@@ -8,11 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.XCircleIcon
 
@@ -23,6 +23,7 @@ import com.lyrics.feelin.core.designsystem.icon.XCircleIcon
 fun RowScope.InnerTextFieldComponent(
     isTextEmpty: Boolean,
     placeholder: String,
+    placeholderTextStyle: TextStyle,
     placeholderColor: Color,
     clearIconColor: Color,
     innerTextField: @Composable (() -> Unit),
@@ -34,7 +35,7 @@ fun RowScope.InnerTextFieldComponent(
         if (isTextEmpty) {
             Text(
                 text = placeholder,
-                style = MaterialTheme.typography.bodySmall,
+                style = placeholderTextStyle,
                 color = placeholderColor,
             )
         }

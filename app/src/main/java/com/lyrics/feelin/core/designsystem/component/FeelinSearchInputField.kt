@@ -3,7 +3,6 @@ package com.lyrics.feelin.core.designsystem.component
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -20,7 +19,6 @@ import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -99,28 +97,15 @@ fun FeelinSearchInputField(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 // 텍스트 입력 영역
-                Box(modifier = Modifier.weight(1f)) {
-                    if (state.text.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = placeholderColor,
-                        )
-                    }
-                    innerTextField()
-                }
-
-                // 클리어 버튼 (입력값 있을 때만 표시)
-                if (state.text.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(8.dp))
-
-                    InputClearButton(
-                        color = clearButtonColor,
-                        interactionSource = interactionSource,
-                        onClick = onClearClick,
-                        modifier = Modifier
-                    )
-                }
+                InnerTextFieldComponent(
+                    isTextEmpty = state.text.isEmpty(),
+                    placeholder = placeholder,
+                    placeholderColor = placeholderColor,
+                    clearIconColor = clearButtonColor,
+                    innerTextField = innerTextField,
+                    onClearButtonClick = { onClearClick.invoke() },
+                    clearButtonInteractionSource = interactionSource
+                )
             }
         },
     )

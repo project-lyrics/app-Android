@@ -1,9 +1,7 @@
 package com.lyrics.feelin.core.designsystem.component
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -14,20 +12,25 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.maxLength
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.SearchIcon
-import com.lyrics.feelin.core.designsystem.icon.XCircleIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
@@ -46,7 +49,8 @@ fun FeelinSearchInputField(
     state: TextFieldState,
     modifier: Modifier = Modifier,
     placeholder: String = "",
-    onClearClick: () -> Unit = {},
+    onSearchClick: () -> Unit = {},
+    onClearClick: () -> Unit = {}
 ) {
     val feelinColors = LocalFeelinColors.current
 
@@ -54,10 +58,21 @@ fun FeelinSearchInputField(
     val textColor = feelinColors.gray09
     val placeholderColor = feelinColors.gray04
     val iconTintColor = feelinColors.gray05
+    val clearButtonColor = feelinColors.gray03
+
+    val interactionSource = remember { MutableInteractionSource() }
 
     BasicTextField(
         state = state,
         modifier = modifier,
+        lineLimits = TextFieldLineLimits.SingleLine,
+        inputTransformation = InputTransformation.maxLength(100),
+        keyboardOptions = KeyboardOptions(
+            imeAction = ImeAction.Search,
+            keyboardType = KeyboardType.Text,
+            autoCorrectEnabled = false
+        ),
+        onKeyboardAction = { onSearchClick.invoke() },
         textStyle = MaterialTheme.typography.bodySmall.copy(color = textColor),
         cursorBrush = SolidColor(textColor),
         decorator = { innerTextField ->
@@ -72,11 +87,11 @@ fun FeelinSearchInputField(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 // 검색 아이콘
-                Image(
+                Icon(
                     painter = SearchIcon,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
-                    colorFilter = ColorFilter.tint(iconTintColor),
+                    tint = iconTintColor,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -97,18 +112,11 @@ fun FeelinSearchInputField(
                 if (state.text.isNotEmpty()) {
                     Spacer(modifier = Modifier.width(8.dp))
 
-                    val clearButtonColor = feelinColors.gray03
-                    Image(
-                        painter = XCircleIcon,
-                        contentDescription = "입력 내용 지우기",
-                        colorFilter = ColorFilter.tint(clearButtonColor),
+                    InputClearButton(
+                        color = clearButtonColor,
+                        interactionSource = interactionSource,
+                        onClick = onClearClick,
                         modifier = Modifier
-                            .size(20.dp)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null,
-                                onClick = onClearClick,
-                            ),
                     )
                 }
             }
@@ -125,6 +133,7 @@ private fun FeelinSearchInputFieldPreview() {
         FeelinSearchInputField(
             state = state,
             placeholder = "텍스트",
+            onSearchClick = { println("onSearchClick invoke") },
             onClearClick = { state.clearText() }
         )
     }

@@ -70,3 +70,11 @@ val EmptyImageDarkIcon: Painter
 val EmptyImageLightIcon: Painter
     @Composable
     get() = painterResource(id = R.drawable.empty_image_light)
+
+val XCircleIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.xcircle)
+
+val SearchIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.search)

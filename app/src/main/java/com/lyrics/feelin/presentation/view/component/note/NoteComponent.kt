@@ -33,6 +33,8 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.view.component.music.MusicComponent
+import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.util.compareNowToUser
 
@@ -92,38 +94,14 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                 )
             }
         }
-        HorizontalDivider(color = feelinColors.gray01, thickness = 1.dp)
-        Row(
-            modifier = Modifier.fillMaxWidth().height(64.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
-        ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                AsyncImage(
-                    model = noteData.song.imageUrl,
-                    modifier = Modifier.size(40.dp).clip(shape = RoundedCornerShape(4.dp)),
-                    contentDescription = "${noteData.song.name}'s album art",
-                )
-                Spacer(modifier = Modifier.width(10.dp))
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(
-                        text = noteData.song.name,
-                        style = FeelinTypography.body2.copy(color = feelinColors.gray08)
-                    )
-                    Text(
-                        text = noteData.song.artist.name,
-                        style = FeelinTypography.caption1.copy(color = feelinColors.gray04),
-                    )
-                }
-            }
-            Image(
-                painter = painterResource(R.drawable.play),
-                contentDescription = "${noteData.song.name} play",
-                modifier = Modifier.size(24.dp),
-                colorFilter = ColorFilter.tint(feelinColors.gray03),
-            )
-        }
-        HorizontalDivider(color = feelinColors.gray01, thickness = 1.dp)
+        MusicComponent(
+            data = MusicComponentData(
+                imageUrl = noteData.song.imageUrl,
+                songName = noteData.song.name,
+                artistName = noteData.song.artist.name,
+            ),
+            modifier = Modifier
+        )
         Row(
             modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
             verticalAlignment = Alignment.CenterVertically,

@@ -78,3 +78,15 @@ val XCircleIcon: Painter
 val SearchIcon: Painter
     @Composable
     get() = painterResource(id = R.drawable.search)
+
+val PlayIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.play)
+
+val SongListIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.song_list)
+
+val PlusIcon: Painter
+    @Composable
+    get() = painterResource(id = R.drawable.plus)

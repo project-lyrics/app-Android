@@ -26,12 +26,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.lyrics.feelin.R
+import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
@@ -89,7 +88,7 @@ fun FeelinBirthYearPicker(
             if (!isActivated) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.caret),
+                    painter = CaretIcon,
                     contentDescription = null,
                     tint = feelinColors.gray02,
                     modifier = Modifier.size(18.dp)

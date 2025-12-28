@@ -199,11 +199,11 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
  */
 @Composable
 private fun MusicComponentLayout(
-    modifier: Modifier = Modifier,
-    showDivider: Boolean = true,
     leadingContent: @Composable () -> Unit,
     textContent: @Composable () -> Unit,
     trailingContent: @Composable () -> Unit,
+    modifier: Modifier = Modifier,
+    showDivider: Boolean = true,
 ) {
     val feelinColors = LocalFeelinColors.current
 

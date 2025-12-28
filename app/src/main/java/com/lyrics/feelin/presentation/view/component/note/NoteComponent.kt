@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,14 +26,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
-import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
+import com.lyrics.feelin.presentation.view.component.music.MusicComponentState
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.util.compareNowToUser
 
@@ -95,7 +93,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             }
         }
         MusicComponent(
-            data = MusicComponentData(
+            state = MusicComponentState.NoteComponent(
                 imageUrl = noteData.song.imageUrl,
                 songName = noteData.song.name,
                 artistName = noteData.song.artist.name,

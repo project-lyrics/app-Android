@@ -10,6 +10,7 @@ import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.platform.LocalContext
 
 /**
@@ -37,6 +38,11 @@ private val LightColorScheme =
         secondary = LightBrandSecondary,
         tertiary = LightBrandTertiary,
     )
+
+/**
+ * 현재 다크모드 여부를 제공하는 CompositionLocal
+ */
+val LocalDarkTheme = staticCompositionLocalOf { false }
 
 /**
  * 시스템/동적 팔레트를 베이스로 받고, 브랜드와 표면을 `Colors`의 디자인시스템 색상으로 오버라이드해 최종 ColorScheme을 만듭니다.
@@ -167,7 +173,10 @@ fun FeelinTheme(
             )
         }
 
-    CompositionLocalProvider(LocalFeelinColors provides appColors) {
+    CompositionLocalProvider(
+        LocalFeelinColors provides appColors,
+        LocalDarkTheme provides darkTheme
+    ) {
         MaterialTheme(colorScheme = colorScheme, typography = MaterialCompatibleTypography, content = content)
     }
 }

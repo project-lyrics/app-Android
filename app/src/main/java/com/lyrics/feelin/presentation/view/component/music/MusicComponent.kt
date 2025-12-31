@@ -1,5 +1,6 @@
 package com.lyrics.feelin.presentation.view.component.music
 
+import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,6 +29,7 @@ import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.icon.PlayIcon
 import com.lyrics.feelin.core.designsystem.icon.PlusIcon
 import com.lyrics.feelin.core.designsystem.icon.SongListIcon
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
@@ -258,58 +260,98 @@ private fun Int.toFormattedNoteCount(): String {
 }
 
 @Preview(name = "노트 작성 시 곡을 선택하지 않은 경우", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(
+    name = "노트 작성 시 곡을 선택하지 않은 경우 - 다크모드",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun MusicComponentNoteWriteEmptyPreview() {
-    MusicComponent(
-        state = MusicComponentState.NoteWriteEmpty
-    )
+    FeelinTheme {
+        MusicComponent(
+            state = MusicComponentState.NoteWriteEmpty
+        )
+    }
 }
 
 @Preview(name = "노트 작성 시 곡을 선택한 경우", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(
+    name = "노트 작성 시 곡을 선택한 경우 - 다크모드",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun MusicComponentNoteWriteMusicExistPreview() {
-    MusicComponent(
-        state = MusicComponentState.NoteWriteMusicExist(
-            imageUrl = "https://picsum.photos/200",
-            songName = "Realize",
-            artistName = "실리카겔",
+    FeelinTheme {
+        MusicComponent(
+            state = MusicComponentState.NoteWriteMusicExist(
+                imageUrl = "https://picsum.photos/200",
+                songName = "Realize",
+                artistName = "실리카겔",
+            )
         )
-    )
+    }
 }
 
 @Preview(name = "곡에 대한 노트를 검색하는 경우", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(
+    name = "곡에 대한 노트를 검색하는 경우 - 다크모드",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun MusicComponentSearchNoteByMusicPreview() {
-    MusicComponent(
-        state = MusicComponentState.SearchNoteByMusic(
-            imageUrl = "https://picsum.photos/200",
-            songName = "Realize",
-            artistName = "실리카겔",
-            noteCount = 999,
+    FeelinTheme {
+        MusicComponent(
+            state = MusicComponentState.SearchNoteByMusic(
+                imageUrl = "https://picsum.photos/200",
+                songName = "Realize",
+                artistName = "실리카겔",
+                noteCount = 999,
+            )
         )
-    )
+    }
 }
 
 @Preview(name = "노트 작성 중 곡을 검색하는 경우", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(
+    name = "노트 작성 중 곡을 검색하는 경우 - 다크모드",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun MusicComponentSearchListPreview() {
-    MusicComponent(
-        state = MusicComponentState.SearchList(
-            imageUrl = "https://picsum.photos/200",
-            songName = "Realize",
-            artistName = "실리카겔",
+    FeelinTheme {
+        MusicComponent(
+            state = MusicComponentState.SearchList(
+                imageUrl = "https://picsum.photos/200",
+                songName = "Realize",
+                artistName = "실리카겔",
+            )
         )
-    )
+    }
 }
 
 @Preview(name = "단일 노트에서 곡을 보여주는 경우", showBackground = true, backgroundColor = 0xFFFFFFFF)
+@Preview(
+    name = "단일 노트에서 곡을 보여주는 경우 - 다크모드",
+    showBackground = true,
+    backgroundColor = 0xFF000000,
+    uiMode = Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun MusicComponentNoteComponentPreview() {
-    MusicComponent(
-        state = MusicComponentState.NoteComponent(
-            imageUrl = "https://picsum.photos/200",
-            songName = "Realize",
-            artistName = "실리카겔",
+    FeelinTheme {
+        MusicComponent(
+            state = MusicComponentState.NoteComponent(
+                imageUrl = "https://picsum.photos/200",
+                songName = "Realize",
+                artistName = "실리카겔",
+            )
         )
-    )
+    }
 }

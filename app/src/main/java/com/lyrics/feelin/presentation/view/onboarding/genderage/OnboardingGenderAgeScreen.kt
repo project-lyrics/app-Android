@@ -2,6 +2,7 @@ package com.lyrics.feelin.presentation.view.onboarding.genderage
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -31,7 +32,12 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
+fun OnboardingGenderAgeScreen(
+    onBackClick: () -> Unit,
+    onSkipClick: () -> Unit,
+    onNextClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
 
@@ -48,13 +54,14 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
         ) {
             FeelinTopAppBarWithBack(
                 title = "",
-                onBackClick = {},
+                onBackClick = onBackClick,
                 showDivider = false,
                 actions = {
                     Text(
                         text = "건너뛰기",
                         style = FeelinTypography.body1,
-                        color = feelinColors.gray05
+                        color = feelinColors.gray05,
+                        modifier = Modifier.clickable { onSkipClick() }
                     )
                 }
             )
@@ -138,7 +145,7 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = { /* 다음 */ },
+                    onClick = onNextClick,
                     enabled = isButtonEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -173,7 +180,11 @@ fun OnboardingGenderAgeScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun OnboardingGenderAgeScreenPreview() {
     FeelinTheme {
-        OnboardingGenderAgeScreen()
+        OnboardingGenderAgeScreen(
+            onBackClick = {},
+            onSkipClick = {},
+            onNextClick = {}
+        )
     }
 }
 

@@ -69,7 +69,7 @@ fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = 
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painter = FeelinTextIcon,
+                    imageVector = FeelinTextIcon,
                     contentDescription = "Feelin",
                     modifier = Modifier
                         .width(212.dp)

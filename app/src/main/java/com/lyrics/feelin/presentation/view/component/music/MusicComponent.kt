@@ -59,7 +59,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 },
                 trailingContent = {
                     Icon(
-                        painter = PlusIcon,
+                        imageVector = PlusIcon,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = feelinColors.gray03,
@@ -88,7 +88,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 },
                 trailingContent = {
                     Icon(
-                        painter = SongListIcon,
+                        imageVector = SongListIcon,
                         contentDescription = null,
                         modifier = Modifier.size(24.dp),
                         tint = feelinColors.gray03,
@@ -117,7 +117,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 },
                 trailingContent = {
                     Icon(
-                        painter = PlayIcon,
+                        imageVector = PlayIcon,
                         contentDescription = null,
                         modifier = Modifier
                             .padding(end = 10.dp)
@@ -184,7 +184,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 },
                 trailingContent = {
                     Icon(
-                        painter = PlayIcon,
+                        imageVector = PlayIcon,
                         contentDescription = "${state.songName} play",
                         modifier = Modifier.size(24.dp),
                         tint = feelinColors.gray03,

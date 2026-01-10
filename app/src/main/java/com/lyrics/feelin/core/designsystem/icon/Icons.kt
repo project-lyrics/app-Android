@@ -101,6 +101,6 @@ val CancelIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_cancel)
 
-val WritinglIcon: ImageVector
+val WritingIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_writing)

@@ -88,7 +88,7 @@ fun FeelinSearchInputField(
             ) {
                 // 검색 아이콘
                 Icon(
-                    painter = SearchIcon,
+                    imageVector = SearchIcon,
                     contentDescription = null,
                     modifier = Modifier.size(20.dp),
                     tint = iconTintColor,

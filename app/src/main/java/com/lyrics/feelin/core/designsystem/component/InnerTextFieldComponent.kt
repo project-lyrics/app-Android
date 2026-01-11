@@ -47,7 +47,7 @@ fun RowScope.InnerTextFieldComponent(
         Spacer(modifier = Modifier.width(8.dp))
 
         Icon(
-            painter = XCircleIcon,
+            imageVector = XCircleIcon,
             contentDescription = "입력 내용 지우기",
             tint = clearIconColor,
             modifier = Modifier.size(20.dp).clickable(

@@ -5,7 +5,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 
 val LightBrandPrimary = Color(0xFF6790F4)
-val LightBrandSecondary = Color(0xFFDBF3FF)
+val LightBrandSecondary = Color(0xFFEBF3FF)
 val LightBrandTertiary = Color(0xFF20368D)
 val DarkBrandPrimary = Color(0xFF658CEA)
 val DarkBrandSecondary = Color(0xFF91B3E3)

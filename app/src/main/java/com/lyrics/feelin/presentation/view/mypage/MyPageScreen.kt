@@ -147,7 +147,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                             textAlign = TextAlign.Center
                         )
                         Icon(
-                            painter = CaretIcon,
+                            imageVector = CaretIcon,
                             contentDescription = "change nickname",
                             tint = feelinColors.gray09,
                             modifier = Modifier.rotate(NICKNAME_CARET_ROTATION_DEGREES)
@@ -238,7 +238,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = vie
                                     verticalArrangement = Arrangement.Center
                                 ) {
                                     Image(
-                                        painter = emptyImageIcon,
+                                        imageVector = emptyImageIcon,
                                         contentDescription = "No notes",
                                         modifier = Modifier.size(width = 78.dp, height = 48.dp)
                                     )

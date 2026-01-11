@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +59,7 @@ fun FeelinNicknameInputField(
     val errorColor = feelinColors.alertWarning
 
     val interactionSource = remember { MutableInteractionSource() }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val validationResult = validateNickname(state.text)
     val isError = validationResult != NicknameValidationResult.Valid && state.text.isNotEmpty()
@@ -76,7 +78,7 @@ fun FeelinNicknameInputField(
             keyboardType = KeyboardType.Text,
             autoCorrectEnabled = false
         ),
-        onKeyboardAction = { /* Do nothing on IME action */ },
+        onKeyboardAction = { keyboardController?.hide() },
         textStyle = FeelinTypography.title2.copy(color = textColor),
         cursorBrush = SolidColor(textColor),
         decorator = { innerTextField ->

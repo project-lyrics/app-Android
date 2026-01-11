@@ -34,11 +34,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
+fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
 
     when (state) {
-        is MusicComponentState.NoteWriteEmpty -> {
+        is MusicComponentData.NoteWriteEmpty -> {
             MusicComponentLayout(
                 modifier = modifier,
                 showDivider = true,
@@ -67,7 +67,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 }
             )
         }
-        is MusicComponentState.NoteWriteMusicExist -> {
+        is MusicComponentData.NoteWriteMusicExist -> {
             MusicComponentLayout(
                 modifier = modifier,
                 showDivider = true,
@@ -96,7 +96,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 }
             )
         }
-        is MusicComponentState.SearchList -> {
+        is MusicComponentData.SearchList -> {
             MusicComponentLayout(
                 modifier = modifier,
                 showDivider = false,
@@ -127,7 +127,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 }
             )
         }
-        is MusicComponentState.SearchNoteByMusic -> {
+        is MusicComponentData.SearchNoteByMusic -> {
             MusicComponentLayout(
                 modifier = modifier,
                 showDivider = true,
@@ -163,7 +163,7 @@ fun MusicComponent(state: MusicComponentState, modifier: Modifier = Modifier) {
                 }
             )
         }
-        is MusicComponentState.NoteComponent -> {
+        is MusicComponentData.NoteComponent -> {
             MusicComponentLayout(
                 modifier = modifier,
                 showDivider = true,
@@ -270,7 +270,7 @@ private fun Int.toFormattedNoteCount(): String {
 private fun MusicComponentNoteWriteEmptyPreview() {
     FeelinTheme {
         MusicComponent(
-            state = MusicComponentState.NoteWriteEmpty
+            state = MusicComponentData.NoteWriteEmpty
         )
     }
 }
@@ -286,7 +286,7 @@ private fun MusicComponentNoteWriteEmptyPreview() {
 private fun MusicComponentNoteWriteMusicExistPreview() {
     FeelinTheme {
         MusicComponent(
-            state = MusicComponentState.NoteWriteMusicExist(
+            state = MusicComponentData.NoteWriteMusicExist(
                 imageUrl = "https://picsum.photos/200",
                 songName = "Realize",
                 artistName = "실리카겔",
@@ -306,7 +306,7 @@ private fun MusicComponentNoteWriteMusicExistPreview() {
 private fun MusicComponentSearchNoteByMusicPreview() {
     FeelinTheme {
         MusicComponent(
-            state = MusicComponentState.SearchNoteByMusic(
+            state = MusicComponentData.SearchNoteByMusic(
                 imageUrl = "https://picsum.photos/200",
                 songName = "Realize",
                 artistName = "실리카겔",
@@ -327,7 +327,7 @@ private fun MusicComponentSearchNoteByMusicPreview() {
 private fun MusicComponentSearchListPreview() {
     FeelinTheme {
         MusicComponent(
-            state = MusicComponentState.SearchList(
+            state = MusicComponentData.SearchList(
                 imageUrl = "https://picsum.photos/200",
                 songName = "Realize",
                 artistName = "실리카겔",
@@ -347,7 +347,7 @@ private fun MusicComponentSearchListPreview() {
 private fun MusicComponentNoteComponentPreview() {
     FeelinTheme {
         MusicComponent(
-            state = MusicComponentState.NoteComponent(
+            state = MusicComponentData.NoteComponent(
                 imageUrl = "https://picsum.photos/200",
                 songName = "Realize",
                 artistName = "실리카겔",

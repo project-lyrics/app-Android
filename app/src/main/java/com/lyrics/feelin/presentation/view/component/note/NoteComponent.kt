@@ -32,7 +32,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
-import com.lyrics.feelin.presentation.view.component.music.MusicComponentState
+import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.util.compareNowToUser
 
@@ -93,7 +93,7 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
             }
         }
         MusicComponent(
-            state = MusicComponentState.NoteComponent(
+            state = MusicComponentData.NoteComponent(
                 imageUrl = noteData.song.imageUrl,
                 songName = noteData.song.name,
                 artistName = noteData.song.artist.name,

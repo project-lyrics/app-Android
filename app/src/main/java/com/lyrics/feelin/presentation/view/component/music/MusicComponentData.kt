@@ -5,7 +5,7 @@ import androidx.compose.runtime.Immutable
 /**
  * 곡 정보를 포함하는 상태들의 공통 인터페이스
  */
-interface MusicData {
+private interface MusicData {
     val imageUrl: String
     val songName: String
     val artistName: String
@@ -16,12 +16,12 @@ interface MusicData {
  * 각 상태에 따라 필요한 데이터만 포함합니다.
  */
 @Immutable
-sealed interface MusicComponentState {
+sealed interface MusicComponentData {
     /**
      * 노트 작성 중 곡을 추가하지 않았을 때입니다.
      * 아무 데이터도 필요하지 않습니다.
      */
-    data object NoteWriteEmpty : MusicComponentState
+    data object NoteWriteEmpty : MusicComponentData
 
     /**
      * 노트 작성 중 곡을 추가했을 때입니다.
@@ -30,7 +30,7 @@ sealed interface MusicComponentState {
         override val imageUrl: String,
         override val songName: String,
         override val artistName: String,
-    ) : MusicComponentState, MusicData
+    ) : MusicComponentData, MusicData
 
     /**
      * 곡에 대한 노트를 검색할 때입니다.
@@ -41,7 +41,7 @@ sealed interface MusicComponentState {
         override val songName: String,
         override val artistName: String,
         val noteCount: Int,
-    ) : MusicComponentState, MusicData
+    ) : MusicComponentData, MusicData
 
     /**
      * 노트 작성 화면에서 곡 검색 화면으로 넘어가 곡을 찾을 때입니다.
@@ -50,7 +50,7 @@ sealed interface MusicComponentState {
         override val imageUrl: String,
         override val songName: String,
         override val artistName: String,
-    ) : MusicComponentState, MusicData
+    ) : MusicComponentData, MusicData
 
     /**
      * [com.lyrics.feelin.presentation.view.component.note.NoteComponent]와 같이 사용해 곡을 보여줄 때입니다.
@@ -59,5 +59,5 @@ sealed interface MusicComponentState {
         override val imageUrl: String,
         override val songName: String,
         override val artistName: String,
-    ) : MusicComponentState, MusicData
+    ) : MusicComponentData, MusicData
 }

@@ -34,10 +34,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
+import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
 import com.lyrics.feelin.core.designsystem.component.ProfileCharacterBottomSheet
-import com.lyrics.feelin.core.designsystem.component.ProfileImageSelector
 import com.lyrics.feelin.core.designsystem.component.validateNickname
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -143,7 +143,7 @@ private fun ProfileImageSelectorWithEdit(
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val profileDrawableRes = ProfileImageSelector.getProfileDrawableRes(
+    val profileDrawableRes = FeelinProfileImageSelector.getProfileDrawableRes(
         profileId = selectedProfileId,
         isSelected = true,
         isDarkMode = false

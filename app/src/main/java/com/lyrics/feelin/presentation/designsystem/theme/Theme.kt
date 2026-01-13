@@ -42,6 +42,7 @@ private val LightColorScheme =
 /**
  * 현재 다크모드 여부를 제공하는 CompositionLocal
  */
+@Suppress("CompositionLocalAllowlist")
 val LocalDarkTheme = staticCompositionLocalOf { false }
 
 /**

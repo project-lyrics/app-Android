@@ -9,7 +9,7 @@ import com.lyrics.feelin.R
  *
  * 프로필 ID, 선택 상태, 다크모드 여부에 따라 올바른 drawable 리소스를 반환
  */
-object ProfileImageSelector {
+object FeelinProfileImageSelector {
 
     /**
      * 프로필 이미지 리소스 ID를 반환
@@ -35,10 +35,10 @@ object ProfileImageSelector {
     @DrawableRes
     private fun getActivatedDrawable(profileId: Int): Int {
         return when (profileId) {
-            1 -> R.drawable.profile_1_activated
-            2 -> R.drawable.profile_2_activated
-            3 -> R.drawable.profile_3_activated
-            4 -> R.drawable.profile_4_activated
+            PROFILE_ID_1 -> R.drawable.profile_1_activated
+            PROFILE_ID_2 -> R.drawable.profile_2_activated
+            PROFILE_ID_3 -> R.drawable.profile_3_activated
+            PROFILE_ID_4 -> R.drawable.profile_4_activated
             else -> R.drawable.profile_1_activated // 기본값
         }
     }
@@ -46,10 +46,10 @@ object ProfileImageSelector {
     @DrawableRes
     private fun getDarkInactiveDrawable(profileId: Int): Int {
         return when (profileId) {
-            1 -> R.drawable.profile_1_dark_inactive
-            2 -> R.drawable.profile_2_dark_inactive
-            3 -> R.drawable.profile_3_dark_inactive
-            4 -> R.drawable.profile_4_dark_inactive
+            PROFILE_ID_1 -> R.drawable.profile_1_dark_inactive
+            PROFILE_ID_2 -> R.drawable.profile_2_dark_inactive
+            PROFILE_ID_3 -> R.drawable.profile_3_dark_inactive
+            PROFILE_ID_4 -> R.drawable.profile_4_dark_inactive
             else -> R.drawable.profile_1_dark_inactive
         }
     }
@@ -57,12 +57,19 @@ object ProfileImageSelector {
     @DrawableRes
     private fun getLightInactiveDrawable(profileId: Int): Int {
         return when (profileId) {
-            1 -> R.drawable.profile_1_light_inactive
-            2 -> R.drawable.profile_2_light_inactive
-            3 -> R.drawable.profile_3_light_inactive
-            4 -> R.drawable.profile_4_light_inactive
+            PROFILE_ID_1 -> R.drawable.profile_1_light_inactive
+            PROFILE_ID_2 -> R.drawable.profile_2_light_inactive
+            PROFILE_ID_3 -> R.drawable.profile_3_light_inactive
+            PROFILE_ID_4 -> R.drawable.profile_4_light_inactive
             else -> R.drawable.profile_1_light_inactive
         }
+    }
+
+    companion object {
+        const val PROFILE_ID_1 = 1
+        const val PROFILE_ID_2 = 2
+        const val PROFILE_ID_3 = 3
+        const val PROFILE_ID_4 = 4
     }
 }
 
@@ -75,7 +82,7 @@ fun getProfileImageRes(
     isSelected: Boolean,
     isDarkMode: Boolean
 ): Int {
-    return ProfileImageSelector.getProfileDrawableRes(
+    return FeelinProfileImageSelector.getProfileDrawableRes(
         profileId = profileId,
         isSelected = isSelected,
         isDarkMode = isDarkMode

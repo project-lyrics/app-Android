@@ -65,12 +65,10 @@ object FeelinProfileImageSelector {
         }
     }
 
-    companion object {
-        const val PROFILE_ID_1 = 1
-        const val PROFILE_ID_2 = 2
-        const val PROFILE_ID_3 = 3
-        const val PROFILE_ID_4 = 4
-    }
+    const val PROFILE_ID_1 = 1
+    const val PROFILE_ID_2 = 2
+    const val PROFILE_ID_3 = 3
+    const val PROFILE_ID_4 = 4
 }
 
 /**

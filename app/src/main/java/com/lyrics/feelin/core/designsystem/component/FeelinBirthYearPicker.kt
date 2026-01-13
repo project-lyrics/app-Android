@@ -88,7 +88,7 @@ fun FeelinBirthYearPicker(
             if (!isActivated) {
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    painter = CaretIcon,
+                    imageVector = CaretIcon,
                     contentDescription = null,
                     tint = feelinColors.gray02,
                     modifier = Modifier.size(18.dp)

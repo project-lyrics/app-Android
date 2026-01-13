@@ -58,6 +58,7 @@ fun ProfileCharacterBottomSheet(
 ) {
     val colors = LocalFeelinColors.current
     val isDarkMode = LocalDarkTheme.current
+    var internalSelectedId by remember { mutableIntStateOf(selectedProfileId) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -85,8 +86,8 @@ fun ProfileCharacterBottomSheet(
                 )
 
                 ProfileCharacterList(
-                    selectedProfileId = selectedProfileId,
-                    onProfileClick = { /* 선택 상태만 업데이트 */ },
+                    selectedProfileId = internalSelectedId,
+                    onProfileClick = { profileId -> internalSelectedId = profileId },
                     isDarkMode = isDarkMode
                 )
             }
@@ -94,8 +95,8 @@ fun ProfileCharacterBottomSheet(
             Spacer(modifier = Modifier.height(32.dp))
 
             ProfileSelectButton(
-                onClick = { onSelectProfile(selectedProfileId) },
-                enabled = selectedProfileId != -1,
+                onClick = { onSelectProfile(internalSelectedId) },
+                enabled = internalSelectedId != -1,
                 backgroundColor = colors.systemActivate,
                 textColor = LightGray00
             )

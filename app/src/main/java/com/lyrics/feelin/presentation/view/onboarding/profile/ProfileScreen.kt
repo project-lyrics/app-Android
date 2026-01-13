@@ -21,7 +21,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,10 +33,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
+import com.lyrics.feelin.core.designsystem.component.ProfileCharacterBottomSheet
+import com.lyrics.feelin.core.designsystem.component.ProfileImageSelector
 import com.lyrics.feelin.core.designsystem.component.validateNickname
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -43,9 +48,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 fun ProfileScreen(modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
     val nicknameState = remember { TextFieldState(initialText = "") }
+    var showBottomSheet by remember { mutableStateOf(false) }
+    var selectedProfileId by remember { mutableIntStateOf(1) }
 
     val isNicknameValid = nicknameState.text.isNotEmpty() &&
-            validateNickname(nicknameState.text) == NicknameValidationResult.Valid
+        validateNickname(nicknameState.text) == NicknameValidationResult.Valid
 
     Column(
         modifier = modifier
@@ -78,7 +85,10 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 modifier = Modifier.fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                ProfileImageSelector()
+                ProfileImageSelectorWithEdit(
+                    selectedProfileId = selectedProfileId,
+                    onEditClick = { showBottomSheet = true }
+                )
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -111,18 +121,41 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             Spacer(modifier = Modifier.height(16.dp))
         }
     }
+
+    if (showBottomSheet) {
+        ProfileCharacterBottomSheet(
+            onDismiss = { showBottomSheet = false },
+            onSelectProfile = { profileId ->
+                selectedProfileId = profileId
+                showBottomSheet = false
+            },
+            selectedProfileId = selectedProfileId
+        )
+    }
 }
 
+@Suppress("MagicNumber")
+private val ProfileImageOverlapOffset = (-36).dp
+
 @Composable
-private fun ProfileImageSelector(modifier: Modifier = Modifier) {
+private fun ProfileImageSelectorWithEdit(
+    selectedProfileId: Int,
+    onEditClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val profileDrawableRes = ProfileImageSelector.getProfileDrawableRes(
+        profileId = selectedProfileId,
+        isSelected = true,
+        isDarkMode = false
+    )
+
     Row(
-        horizontalArrangement = Arrangement.spacedBy((-36).dp, Alignment.Start),
+        horizontalArrangement = Arrangement.spacedBy(ProfileImageOverlapOffset, Alignment.Start),
         verticalAlignment = Alignment.Bottom,
         modifier = modifier
     ) {
-
         Icon(
-            painter = painterResource(id = R.drawable.profile_1_activated),
+            painter = painterResource(id = profileDrawableRes),
             contentDescription = null,
             modifier = Modifier.size(176.dp),
             tint = Color.Unspecified
@@ -134,7 +167,7 @@ private fun ProfileImageSelector(modifier: Modifier = Modifier) {
                 .border(5.dp, LocalFeelinColors.current.gray00, CircleShape)
                 .clip(CircleShape)
                 .background(LocalFeelinColors.current.brandPrimary)
-                .clickable { /* Handle camera click */ },
+                .clickable { onEditClick() },
             contentAlignment = Alignment.Center
         ) {
             Icon(
@@ -162,7 +195,7 @@ private fun CompleteButton(text: String, enabled: Boolean, onClick: () -> Unit) 
         )
     ) {
         Text(
-            text = "완료",
+            text = text,
             style = FeelinTypography.title2,
             color = LocalFeelinColors.current.gray00
         )

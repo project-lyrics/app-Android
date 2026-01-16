@@ -88,3 +88,19 @@ val SongListIcon: ImageVector
 val PlusIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.plus)
+
+val CloseIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_close)
+
+val CameraIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_camera)
+
+val CancelIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_cancel)
+
+val WritingIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_writing)

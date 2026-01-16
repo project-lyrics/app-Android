@@ -28,7 +28,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
+fun OnboardingTermsScreen(
+    onBackClick: () -> Unit,
+    onStartClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
 
@@ -61,7 +65,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
         ) {
             FeelinTopAppBarWithBack(
                 title = "",
-                onBackClick = {},
+                onBackClick = onBackClick,
                 showDivider = false
             )
 
@@ -128,7 +132,7 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = { /* 시작하기 */ },
+                    onClick = onStartClick,
                     enabled = isButtonEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -163,6 +167,9 @@ fun OnboardingTermsScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun OnboardingTermsScreenPreview() {
     FeelinTheme {
-        OnboardingTermsScreen()
+        OnboardingTermsScreen(
+            onBackClick = {},
+            onStartClick = {}
+        )
     }
 }

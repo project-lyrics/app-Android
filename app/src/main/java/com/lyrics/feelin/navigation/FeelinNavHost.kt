@@ -33,6 +33,8 @@ import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
+import com.lyrics.feelin.presentation.view.onboarding.terms.OnboardingTermsScreen
 
 @Composable
 fun FeelinNavHost(
@@ -130,7 +132,43 @@ fun FeelinNavHost(
 
             composable(FeelinDestination.Login.route) {
                 selectedBottomBarIndex = -1
-                LoginScreen()
+                LoginScreen(
+                    onSocialLoginClick = {
+                        navController.navigate(FeelinDestination.OnboardingTerms.route)
+                    },
+                    onContinueWithoutLogin = {
+                        navController.navigate(FeelinDestination.Home.route) {
+                            popUpTo(FeelinDestination.Login.route) { inclusive = true }
+                        }
+                    }
+                )
+            }
+
+            composable(FeelinDestination.OnboardingTerms.route) {
+                selectedBottomBarIndex = -1
+                OnboardingTermsScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onStartClick = {
+                        navController.navigate(FeelinDestination.OnboardingGenderAge.route)
+                    }
+                )
+            }
+
+            composable(FeelinDestination.OnboardingGenderAge.route) {
+                selectedBottomBarIndex = -1
+                OnboardingGenderAgeScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onSkipClick = {
+                        navController.navigate(FeelinDestination.Home.route) {
+                            popUpTo(FeelinDestination.Login.route) { inclusive = true }
+                        }
+                    },
+                    onNextClick = {
+                        navController.navigate(FeelinDestination.Home.route) {
+                            popUpTo(FeelinDestination.Login.route) { inclusive = true }
+                        }
+                    }
+                )
             }
         }
     }

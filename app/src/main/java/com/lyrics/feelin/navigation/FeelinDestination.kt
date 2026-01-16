@@ -10,4 +10,8 @@ sealed class FeelinDestination(
     object MyPage : FeelinDestination(route = "my_page")
 
     object Login : FeelinDestination(route = "login")
+
+    object OnboardingTerms : FeelinDestination(route = "onboarding_terms")
+
+    object OnboardingGenderAge : FeelinDestination(route = "onboarding_gender_age")
 }

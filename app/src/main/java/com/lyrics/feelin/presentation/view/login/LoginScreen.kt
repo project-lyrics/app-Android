@@ -37,7 +37,12 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
 // 로그인 화면은 테마 미 적용입니다. @이대근 2025.09.15.
 
 @Composable
-fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = viewModel()) {
+fun LoginScreen(
+    onSocialLoginClick: () -> Unit,
+    onContinueWithoutLogin: () -> Unit,
+    modifier: Modifier = Modifier,
+    loginViewModel: LoginViewModel = viewModel(),
+) {
     val loginErrorCode by loginViewModel.loginErrorCode.collectAsState(initial = null)
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
 
@@ -91,17 +96,17 @@ fun LoginScreen(modifier: Modifier = Modifier, loginViewModel: LoginViewModel = 
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Kakao,
             isLastLogin = (lastOAuthProvider == OAuthProvider.KAKAO),
-            onClick = { loginViewModel.kakaoLogin() }
+            onClick = onSocialLoginClick
         )
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Google,
             isLastLogin = (lastOAuthProvider == OAuthProvider.GOOGLE),
-            onClick = { loginViewModel.googleLogin() }
+            onClick = onSocialLoginClick
         )
         Spacer(modifier = Modifier.height(12.dp))
         SignUpLaterTextButton(
-            onClick = { loginViewModel.continueWithoutLogin() },
+            onClick = onContinueWithoutLogin,
         )
     }
 }
@@ -122,7 +127,7 @@ private fun SignUpLaterTextButton(
         Text(
             text = "회원가입은 나중에! 둘러볼게요",
             style = FeelinTypography.active.copy(fontSize = 14.sp, color = LightGray04),
-            modifier = Modifier.clickable(enabled = false, onClick = onClick),
+            modifier = Modifier.clickable(onClick = onClick),
         )
     }
 }
@@ -131,6 +136,9 @@ private fun SignUpLaterTextButton(
 @Composable
 private fun LoginScreenPreview() {
     FeelinTheme {
-        LoginScreen()
+        LoginScreen(
+            onSocialLoginClick = {},
+            onContinueWithoutLogin = {}
+        )
     }
 }

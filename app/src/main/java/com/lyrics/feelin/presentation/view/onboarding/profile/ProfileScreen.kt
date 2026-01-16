@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -34,8 +33,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
-import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
+import com.lyrics.feelin.core.designsystem.component.ProfileCharacter
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
 import com.lyrics.feelin.core.designsystem.component.ProfileCharacterBottomSheet
 import com.lyrics.feelin.core.designsystem.component.validateNickname
@@ -49,7 +48,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
     val nicknameState = remember { TextFieldState(initialText = "") }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedProfileId by remember { mutableIntStateOf(1) }
+    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_1) }
 
     val isNicknameValid = nicknameState.text.isNotEmpty() &&
         validateNickname(nicknameState.text) == NicknameValidationResult.Valid
@@ -86,7 +85,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.Center
             ) {
                 ProfileImageSelectorWithEdit(
-                    selectedProfileId = selectedProfileId,
+                    selectedProfile = selectedProfile,
                     onEditClick = { showBottomSheet = true }
                 )
             }
@@ -125,11 +124,11 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
     if (showBottomSheet) {
         ProfileCharacterBottomSheet(
             onDismiss = { showBottomSheet = false },
-            onSelectProfile = { profileId ->
-                selectedProfileId = profileId
+            onSelectProfile = { profile ->
+                selectedProfile = profile
                 showBottomSheet = false
             },
-            selectedProfileId = selectedProfileId
+            selectedProfile = selectedProfile
         )
     }
 }
@@ -139,12 +138,11 @@ private val ProfileImageOverlapOffset = (-36).dp
 
 @Composable
 private fun ProfileImageSelectorWithEdit(
-    selectedProfileId: Int,
+    selectedProfile: ProfileCharacter,
     onEditClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val profileDrawableRes = FeelinProfileImageSelector.getProfileDrawableRes(
-        profileId = selectedProfileId,
+    val profileDrawableRes = selectedProfile.getDrawableRes(
         isSelected = true,
         isDarkMode = false
     )

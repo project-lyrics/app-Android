@@ -23,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,10 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector.PROFILE_ID_1
-import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector.PROFILE_ID_2
-import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector.PROFILE_ID_3
-import com.lyrics.feelin.core.designsystem.component.FeelinProfileImageSelector.PROFILE_ID_4
+
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
@@ -48,21 +46,21 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
  * 프로필 캐릭터 선택 Bottom Sheet
  *
  * @param onDismiss 닫기 버튼 클릭 시 호출
- * @param onSelectProfile 선택 버튼 클릭 시 호출 (선택된 프로필 ID 전달)
- * @param selectedProfileId 현재 선택된 프로필 ID
+ * @param onSelectProfile 선택 버튼 클릭 시 호출 (선택된 프로필 전달)
+ * @param selectedProfile 현재 선택된 프로필 캐릭터
  * @param modifier Modifier
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileCharacterBottomSheet(
     onDismiss: () -> Unit,
-    onSelectProfile: (Int) -> Unit,
+    onSelectProfile: (ProfileCharacter) -> Unit,
     modifier: Modifier = Modifier,
-    selectedProfileId: Int = -1
+    selectedProfile: ProfileCharacter? = null
 ) {
     val colors = LocalFeelinColors.current
     val isDarkMode = LocalDarkTheme.current
-    var internalSelectedId by remember { mutableIntStateOf(selectedProfileId) }
+    var internalSelectedProfile by remember { mutableStateOf(selectedProfile) }
 
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -90,8 +88,8 @@ fun ProfileCharacterBottomSheet(
                 )
 
                 ProfileCharacterList(
-                    selectedProfileId = internalSelectedId,
-                    onProfileClick = { profileId -> internalSelectedId = profileId },
+                    selectedProfile = internalSelectedProfile,
+                    onProfileClick = { profile -> internalSelectedProfile = profile },
                     isDarkMode = isDarkMode
                 )
             }
@@ -99,8 +97,8 @@ fun ProfileCharacterBottomSheet(
             Spacer(modifier = Modifier.height(32.dp))
 
             ProfileSelectButton(
-                onClick = { onSelectProfile(internalSelectedId) },
-                enabled = internalSelectedId != -1,
+                onClick = { internalSelectedProfile?.let { onSelectProfile(it) } },
+                enabled = internalSelectedProfile != null,
                 backgroundColor = colors.systemActivate,
                 textColor = LightGray00
             )
@@ -140,8 +138,8 @@ private fun ProfileBottomSheetHeader(
 
 @Composable
 private fun ProfileCharacterList(
-    selectedProfileId: Int,
-    onProfileClick: (Int) -> Unit,
+    selectedProfile: ProfileCharacter?,
+    onProfileClick: (ProfileCharacter) -> Unit,
     isDarkMode: Boolean
 ) {
     Column(
@@ -151,34 +149,15 @@ private fun ProfileCharacterList(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            ProfileSelectItemLayered(
-                profileId = PROFILE_ID_1,
-                isSelected = selectedProfileId == PROFILE_ID_1,
-                onClick = { onProfileClick(PROFILE_ID_1) },
-                isDarkMode = isDarkMode,
-                modifier = Modifier.weight(1f)
-            )
-            ProfileSelectItemLayered(
-                profileId = PROFILE_ID_2,
-                isSelected = selectedProfileId == PROFILE_ID_2,
-                onClick = { onProfileClick(PROFILE_ID_2) },
-                isDarkMode = isDarkMode,
-                modifier = Modifier.weight(1f)
-            )
-            ProfileSelectItemLayered(
-                profileId = PROFILE_ID_3,
-                isSelected = selectedProfileId == PROFILE_ID_3,
-                isDarkMode = isDarkMode,
-                onClick = { onProfileClick(PROFILE_ID_3) },
-                modifier = Modifier.weight(1f)
-            )
-            ProfileSelectItemLayered(
-                profileId = PROFILE_ID_4,
-                isSelected = selectedProfileId == PROFILE_ID_4,
-                isDarkMode = isDarkMode,
-                onClick = { onProfileClick(PROFILE_ID_4) },
-                modifier = Modifier.weight(1f)
-            )
+            ProfileCharacter.entries.forEach { profile ->
+                ProfileSelectItemLayered(
+                    profile = profile,
+                    isSelected = selectedProfile == profile,
+                    onClick = { onProfileClick(profile) },
+                    isDarkMode = isDarkMode,
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }
@@ -186,14 +165,14 @@ private fun ProfileCharacterList(
 /**
  * 레이어 구조의 프로필 선택 아이템
  *
- * @param profileId 프로필 번호 (1-4)
+ * @param profile 프로필 캐릭터
  * @param isSelected 선택 상태
  * @param onClick 클릭 콜백
  * @param modifier Modifier
  */
 @Composable
 fun ProfileSelectItemLayered(
-    profileId: Int,
+    profile: ProfileCharacter,
     isSelected: Boolean,
     isDarkMode: Boolean,
     onClick: () -> Unit,
@@ -201,11 +180,7 @@ fun ProfileSelectItemLayered(
 ) {
     val colors = LocalFeelinColors.current
 
-    val imageRes = getProfileImageRes(
-        profileId = profileId,
-        isSelected = isSelected,
-        isDarkMode = isDarkMode
-    )
+    val imageRes = profile.getDrawableRes(isSelected, isDarkMode)
 
     val outerCircleColor = if (isSelected) {
         colors.brandPrimary
@@ -233,7 +208,7 @@ fun ProfileSelectItemLayered(
         ) {
             Image(
                 painter = painterResource(id = imageRes),
-                contentDescription = "프로필 $profileId",
+                contentDescription = "프로필 ${profile.id}",
                 modifier = Modifier
                     .size(72.dp)
                     .clip(CircleShape),
@@ -273,13 +248,13 @@ private fun ProfileSelectButton(
 @Preview(name = "Light Mode - Profile 1 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewLight() {
-    var selectedProfile by remember { mutableIntStateOf(PROFILE_ID_1) }
+    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_1) }
 
     FeelinTheme(darkTheme = false) {
         ProfileCharacterBottomSheet(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
-            selectedProfileId = selectedProfile
+            selectedProfile = selectedProfile
         )
     }
 }
@@ -291,13 +266,13 @@ private fun ProfileCharacterBottomSheetPreviewLight() {
 )
 @Composable
 private fun ProfileCharacterBottomSheetPreviewDark() {
-    var selectedProfile by remember { mutableIntStateOf(PROFILE_ID_2) }
+    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_2) }
 
     FeelinTheme(darkTheme = true) {
         ProfileCharacterBottomSheet(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
-            selectedProfileId = selectedProfile
+            selectedProfile = selectedProfile
         )
     }
 }
@@ -316,13 +291,13 @@ private fun ProfileCharacterBottomSheetPreviewNoSelection() {
 @Preview(name = "Light Mode - Profile 3 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewProfile3() {
-    var selectedProfile by remember { mutableIntStateOf(PROFILE_ID_3) }
+    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_3) }
 
     FeelinTheme(darkTheme = false) {
         ProfileCharacterBottomSheet(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
-            selectedProfileId = selectedProfile
+            selectedProfile = selectedProfile
         )
     }
 }

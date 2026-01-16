@@ -34,8 +34,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
-import com.lyrics.feelin.core.designsystem.component.ProfileCharacter
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
+import com.lyrics.feelin.core.designsystem.component.ProfileCharacter
 import com.lyrics.feelin.core.designsystem.component.ProfileCharacterBottomSheet
 import com.lyrics.feelin.core.designsystem.component.validateNickname
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon

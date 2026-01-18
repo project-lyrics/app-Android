@@ -44,7 +44,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyrics.feelin.core.designsystem.component.FeelinTab
 import com.lyrics.feelin.core.designsystem.component.FeelinTabRow
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarNoBack
@@ -66,7 +66,7 @@ private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = viewModel()) {
+fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = hiltViewModel()) {
     val myPageState by viewModel.myPageScreenState.collectAsState()
 
     val feelinColors = LocalFeelinColors.current

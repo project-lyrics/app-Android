@@ -2,26 +2,53 @@ package com.lyrics.feelin.presentation.view.mypage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyrics.feelin.core.data.datasource.local.UserPreferencesDataStore
 import com.lyrics.feelin.core.designsystem.component.FilterButtonData
 import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
 import com.lyrics.feelin.presentation.view.component.profile.ProfileType
-import kotlinx.coroutines.delay
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 @Suppress("UnusedPrivateProperty") // TODO(@이대근): 실제 기능 구현시 제거할 것 2025.11.21.
-class MyPageViewModel : ViewModel() {
+@HiltViewModel
+class MyPageViewModel @Inject constructor(
+    private val userPreferencesDataStore: UserPreferencesDataStore
+) : ViewModel() {
     private val _myPageScreenStatus: MutableStateFlow<MyPageScreenState> = MutableStateFlow(MyPageScreenState.initial())
     val myPageScreenState: StateFlow<MyPageScreenState> = _myPageScreenStatus.asStateFlow()
 
     fun loadMyPageData() {
         viewModelScope.launch {
-            @Suppress("MagicNumber")
-            delay(1500L)
-            _myPageScreenStatus.value = _dataSample
+            val userData = userPreferencesDataStore.userData.first()
+
+            if (userData.isLoggedIn && userData.nickname != null) {
+                // 로그인 상태: DataStore에서 사용자 정보 가져오기
+                val profileType = profileIndexToProfileType(userData.profileIndex)
+                _myPageScreenStatus.value = MyPageScreenState(
+                    status = MyPageScreenStatus.SUCCESS_LOAD,
+                    tabStatus = MyPageTabScreenStatus.SUCCESS_LOAD,
+                    user = MyPageUserData(
+                        id = 0L, // 로컬 임시 데이터이므로 0
+                        nickname = userData.nickname,
+                        profileCharacterType = profileType
+                    ),
+                    filterArtists = emptyList(),
+                    notes = emptyList()
+                )
+            } else {
+                // 비로그인 상태
+                _myPageScreenStatus.value = _logoutSample
+            }
         }
+    }
+
+    private fun profileIndexToProfileType(profileIndex: Int?): ProfileType {
+        return ProfileType.entries.getOrNull(profileIndex ?: 0) ?: ProfileType.SHORT_HAIR
     }
 
     private val _dataSample = MyPageScreenState(

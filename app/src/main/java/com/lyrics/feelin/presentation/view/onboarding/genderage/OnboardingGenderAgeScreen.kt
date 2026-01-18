@@ -35,7 +35,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 fun OnboardingGenderAgeScreen(
     onBackClick: () -> Unit,
     onSkipClick: () -> Unit,
-    onNextClick: () -> Unit,
+    onNextClick: (gender: String, birthYear: Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     FeelinTheme(darkTheme = false) {
@@ -145,7 +145,11 @@ fun OnboardingGenderAgeScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 Button(
-                    onClick = onNextClick,
+                    onClick = {
+                        selectedGender?.let { gender ->
+                            onNextClick(gender, selectedYear.toInt())
+                        }
+                    },
                     enabled = isButtonEnabled,
                     modifier = Modifier
                         .fillMaxWidth()
@@ -183,7 +187,7 @@ private fun OnboardingGenderAgeScreenPreview() {
         OnboardingGenderAgeScreen(
             onBackClick = {},
             onSkipClick = {},
-            onNextClick = {}
+            onNextClick = { _, _ -> }
         )
     }
 }

@@ -46,7 +46,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
-    onCompleteClick: () -> Unit,
+    onCompleteClick: (nickname: String, profileIndex: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -118,7 +118,7 @@ fun ProfileScreen(
             CompleteButton(
                 text = "완료",
                 enabled = isNicknameValid,
-                onClick = onCompleteClick
+                onClick = { onCompleteClick(nicknameState.text.toString(), selectedProfile.ordinal) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -210,7 +210,7 @@ private fun ProfileScreenPreview() {
     FeelinTheme {
         ProfileScreen(
             onBackClick = {},
-            onCompleteClick = {}
+            onCompleteClick = { _, _ -> }
         )
     }
 }

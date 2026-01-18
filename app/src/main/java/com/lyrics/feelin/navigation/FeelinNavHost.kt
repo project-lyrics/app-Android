@@ -18,6 +18,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -36,6 +37,7 @@ import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
 import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen
 import com.lyrics.feelin.presentation.view.onboarding.terms.OnboardingTermsScreen
@@ -96,32 +98,58 @@ private fun NavGraphBuilder.onboardingTermsScreen(navController: NavHostControll
 }
 
 private fun NavGraphBuilder.onboardingGenderAgeScreen(navController: NavHostController) {
-    composable(FeelinDestination.OnboardingGenderAge.route) {
+    composable(FeelinDestination.OnboardingGenderAge.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
         OnboardingScaffold {
             OnboardingGenderAgeScreen(
                 onBackClick = { navController.popBackStack() },
                 onSkipClick = { navController.navigate(FeelinDestination.OnboardingProfile.route) },
-                onNextClick = { navController.navigate(FeelinDestination.OnboardingProfile.route) }
+                onNextClick = { gender, birthYear ->
+                    viewModel.saveGenderAndBirthYear(gender, birthYear)
+                    navController.navigate(FeelinDestination.OnboardingProfile.route)
+                }
             )
         }
     }
 }
 
 private fun NavGraphBuilder.onboardingProfileScreen(navController: NavHostController) {
-    composable(FeelinDestination.OnboardingProfile.route) {
+    composable(FeelinDestination.OnboardingProfile.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
         OnboardingScaffold {
             ProfileScreen(
                 onBackClick = { navController.popBackStack() },
-                onCompleteClick = { navController.navigate(FeelinDestination.OnboardingWelcome.route) }
+                onCompleteClick = { nickname, profileIndex ->
+                    viewModel.saveProfile(nickname, profileIndex)
+                    navController.navigate(FeelinDestination.OnboardingWelcome.route)
+                }
             )
         }
     }
 }
 
 private fun NavGraphBuilder.onboardingWelcomeScreen(navController: NavHostController) {
-    composable(FeelinDestination.OnboardingWelcome.route) {
+    composable(FeelinDestination.OnboardingWelcome.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
         OnboardingScaffold {
-            WelcomeScreen(onNavigateToMain = { navController.navigateToMainGraph() })
+            WelcomeScreen(
+                onNavigateToMain = {
+                    viewModel.completeOnboarding()
+                    navController.navigateToMainGraph()
+                }
+            )
         }
     }
 }

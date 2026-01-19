@@ -51,6 +51,14 @@ class MyPageViewModel @Inject constructor(
         return ProfileType.entries.getOrNull(profileIndex ?: 0) ?: ProfileType.SHORT_HAIR
     }
 
+    // TODO: 테스트용 DataStore 초기화 함수 - 추후 제거할 것
+    fun clearDataStore() {
+        viewModelScope.launch {
+            userPreferencesDataStore.logout()
+            _myPageScreenStatus.value = _logoutSample
+        }
+    }
+
     private val _dataSample = MyPageScreenState(
         status = MyPageScreenStatus.SUCCESS_LOAD,
         tabStatus = MyPageTabScreenStatus.SUCCESS_LOAD,

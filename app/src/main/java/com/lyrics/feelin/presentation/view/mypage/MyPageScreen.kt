@@ -95,7 +95,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = hil
                         imageVector = SettingsIconLight,
                         contentDescription = "설정",
                         tint = feelinColors.gray09,
-                        onClick = {}
+                        onClick = { viewModel.clearDataStore() } // TODO: 테스트용(로그아웃) - 추후 제거할 것
                     )
                     TopBarIconButton(
                         imageVector = NotificationIcon,

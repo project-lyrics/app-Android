@@ -2,6 +2,7 @@ package com.lyrics.feelin.presentation.view.onboarding.favoriteartist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +21,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -29,8 +31,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -38,6 +42,7 @@ import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.LightBrandSecondary
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponent
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
@@ -60,50 +65,56 @@ fun OnboardingFavoriteArtistScreen(
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
 
-        when (viewState.status) {
-            OnboardingFavoriteArtistStatus.LOADING -> {
-                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    CircularProgressIndicator()
-                }
-            }
+        Box(modifier = modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+                    .fillMaxSize()
+                    .background(color = feelinColors.gray00)
+            ) {
+                FeelinTopAppBarWithClose(
+                    title = "",
+                    onCloseClick = onCloseClick,
+                    showDivider = false,
+                )
+                Spacer(modifier = Modifier.height(28.dp))
 
-            OnboardingFavoriteArtistStatus.SUCCESS -> {
-                Box(modifier = modifier.fillMaxSize()) {
-                    Column(
-                        modifier = Modifier
-                            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-                            .fillMaxSize()
-                            .background(color = feelinColors.gray00)
-                    ) {
-                        FeelinTopAppBarWithClose(
-                            title = "",
-                            onCloseClick = onCloseClick,
-                            showDivider = false,
-                        )
-                        Spacer(modifier = Modifier.height(28.dp))
-
-                        Text(
-                            text = """
+                Text(
+                    text = """
                     좋아하는 아티스트를
                     모두 선택해주세요
-                            """.trimIndent(),
-                            style = FeelinTypography.heading1.copy(color = feelinColors.gray08),
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        )
-                        Text(
-                            text = "곡과 가사를 공유할 수 있는 공간이 생성돼요",
-                            style = FeelinTypography.body3.copy(color = feelinColors.gray04),
-                            modifier = Modifier.padding(top = 8.dp, start = 20.dp, end = 20.dp)
-                        )
+                    """.trimIndent(),
+                    style = FeelinTypography.heading1.copy(color = feelinColors.gray08),
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Text(
+                    text = "곡과 가사를 공유할 수 있는 공간이 생성돼요",
+                    style = FeelinTypography.body3.copy(color = feelinColors.gray04),
+                    modifier = Modifier.padding(top = 8.dp, start = 20.dp, end = 20.dp)
+                )
 
-                        Spacer(modifier = Modifier.height(16.dp))
-                        FeelinSearchInputField(
-                            state = searchState,
-                            placeholder = "아티스트 검색",
-                            modifier = Modifier.padding(horizontal = 20.dp)
-                        )
+                Spacer(modifier = Modifier.height(16.dp))
+                FeelinSearchInputField(
+                    state = searchState,
+                    placeholder = "아티스트 검색",
+                    onSearchClick = {},
+                    onClearClick = { searchState.clearText() },
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
 
-                        Spacer(modifier = Modifier.height(28.dp))
+                Spacer(modifier = Modifier.height(28.dp))
+
+                when (viewState.status) {
+                    OnboardingFavoriteArtistStatus.LOADING -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    OnboardingFavoriteArtistStatus.SUCCESS -> {
                         LazyVerticalGrid(
                             columns = GridCells.Fixed(GRID_COL_MAX_ELEMENTS),
                             // 스크롤 끝까지 내렸을 때 마지막 항목이 버튼에 가려지지 않게 하단 패딩 부여
@@ -119,38 +130,60 @@ fun OnboardingFavoriteArtistScreen(
                                         imageUrl = artist.imageUrl,
                                         isSelected = artist.isSelected,
                                     ),
-                                    modifier = Modifier.clickable(enabled = true, onClick = {
+                                    modifier = Modifier.clickable(
+                                        enabled = true,
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null,
+                                    ) {
                                         viewModel.toggleArtistSelection(artist.id)
-                                    })
+                                    }
                                 )
                             }
                         }
                     }
 
-                    Button(
-                        onClick = {},
-                        enabled = viewState.isEnableComplete,
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .fillMaxWidth()
-                            .padding(bottom = 24.dp, start = 20.dp, end = 20.dp)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = feelinColors.systemActivate,
-                            disabledContainerColor = feelinColors.systemDisable
-                        ),
-                        shape = RoundedCornerShape(12.dp)
-                    ) {
-                        Text(
-                            text = "완료",
-                            style = FeelinTypography.title2,
-                            color = feelinColors.gray00
-                        )
+                    else -> {
+                        // TODO(@이대근): 에러 다이얼로그 처리 2026.02.25.
+                        Text("문제가 발생했습니다.")
                     }
                 }
             }
 
-            else -> {
+            // 하단 그라데이션 오버레이
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .height(117.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                LightBrandSecondary.copy(alpha = 0.0f),
+                                LightBrandSecondary.copy(alpha = 0.2f)
+                            ),
+                        )
+                    )
+            )
+
+            Button(
+                onClick = {},
+                enabled = viewState.isEnableComplete,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp, start = 20.dp, end = 20.dp)
+                    .height(56.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = feelinColors.systemActivate,
+                    disabledContainerColor = feelinColors.systemDisable
+                ),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Text(
+                    text = "완료",
+                    style = FeelinTypography.title2,
+                    color = feelinColors.gray00
+                )
             }
         }
     }

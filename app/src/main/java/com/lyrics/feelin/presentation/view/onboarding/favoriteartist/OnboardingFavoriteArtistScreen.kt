@@ -31,13 +31,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -51,12 +54,14 @@ private const val GRID_COL_MAX_ELEMENTS = 3
 
 @Composable
 fun OnboardingFavoriteArtistScreen(
-    onCloseClick: () -> Unit,
+    onCloseScreen: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: OnboardingFavoriteArtistViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val searchState = rememberTextFieldState()
+
+    var openDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadArtists()
@@ -64,6 +69,20 @@ fun OnboardingFavoriteArtistScreen(
 
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
+
+        if (openDialog) {
+            FeelinModalDialog(
+                title = "선택한 정보를 저장하지 않고\n나가시겠어요?",
+                description = null,
+                confirmButtonText = "나가기",
+                dismissButtonText = "취소",
+                onDismissButtonClick = { openDialog = false },
+                onConfirmButtonClick = {
+                    openDialog = false
+                    onCloseScreen.invoke()
+                }
+            )
+        }
 
         Box(modifier = modifier.fillMaxSize()) {
             Column(
@@ -74,7 +93,9 @@ fun OnboardingFavoriteArtistScreen(
             ) {
                 FeelinTopAppBarWithClose(
                     title = "",
-                    onCloseClick = onCloseClick,
+                    onCloseClick = {
+                        openDialog = true
+                    },
                     showDivider = false,
                 )
                 Spacer(modifier = Modifier.height(28.dp))
@@ -97,7 +118,7 @@ fun OnboardingFavoriteArtistScreen(
                 FeelinSearchInputField(
                     state = searchState,
                     placeholder = "아티스트 검색",
-                    onSearchClick = {},
+                    onSearchClick = { /* TODO(@이대근): 검색 연동 처리 2026.02.25. */ },
                     onClearClick = { searchState.clearText() },
                     modifier = Modifier.padding(horizontal = 20.dp)
                 )
@@ -166,7 +187,9 @@ fun OnboardingFavoriteArtistScreen(
             )
 
             Button(
-                onClick = {},
+                onClick = {
+                    onCloseScreen.invoke()
+                },
                 enabled = viewState.isEnableComplete,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
@@ -193,6 +216,6 @@ fun OnboardingFavoriteArtistScreen(
 @Composable
 private fun OnboardingFavoriteArtistScreenPreview() {
     OnboardingFavoriteArtistScreen(
-        onCloseClick = {}
+        onCloseScreen = {}
     )
 }

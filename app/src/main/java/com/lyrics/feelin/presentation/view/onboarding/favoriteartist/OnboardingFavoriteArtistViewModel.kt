@@ -26,18 +26,31 @@ class OnboardingFavoriteArtistViewModel : ViewModel() {
         }
     }
 
-    fun toggleArtistSelection(artistId: Int) {
+    fun toggleArtistSelection(artistId: Int): Boolean {
+        val currentArtist = _viewState.value.artists.find { it.id == artistId } ?: return false
+
+        // 선택 해제는 항상 허용, 선택 시도일 때만 최대값 체크
+        if (!currentArtist.isSelected && _viewState.value.artists.count { it.isSelected } >= MAX_FAVORITE_ARTISTS) {
+            return true
+        }
+
         _viewState.update { state ->
             state.copy(
                 artists = state.artists.map { artist ->
-                    if (artist.id == artistId) artist.copy(isSelected = !artist.isSelected)
-                    else artist
+                    if (artist.id == artistId) {
+                        artist.copy(isSelected = !artist.isSelected)
+                    } else {
+                        artist
+                    }
                 }
             )
         }
+        return false
     }
 
     companion object {
+        private const val MAX_FAVORITE_ARTISTS = 30
+
         @Suppress("MagicNumber")
         private fun sampleArtists(): List<FavoriteArtistData> {
             return List(34) { index ->

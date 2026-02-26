@@ -61,7 +61,8 @@ fun OnboardingFavoriteArtistScreen(
     val viewState by viewModel.viewState.collectAsState()
     val searchState = rememberTextFieldState()
 
-    var openDialog by remember { mutableStateOf(false) }
+    var isOpenCloseDialog by remember { mutableStateOf(false) }
+    var isOpenArtistLimitDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         viewModel.loadArtists()
@@ -70,16 +71,28 @@ fun OnboardingFavoriteArtistScreen(
     FeelinTheme(darkTheme = false) {
         val feelinColors = LocalFeelinColors.current
 
-        if (openDialog) {
+        if (isOpenCloseDialog) {
             FeelinModalDialog(
                 title = "선택한 정보를 저장하지 않고\n나가시겠어요?",
                 description = null,
                 confirmButtonText = "나가기",
                 dismissButtonText = "취소",
-                onDismissButtonClick = { openDialog = false },
+                onDismissButtonClick = { isOpenCloseDialog = false },
                 onConfirmButtonClick = {
-                    openDialog = false
+                    isOpenCloseDialog = false
                     onCloseScreen.invoke()
+                }
+            )
+        }
+
+        if (isOpenArtistLimitDialog) {
+            FeelinModalDialog(
+                title = "아티스트는 최대 30명까지\n선택할 수 있어요.",
+                description = null,
+                isDismissButtonEnable = false,
+                confirmButtonText = "확인",
+                onConfirmButtonClick = {
+                    isOpenArtistLimitDialog = false
                 }
             )
         }
@@ -94,7 +107,7 @@ fun OnboardingFavoriteArtistScreen(
                 FeelinTopAppBarWithClose(
                     title = "",
                     onCloseClick = {
-                        openDialog = true
+                        isOpenCloseDialog = true
                     },
                     showDivider = false,
                 )
@@ -156,7 +169,9 @@ fun OnboardingFavoriteArtistScreen(
                                         interactionSource = remember { MutableInteractionSource() },
                                         indication = null,
                                     ) {
-                                        viewModel.toggleArtistSelection(artist.id)
+                                        if (viewModel.toggleArtistSelection(artist.id)) {
+                                            isOpenArtistLimitDialog = true
+                                        }
                                     }
                                 )
                             }

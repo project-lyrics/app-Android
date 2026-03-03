@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.BackIcon
+import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconDark
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
@@ -155,6 +156,56 @@ fun FeelinTopAppBarNoBack(
             centeredTitle = centeredTitle,
             paddingValues = paddingValues,
             navigationIcon = null,
+            modifier = modifier,
+        )
+        if (showDivider) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(feelinColors.gray01)
+            )
+        }
+    }
+}
+
+@Suppress("ModifierNotUsedAtRoot")
+@Composable
+fun FeelinTopAppBarWithClose(
+    title: String,
+    onCloseClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    colors: FeelinTopAppBarColors = FeelinTopAppBarDefaults.topAppBarColors(),
+    actions: @Composable RowScope.() -> Unit = {},
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+        vertical = FeelinTopAppBarDefaults.VerticalPadding,
+    ),
+    centeredTitle: Boolean = false,
+    showDivider: Boolean = true,
+) {
+    val feelinColors = LocalFeelinColors.current
+
+    Column {
+        TopAppBarBase(
+            title = {
+                Text(
+                    text = title,
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
+                )
+            },
+            actions = actions,
+            colors = colors,
+            centeredTitle = centeredTitle,
+            paddingValues = paddingValues,
+            navigationIcon = {
+                TopBarIconButton(
+                    imageVector = CloseIcon,
+                    onClick = onCloseClick,
+                    contentDescription = "Close",
+                    tint = feelinColors.gray09,
+                )
+            },
             modifier = modifier,
         )
         if (showDivider) {
@@ -317,6 +368,32 @@ private fun FeelinTopAppBarDoubleIconPreview() {
                         contentDescription = "알림",
                         tint = LocalFeelinColors.current.gray09,
                         onClick = {}
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Preview(name = "TopBar with Close - Light", showBackground = true)
+@Preview(
+    name = "TopBar with Close - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FeelinTopAppBarWithClosePreview() {
+    FeelinTheme {
+        Box {
+            FeelinTopAppBarWithClose(
+                title = "노트 작성",
+                onCloseClick = {},
+                actions = {
+                    Text(
+                        text = "완료",
+                        style = FeelinTypography.body1.copy(
+                            color = LocalFeelinColors.current.systemDisable
+                        )
                     )
                 }
             )

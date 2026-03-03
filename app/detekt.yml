@@ -963,7 +963,7 @@ style:
       - "fromProfileType" # ProfileComponentData.fromProfileType 함수 제외
     excludeLabeled: false
     excludeReturnFromLambda: true
-    excludeGuardClauses: false
+    excludeGuardClauses: true
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:

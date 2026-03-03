@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -32,9 +34,9 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 @Composable
 fun FeelinModalDialog(
     title: String,
-    description: String,
     confirmButtonText: String,
     onConfirmButtonClick: () -> Unit,
+    description: String?,
     modifier: Modifier = Modifier,
     isDismissButtonEnable: Boolean = true,
     dismissButtonText: String = "",
@@ -55,14 +57,18 @@ fun FeelinModalDialog(
         ) {
             Text(
                 text = title,
-                style = FeelinTypography.title2.copy(color = feelinColors.gray09),
+                style = FeelinTypography.title2.copy(color = feelinColors.gray09, textAlign = TextAlign.Center),
                 modifier = Modifier.padding(top = 24.dp)
             )
-            Text(
-                text = description,
-                style = FeelinTypography.body3.copy(color = feelinColors.gray05),
-                modifier = Modifier.padding(top = 10.dp, bottom = 12.dp)
-            )
+            if (description != null) {
+                Text(
+                    text = description,
+                    style = FeelinTypography.body3.copy(color = feelinColors.gray05),
+                    modifier = Modifier.padding(top = 10.dp, bottom = 12.dp)
+                )
+            } else {
+                Spacer(modifier = Modifier.height(12.dp))
+            }
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
@@ -122,6 +128,23 @@ private fun FeelinModalDialogPreview() {
         FeelinModalDialog(
             title = "모달 제목",
             description = "모달 설명은 여기 적으면 됩니다.",
+            confirmButtonText = "확인",
+            onConfirmButtonClick = {},
+            isDismissButtonEnable = true,
+            dismissButtonText = "취소",
+            onDismissButtonClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+private fun FeelinModalDialogOnlyTitlePreview() {
+    FeelinTheme {
+        FeelinModalDialog(
+            title = "긴 모달 제목도 title에 적으면 됩니다.",
+            description = null,
             confirmButtonText = "확인",
             onConfirmButtonClick = {},
             isDismissButtonEnable = true,

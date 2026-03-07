@@ -2,7 +2,7 @@ package com.lyrics.feelin.presentation.view.mypage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.lyrics.feelin.core.data.datasource.local.UserPreferencesDataStore
+import com.lyrics.feelin.core.data.repository.UserRepository
 import com.lyrics.feelin.core.designsystem.component.FilterButtonData
 import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
 import com.lyrics.feelin.presentation.view.component.profile.ProfileType
@@ -17,14 +17,14 @@ import kotlinx.coroutines.launch
 @Suppress("UnusedPrivateProperty") // TODO(@이대근): 실제 기능 구현시 제거할 것 2025.11.21.
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
-    private val userPreferencesDataStore: UserPreferencesDataStore
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _myPageScreenStatus: MutableStateFlow<MyPageScreenState> = MutableStateFlow(MyPageScreenState.initial())
     val myPageScreenState: StateFlow<MyPageScreenState> = _myPageScreenStatus.asStateFlow()
 
     fun loadMyPageData() {
         viewModelScope.launch {
-            val userData = userPreferencesDataStore.userData.first()
+            val userData = userRepository.userData.first()
 
             if (userData.isLoggedIn && userData.nickname != null) {
                 // 로그인 상태: DataStore에서 사용자 정보 가져오기
@@ -54,7 +54,7 @@ class MyPageViewModel @Inject constructor(
     // TODO: 테스트용 DataStore 초기화 함수 - 추후 제거할 것
     fun clearDataStore() {
         viewModelScope.launch {
-            userPreferencesDataStore.logout()
+            userRepository.logout()
             _myPageScreenStatus.value = _logoutSample
         }
     }

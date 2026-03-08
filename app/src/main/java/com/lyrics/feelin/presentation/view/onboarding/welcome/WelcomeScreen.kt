@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -29,9 +31,23 @@ import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightBrandPrimary
+import kotlinx.coroutines.delay
+
+private const val AUTO_NAVIGATE_DELAY_MS = 1000L
 
 @Composable
-fun WelcomeScreen(modifier: Modifier = Modifier) {
+fun WelcomeScreen(
+    onNavigateToMain: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val currentOnNavigateToMain = rememberUpdatedState(onNavigateToMain)
+
+    // iOS와 동일하게 1초 후 자동으로 다음 화면으로 전환
+    LaunchedEffect(Unit) {
+        delay(AUTO_NAVIGATE_DELAY_MS)
+        currentOnNavigateToMain.value()
+    }
+
     Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -86,6 +102,8 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun WelcomeScreenPreview() {
     FeelinTheme {
-        WelcomeScreen()
+        WelcomeScreen(
+            onNavigateToMain = {}
+        )
     }
 }

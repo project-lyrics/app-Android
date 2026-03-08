@@ -44,7 +44,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(
+    onBackClick: () -> Unit,
+    onCompleteClick: (nickname: String, profileIndex: Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
     val feelinColors = LocalFeelinColors.current
     val nicknameState = remember { TextFieldState(initialText = "") }
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -60,7 +64,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
     ) {
         FeelinTopAppBarWithBack(
             title = "",
-            onBackClick = {},
+            onBackClick = onBackClick,
             showDivider = false,
             actions = {}
         )
@@ -114,7 +118,7 @@ fun ProfileScreen(modifier: Modifier = Modifier) {
             CompleteButton(
                 text = "완료",
                 enabled = isNicknameValid,
-                onClick = { /* Handle complete action */ }
+                onClick = { onCompleteClick(nicknameState.text.toString(), selectedProfile.ordinal) }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -204,6 +208,9 @@ private fun CompleteButton(text: String, enabled: Boolean, onClick: () -> Unit) 
 @Composable
 private fun ProfileScreenPreview() {
     FeelinTheme {
-        ProfileScreen()
+        ProfileScreen(
+            onBackClick = {},
+            onCompleteClick = { _, _ -> }
+        )
     }
 }

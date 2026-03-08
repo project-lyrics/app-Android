@@ -13,9 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +28,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 
 /**
  * 말풍선을 로그인 버튼 위에 놓기 위한 X 조정값입니다.
@@ -75,7 +75,6 @@ fun SocialLoginButton(
             contentAlignment = Alignment.Center,
         ) {
             Row(
-                modifier = Modifier.height(24.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
             ) {
@@ -84,7 +83,7 @@ fun SocialLoginButton(
                         painter = painterResource(id = config.iconRes),
                         contentDescription = config.iconContentDescription,
                         modifier = Modifier.padding(
-                            start = 2.5.dp,
+                            start = 3.dp,
                             top = 2.5.dp,
                             end = 2.5.dp,
                             bottom = 2.5.dp,
@@ -103,10 +102,9 @@ fun SocialLoginButton(
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp))
-                // TODO(@이대근): 살려줘요 아이콘이랑 텍스트가 중앙정렬이 안 맞아 2025.09.16.
                 Text(
                     text = config.text,
-                    style = MaterialTheme.typography.titleMedium.copy(
+                    style = FeelinTypography.title2.copy(
                         color = config.textColor,
                         textAlign = TextAlign.Center,
                         lineHeight = 1.2.em,
@@ -114,9 +112,6 @@ fun SocialLoginButton(
                             includeFontPadding = false,
                         ),
                     ),
-                    modifier = Modifier
-                        .height(24.dp)
-                        .wrapContentHeight(),
                 )
             }
         }
@@ -132,23 +127,21 @@ fun SocialLoginButton(
 
 object SocialLoginButtonConfigs {
     private const val KAKAO_YELLOW = 0xFFFFE400
-    private const val KAKAO_TEXT_BLACK = 0xFF000000
-    private const val GOOGLE_BACKGROUND_WHITE = 0xFF1F1F1F
 
     val Kakao = SocialLoginButtonConfig(
         iconRes = R.drawable.kakao_login_icon,
-        text = "카카오 로그인",
+        text = "카카오로 시작하기",
         backgroundColor = Color(KAKAO_YELLOW),
-        textColor = Color(KAKAO_TEXT_BLACK),
-        useImageIcon = false,
+        textColor = LightGray09,
+        useImageIcon = true,
         iconContentDescription = "kakao login button icon"
     )
 
     val Google = SocialLoginButtonConfig(
         iconRes = R.drawable.google_login_icon,
-        text = "Google 계정으로 로그인",
+        text = "Google로 시작하기",
         backgroundColor = LightGray01,
-        textColor = Color(GOOGLE_BACKGROUND_WHITE),
+        textColor = LightGray09,
         useImageIcon = true,
         iconContentDescription = "google login button icon"
     )

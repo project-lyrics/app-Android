@@ -898,6 +898,7 @@ style:
         "**/jvmTest/**",
         "**/jsTest/**",
         "**/iosTest/**",
+        "**/designsystem/theme/**",
       ]
     ignoreNumbers:
       - "-1"
@@ -964,7 +965,7 @@ style:
       - "authenticate" # OkHttp Authenticator RTR 전략에서 조기 리턴 활용
     excludeLabeled: false
     excludeReturnFromLambda: true
-    excludeGuardClauses: false
+    excludeGuardClauses: true
   SafeCast:
     active: true
   SerialVersionUIDInSerializableClass:

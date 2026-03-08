@@ -27,36 +27,36 @@ data class ProfileComponentData(
                     return ProfileComponentData(
                         type = ProfileType.SHORT_HAIR,
                         isEnable = true,
-                        enableAsset = R.drawable.profile_1_notheme_activate_3x,
-                        disableLightAsset = R.drawable.profile_1_light_inactivate_3x,
-                        disableDarkAsset = R.drawable.profile_1_dark_inactivate_3x,
+                        enableAsset = R.drawable.profile_1_activated,
+                        disableLightAsset = R.drawable.profile_1_light_inactive,
+                        disableDarkAsset = R.drawable.profile_1_dark_inactive,
                     )
 
                 ProfileType.BRAIDED_HAIR ->
                     return ProfileComponentData(
                         type = ProfileType.BRAIDED_HAIR,
                         isEnable = true,
-                        enableAsset = R.drawable.profile_2_notheme_activate_3x,
-                        disableLightAsset = R.drawable.profile_2_light_inactivate_3x,
-                        disableDarkAsset = R.drawable.profile_2_dark_inactivate_3x,
+                        enableAsset = R.drawable.profile_2_activated,
+                        disableLightAsset = R.drawable.profile_2_light_inactive,
+                        disableDarkAsset = R.drawable.profile_2_dark_inactive,
                     )
 
                 ProfileType.PARTED_HAIR ->
                     return ProfileComponentData(
                         type = ProfileType.PARTED_HAIR,
                         isEnable = true,
-                        enableAsset = R.drawable.profile_3_notheme_activate_3x,
-                        disableLightAsset = R.drawable.profile_3_light_inactivate_3x,
-                        disableDarkAsset = R.drawable.profile_3_dark_inactivate_3x,
+                        enableAsset = R.drawable.profile_3_activated,
+                        disableLightAsset = R.drawable.profile_3_light_inactive,
+                        disableDarkAsset = R.drawable.profile_3_dark_inactive,
                     )
 
                 ProfileType.POOP_HAIR ->
                     return ProfileComponentData(
                         type = ProfileType.POOP_HAIR,
                         isEnable = true,
-                        enableAsset = R.drawable.profile_4_notheme_activate_3x,
-                        disableLightAsset = R.drawable.profile_4_light_inactivate_3x,
-                        disableDarkAsset = R.drawable.profile_4_dark_inactivate_3x,
+                        enableAsset = R.drawable.profile_4_activated,
+                        disableLightAsset = R.drawable.profile_4_light_inactive,
+                        disableDarkAsset = R.drawable.profile_4_dark_inactive,
                     )
             }
         }

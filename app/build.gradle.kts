@@ -114,7 +114,7 @@ dependencies {
 //    time (kotlinx.datetime)
     implementation(libs.kotlinx.datetime)
 
-    // DataStore
+//    DataStore
     implementation(libs.androidx.datastore.preferences)
 
     // kakao SDK

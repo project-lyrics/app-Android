@@ -5,6 +5,7 @@ package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,7 +19,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalContentColor
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -32,8 +32,12 @@ import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.BackIcon
+import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
+import com.lyrics.feelin.core.designsystem.icon.SettingsIconDark
+import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
@@ -86,6 +90,7 @@ fun FeelinTopAppBarWithBack(
         vertical = FeelinTopAppBarDefaults.VerticalPadding,
     ),
     centeredTitle: Boolean = false,
+    showDivider: Boolean = true,
 ) {
     val feelinColors = LocalFeelinColors.current
 
@@ -94,7 +99,7 @@ fun FeelinTopAppBarWithBack(
             title = {
                 Text(
                     text = title,
-                    style = MaterialTheme.typography.headlineSmall.copy(color = feelinColors.gray09),
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
                 )
             },
             actions = actions,
@@ -111,12 +116,106 @@ fun FeelinTopAppBarWithBack(
             },
             modifier = modifier,
         )
-        Spacer(
-            Modifier
-                .fillMaxWidth()
-                .size(1.dp)
-                .background(feelinColors.gray01)
+        if (showDivider) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(feelinColors.gray01)
+            )
+        }
+    }
+}
+
+@Suppress("ModifierNotUsedAtRoot")
+@Composable
+fun FeelinTopAppBarNoBack(
+    title: String,
+    modifier: Modifier = Modifier,
+    colors: FeelinTopAppBarColors = FeelinTopAppBarDefaults.topAppBarColors(),
+    actions: @Composable RowScope.() -> Unit = {},
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+        vertical = FeelinTopAppBarDefaults.VerticalPadding,
+    ),
+    centeredTitle: Boolean = false,
+    showDivider: Boolean = false,
+) {
+    val feelinColors = LocalFeelinColors.current
+
+    Column {
+        TopAppBarBase(
+            title = {
+                Text(
+                    text = title,
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
+                )
+            },
+            actions = actions,
+            colors = colors,
+            centeredTitle = centeredTitle,
+            paddingValues = paddingValues,
+            navigationIcon = null,
+            modifier = modifier,
         )
+        if (showDivider) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(feelinColors.gray01)
+            )
+        }
+    }
+}
+
+@Suppress("ModifierNotUsedAtRoot")
+@Composable
+fun FeelinTopAppBarWithClose(
+    title: String,
+    onCloseClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    colors: FeelinTopAppBarColors = FeelinTopAppBarDefaults.topAppBarColors(),
+    actions: @Composable RowScope.() -> Unit = {},
+    paddingValues: PaddingValues = PaddingValues(
+        horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+        vertical = FeelinTopAppBarDefaults.VerticalPadding,
+    ),
+    centeredTitle: Boolean = false,
+    showDivider: Boolean = true,
+) {
+    val feelinColors = LocalFeelinColors.current
+
+    Column {
+        TopAppBarBase(
+            title = {
+                Text(
+                    text = title,
+                    style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
+                )
+            },
+            actions = actions,
+            colors = colors,
+            centeredTitle = centeredTitle,
+            paddingValues = paddingValues,
+            navigationIcon = {
+                TopBarIconButton(
+                    imageVector = CloseIcon,
+                    onClick = onCloseClick,
+                    contentDescription = "Close",
+                    tint = feelinColors.gray09,
+                )
+            },
+            modifier = modifier,
+        )
+        if (showDivider) {
+            Spacer(
+                Modifier
+                    .fillMaxWidth()
+                    .size(1.dp)
+                    .background(feelinColors.gray01)
+            )
+        }
     }
 }
 
@@ -148,13 +247,8 @@ private fun TopAppBarBase(
             .padding(paddingValues),
     ) {
         if (navigationIcon != null) {
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-            ) {
-                CompositionLocalProvider(
-                    content = navigationIcon
-                )
+            Box(modifier = Modifier.align(Alignment.CenterStart)) {
+                CompositionLocalProvider(content = navigationIcon)
             }
         }
 
@@ -172,13 +266,8 @@ private fun TopAppBarBase(
             )
         }
 
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-        ) {
-            CompositionLocalProvider(
-                content = actionsRow
-            )
+        Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+            CompositionLocalProvider(content = actionsRow)
         }
     }
 }
@@ -211,6 +300,11 @@ fun TopBarIconButton(
 }
 
 @Preview(name = "Transparent TopBar - Light", showBackground = true)
+@Preview(
+    name = "Transparent TopBar - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
 @Composable
 private fun FeelinTransparentTopAppBarPreview() {
     FeelinTheme {
@@ -229,30 +323,12 @@ private fun FeelinTransparentTopAppBarPreview() {
     }
 }
 
+@Preview(name = "TopBar with Back - Light", showBackground = true)
 @Preview(
-    name = "Transparent TopBar - Dark",
+    name = "TopBar with Back - Dark",
     showBackground = true,
     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
-@Composable
-private fun FeelinTransparentTopAppBarDarkPreview() {
-    FeelinTheme {
-        Box {
-            FeelinTransparentTopAppBar(
-                onBackClick = {},
-                actions = {
-                    TopBarIconButton(
-                        imageVector = NotificationIcon,
-                        contentDescription = "알림",
-                        onClick = {}
-                    )
-                }
-            )
-        }
-    }
-}
-
-@Preview(name = "TopBar with Back - Light", showBackground = true)
 @Composable
 private fun FeelinTopAppBarWithBackPreview() {
     FeelinTheme {
@@ -266,17 +342,60 @@ private fun FeelinTopAppBarWithBackPreview() {
 }
 
 @Preview(
-    name = "TopBar with Back - Dark",
+    name = "TopBar no back with double icon - Light",
+    showBackground = true
+)
+@Preview(
+    name = "TopBar no back with double icon - Dark",
     showBackground = true,
     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun FeelinTopAppBarWithBackDarkPreview() {
+private fun FeelinTopAppBarDoubleIconPreview() {
     FeelinTheme {
         Box {
-            FeelinTopAppBarWithBack(
-                title = "필릭스 레코드",
-                onBackClick = {}
+            FeelinTopAppBarNoBack(
+                title = "마이페이지",
+                actions = {
+                    TopBarIconButton(
+                        imageVector = if (isSystemInDarkTheme()) SettingsIconDark else SettingsIconLight,
+                        contentDescription = "설정",
+                        tint = LocalFeelinColors.current.gray09,
+                        onClick = {}
+                    )
+                    TopBarIconButton(
+                        imageVector = NotificationIcon,
+                        contentDescription = "알림",
+                        tint = LocalFeelinColors.current.gray09,
+                        onClick = {}
+                    )
+                }
+            )
+        }
+    }
+}
+
+@Preview(name = "TopBar with Close - Light", showBackground = true)
+@Preview(
+    name = "TopBar with Close - Dark",
+    showBackground = true,
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
+)
+@Composable
+private fun FeelinTopAppBarWithClosePreview() {
+    FeelinTheme {
+        Box {
+            FeelinTopAppBarWithClose(
+                title = "노트 작성",
+                onCloseClick = {},
+                actions = {
+                    Text(
+                        text = "완료",
+                        style = FeelinTypography.body1.copy(
+                            color = LocalFeelinColors.current.systemDisable
+                        )
+                    )
+                }
             )
         }
     }
@@ -289,7 +408,7 @@ object FeelinTopAppBarDefaults {
     val ActionIconSize: Dp = 24.dp
     val ActionButtonSize: Dp = 24.dp
     val NavigationButtonSize: Dp = 24.dp
-    val ActionsSpacing: Dp = 4.dp
+    val ActionsSpacing: Dp = 20.dp
 
     val ActionIconColor: Color = LightGray09
     val NavigationIconColor: Color = LightGray09

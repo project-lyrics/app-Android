@@ -18,7 +18,7 @@ fun ProfileComponent(type: ProfileType, size: Int, modifier: Modifier = Modifier
     Image(
         painter = painterResource(profileData.value.enableAsset),
         contentDescription = "User Profile Image",
-        modifier = Modifier.size(size.dp),
+        modifier = modifier.size(size.dp),
     )
 }
 

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -61,7 +60,7 @@ fun FeelinBottomNavigation(
                     strokeWidth = 2f
                 )
             },
-        color = MaterialTheme.colorScheme.primaryContainer,
+        color = feelinColors.backgroundPrimary,
         tonalElevation = 12.dp
     ) {
         Row(
@@ -111,39 +110,13 @@ private fun FeelinBottomNavItem(
 }
 
 @Preview(name = "Bottom Navigation - Light", showBackground = true)
-@Composable
-private fun FeelinNavigationRailPreview() {
-    val items = listOf(
-        BottomNavItem(
-            activeIcon = { HomeActiveIcon },
-            inactiveIcon = { HomeInactiveIcon }
-        ),
-        BottomNavItem(
-            activeIcon = { NoteSearchingActiveIcon },
-            inactiveIcon = { NoteSearchingInactiveIcon }
-        ),
-        BottomNavItem(
-            activeIcon = { MyPageActiveIcon },
-            inactiveIcon = { MyPageInactiveIcon }
-        )
-    )
-
-    FeelinTheme {
-        FeelinBottomNavigation(
-            items = items,
-            selectedIndex = 0,
-            onItemSelect = {}
-        )
-    }
-}
-
 @Preview(
     name = "Bottom Navigation - Dark",
     showBackground = true,
     uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
-private fun FeelinNavigationRailDarkPreview() {
+private fun FeelinNavigationRailPreview() {
     val items = listOf(
         BottomNavItem(
             activeIcon = { HomeActiveIcon },

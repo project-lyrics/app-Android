@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,8 +36,8 @@ import com.lyrics.feelin.R
 import com.lyrics.feelin.core.data.datasource.sdk.util.toDomainModel
 import com.lyrics.feelin.core.designsystem.icon.FeelinTextIcon
 import com.lyrics.feelin.core.domain.model.OAuthProvider
-import com.lyrics.feelin.presentation.designsystem.theme.CaptionActiveTextStyle
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
+import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightBackgroundPrimary
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
@@ -49,6 +48,8 @@ private const val TAG = "LoginScreen"
 
 @Composable
 fun LoginScreen(
+    onSocialLoginClick: () -> Unit,
+    onContinueWithoutLogin: () -> Unit,
     modifier: Modifier = Modifier,
     loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
@@ -66,16 +67,14 @@ fun LoginScreen(
     }
 
     Column(
-        modifier =
-        Modifier
+        modifier = Modifier
             .fillMaxSize()
             .background(color = LightBackgroundPrimary),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Box(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .height(172.dp)
                 .fillMaxWidth(),
         ) {
@@ -91,18 +90,16 @@ fun LoginScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Icon(
-                    painter = FeelinTextIcon,
+                    imageVector = FeelinTextIcon,
                     contentDescription = "Feelin",
-                    modifier =
-                    Modifier
+                    modifier = Modifier
                         .width(212.dp)
                         .height(88.dp),
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Text(
                     text = "모두의 이야기로 채우는 우리의 음악 공간",
-                    style =
-                    MaterialTheme.typography.titleMedium.copy(
+                    style = FeelinTypography.title2.copy(
                         fontSize = 16.sp,
                         color = LightGray05,
                     ),
@@ -115,17 +112,23 @@ fun LoginScreen(
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Kakao,
             isLastLogin = (lastOAuthProvider == OAuthProvider.KAKAO),
-            onClick = { kakaoLogin(context, loginViewModel) }
+            onClick = {
+                kakaoLogin(context, loginViewModel)
+                onSocialLoginClick
+            }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SocialLoginButton(
             config = SocialLoginButtonConfigs.Google,
             isLastLogin = (lastOAuthProvider == OAuthProvider.GOOGLE),
-            onClick = { googleLogin(context, loginViewModel) }
+            onClick = {
+                googleLogin(context, loginViewModel)
+                onSocialLoginClick
+            }
         )
         Spacer(modifier = Modifier.height(12.dp))
         SignUpLaterTextButton(
-            onClick = { loginViewModel.continueWithoutLogin() },
+            onClick = onContinueWithoutLogin,
         )
     }
 }
@@ -212,8 +215,8 @@ private fun SignUpLaterTextButton(
     ) {
         Text(
             text = "회원가입은 나중에! 둘러볼게요",
-            style = CaptionActiveTextStyle.copy(fontSize = 14.sp, color = LightGray04),
-            modifier = Modifier.clickable(enabled = false, onClick = onClick),
+            style = FeelinTypography.active.copy(fontSize = 14.sp, color = LightGray04),
+            modifier = Modifier.clickable(onClick = onClick),
         )
     }
 }
@@ -222,6 +225,9 @@ private fun SignUpLaterTextButton(
 @Composable
 private fun LoginScreenPreview() {
     FeelinTheme {
-        LoginScreen()
+        LoginScreen(
+            onSocialLoginClick = {},
+            onContinueWithoutLogin = {}
+        )
     }
 }

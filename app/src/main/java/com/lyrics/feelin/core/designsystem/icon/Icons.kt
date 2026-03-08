@@ -1,9 +1,7 @@
 package com.lyrics.feelin.core.designsystem.icon
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
 import com.lyrics.feelin.R
 
@@ -39,6 +37,74 @@ val NotificationIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_notification)
 
-val FeelinTextIcon: Painter
+val FeelinTextIcon: ImageVector
     @Composable
-    get() = painterResource(id = R.drawable.feelin_text_logo)
+    get() = ImageVector.vectorResource(id = R.drawable.feelin_text_logo)
+
+val CheckBoxIconDisabled: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_check_box_disabled)
+
+val CheckBoxIconEnabled: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_check_box_enabled)
+
+val SettingsIconLight: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_light)
+
+val SettingsIconDark: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.settings_dark)
+
+val CaretIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.caret)
+
+val EmptyImageDarkIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.empty_image_dark)
+
+val EmptyImageLightIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.empty_image_light)
+
+val XCircleIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.xcircle)
+
+val SearchIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.search)
+
+val PlayIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.play)
+
+val SongListIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.song_list)
+
+val PlusIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.plus)
+
+val CloseIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_close)
+
+val CameraIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_camera)
+
+val CancelIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_cancel)
+
+val WritingIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.ic_writing)
+
+val FindSquareIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.find_square)

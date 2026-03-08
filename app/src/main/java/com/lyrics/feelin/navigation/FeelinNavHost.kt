@@ -1,6 +1,7 @@
 package com.lyrics.feelin.navigation
 
 import android.util.Log
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
@@ -17,10 +18,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navigation
 import com.lyrics.feelin.core.designsystem.component.BottomNavItem
 import com.lyrics.feelin.core.designsystem.component.FeelinBottomNavigation
 import com.lyrics.feelin.core.designsystem.icon.HomeActiveIcon
@@ -33,14 +37,170 @@ import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
+import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
+import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen
+import com.lyrics.feelin.presentation.view.onboarding.terms.OnboardingTermsScreen
+import com.lyrics.feelin.presentation.view.onboarding.welcome.WelcomeScreen
 
 @Composable
 fun FeelinNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = FeelinDestination.Login.route,
+    startDestination: String = FeelinDestination.OnboardingGraph.route,
 ) {
-    var selectedBottomBarIndex by remember { mutableIntStateOf(0) }
+    NavHost(
+        navController = navController,
+        startDestination = startDestination,
+        modifier = modifier.fillMaxSize()
+    ) {
+        onboardingNavGraph(navController)
+
+        mainNavGraph(navController)
+    }
+}
+
+private fun NavGraphBuilder.onboardingNavGraph(navController: NavHostController) {
+    navigation(
+        startDestination = FeelinDestination.Login.route,
+        route = FeelinDestination.OnboardingGraph.route
+    ) {
+        loginScreen(navController)
+        onboardingTermsScreen(navController)
+        onboardingGenderAgeScreen(navController)
+        onboardingProfileScreen(navController)
+        onboardingWelcomeScreen(navController)
+    }
+}
+
+private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
+    composable(FeelinDestination.Login.route) {
+        OnboardingScaffold {
+            LoginScreen(
+                onSocialLoginClick = {
+                    navController.navigate(FeelinDestination.OnboardingTerms.route)
+                },
+                onContinueWithoutLogin = { navController.navigateToMainGraph() }
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.onboardingTermsScreen(navController: NavHostController) {
+    composable(FeelinDestination.OnboardingTerms.route) {
+        OnboardingScaffold {
+            OnboardingTermsScreen(
+                onBackClick = { navController.popBackStack() },
+                onStartClick = { navController.navigate(FeelinDestination.OnboardingGenderAge.route) }
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.onboardingGenderAgeScreen(navController: NavHostController) {
+    composable(FeelinDestination.OnboardingGenderAge.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
+        OnboardingScaffold {
+            OnboardingGenderAgeScreen(
+                onBackClick = { navController.popBackStack() },
+                onSkipClick = { navController.navigate(FeelinDestination.OnboardingProfile.route) },
+                onNextClick = { gender, birthYear ->
+                    viewModel.saveGenderAndBirthYear(gender, birthYear)
+                    navController.navigate(FeelinDestination.OnboardingProfile.route)
+                }
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.onboardingProfileScreen(navController: NavHostController) {
+    composable(FeelinDestination.OnboardingProfile.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
+        OnboardingScaffold {
+            ProfileScreen(
+                onBackClick = { navController.popBackStack() },
+                onCompleteClick = { nickname, profileIndex ->
+                    viewModel.saveProfile(nickname, profileIndex)
+                    navController.navigate(FeelinDestination.OnboardingWelcome.route)
+                }
+            )
+        }
+    }
+}
+
+private fun NavGraphBuilder.onboardingWelcomeScreen(navController: NavHostController) {
+    composable(FeelinDestination.OnboardingWelcome.route) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
+        }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+
+        OnboardingScaffold {
+            WelcomeScreen(
+                onNavigateToMain = {
+                    viewModel.completeOnboarding()
+                    navController.navigateToMainGraph()
+                }
+            )
+        }
+    }
+}
+
+private fun NavHostController.navigateToMainGraph() {
+    navigate(FeelinDestination.MainGraph.route) {
+        popUpTo(FeelinDestination.OnboardingGraph.route) { inclusive = true }
+    }
+}
+
+private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
+    navigation(
+        startDestination = FeelinDestination.Home.route,
+        route = FeelinDestination.MainGraph.route
+    ) {
+        composable(FeelinDestination.Home.route) {
+            MainScaffold(
+                navController = navController,
+                selectedIndex = 0
+            ) {
+                CommunityMainScreen("필릭스", onBack = {})
+            }
+        }
+
+        composable(FeelinDestination.NoteSearch.route) {
+            MainScaffold(
+                navController = navController,
+                selectedIndex = 1
+            ) {
+                NoteSearchScreen()
+            }
+        }
+
+        composable(FeelinDestination.MyPage.route) {
+            MainScaffold(
+                navController = navController,
+                selectedIndex = 2
+            ) {
+                MyPageScreen()
+            }
+        }
+    }
+}
+
+@Composable
+private fun MainScaffold(
+    navController: NavHostController,
+    selectedIndex: Int,
+    content: @Composable () -> Unit
+) {
+    var selectedBottomBarIndex by remember { mutableIntStateOf(selectedIndex) }
 
     val bottomBarItems = remember {
         listOf(
@@ -60,50 +220,40 @@ fun FeelinNavHost(
     }
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
         bottomBar = {
-            if (selectedBottomBarIndex != -1) {
-                FeelinBottomNavigation(
-                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
-                    items = bottomBarItems,
-                    selectedIndex = selectedBottomBarIndex,
-                    onItemSelect = { index ->
-                        selectedBottomBarIndex = index
-                        val destination =
-                            when (index) {
-                                0 -> FeelinDestination.Home.route
-                                1 -> FeelinDestination.NoteSearch.route
-                                2 -> FeelinDestination.MyPage.route
-                                else -> FeelinDestination.Home.route
-                            }
-                        navController.navigate(destination) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                saveState = true
-                            }
-                            launchSingleTop = true
-                            restoreState = true
+            FeelinBottomNavigation(
+                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
+                items = bottomBarItems,
+                selectedIndex = selectedBottomBarIndex,
+                onItemSelect = { index ->
+                    selectedBottomBarIndex = index
+                    val destination = when (index) {
+                        0 -> FeelinDestination.Home.route
+                        1 -> FeelinDestination.NoteSearch.route
+                        2 -> FeelinDestination.MyPage.route
+                        else -> FeelinDestination.Home.route
+                    }
+                    navController.navigate(destination) {
+                        popUpTo(FeelinDestination.MainGraph.route) {
+                            saveState = true
                         }
-                    },
-                )
-            }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+            )
         },
         contentWindowInsets = WindowInsets(0)
     ) { paddingValues ->
+        // WindowInsets.navigationBars가 30dp 이하인 경우 Scaffold paddingValues 사용
         var bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-        // resources.getIdentifier()를 이용해 내비게이션 바의 크기를 받는 방법도 시도해 보았지만,
-        // 일부 경우에서는 크기를 제대로 가져오지 못합니다.
-        // 이에 아래의 측정치를 따라, 받아온 bottomPadding의 dp가 30 이하일 경우 WindowInsets이 아닌
-        // Scaffold에서 받은 bottomPadding을 하위 컴포저블에서 가지도록 수정합니다. @이대근
-        // 픽셀9 에뮬레이터 24dp, S23울트라 실기기 14.857142.dp, 노트10플러스 실기기 15.142858.dp
         if (bottomPadding <= 30.dp) {
             bottomPadding = paddingValues.calculateBottomPadding()
         }
-        Log.d("MainActivity", "FeelinNavHost: bottomPadding $bottomPadding")
-        Log.d("MainActivity", "FeelinNavHost: paddingValues $paddingValues")
+        Log.d("FeelinNavHost", "MainScaffold: bottomPadding=$bottomPadding")
 
-        NavHost(
-            navController = navController,
-            startDestination = startDestination,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
@@ -113,25 +263,24 @@ fun FeelinNavHost(
                     bottom = bottomPadding
                 )
         ) {
-            composable(FeelinDestination.Home.route) {
-                selectedBottomBarIndex = 0
-                CommunityMainScreen("필릭스", onBack = {})
-            }
+            content()
+        }
+    }
+}
 
-            composable(FeelinDestination.NoteSearch.route) {
-                selectedBottomBarIndex = 1
-                NoteSearchScreen()
-            }
-
-            composable(FeelinDestination.MyPage.route) {
-                selectedBottomBarIndex = 2
-                MyPageScreen()
-            }
-
-            composable(FeelinDestination.Login.route) {
-                selectedBottomBarIndex = -1
-                LoginScreen()
-            }
+@Composable
+private fun OnboardingScaffold(
+    content: @Composable () -> Unit
+) {
+    Scaffold(
+        modifier = Modifier.fillMaxSize(),
+    ) { paddingValues ->
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+        ) {
+            content()
         }
     }
 }

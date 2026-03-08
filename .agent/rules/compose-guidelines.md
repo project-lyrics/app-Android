@@ -1,7 +1,7 @@
 ---
+trigger: manual
 description: Jetpack Compose 개발 가이드라인과 모범 사례
 globs: ["**/presentation/**/*.kt", "**/ui/**/*.kt", "**/*Composable*.kt"]
-alwaysApply: false
 ---
 
 # Jetpack Compose 개발 가이드라인

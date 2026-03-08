@@ -1,8 +1,8 @@
 package com.lyrics.feelin.presentation.view.mypage
 
 import com.lyrics.feelin.core.designsystem.component.FilterButtonData
+import com.lyrics.feelin.core.domain.model.ProfileType
 import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
-import com.lyrics.feelin.presentation.view.component.profile.ProfileType
 
 enum class MyPageScreenStatus {
     INITIAL,

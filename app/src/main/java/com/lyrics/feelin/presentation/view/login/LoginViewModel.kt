@@ -16,14 +16,35 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "LoginViewModel"
 
+enum class LoginErrorType {
+    OAUTH_CLIENT,
+    OAUTH_SERVER,
+    BACKEND_SERVER,
+    UNKNOWN,
+}
+
+data class LoginError(
+    val type: LoginErrorType,
+    /** 에러 설명, 자체 서버에서 받는 에러에만 존재 */
+    val description: String? = null,
+    /** 에러 코드, 자체 서버에서 받는 에러에만 존재 */
+    val code: String? = null,
+)
+
+sealed interface LoginUiState {
+    data object Idle : LoginUiState
+    data object Success : LoginUiState
+    data object SignUpRequired : LoginUiState
+    data class Error(val error: LoginError) : LoginUiState
+}
+
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val authManager: AuthManager
 ) : ViewModel() {
-    // TODO(@이대근): LoginErrorCode가 아니라 로그인 에러를 통째로 뷰에 넘겨서, 다이얼로그를 표시할 수 있도록 해야 한다. 2025.10.13.
-    private val _loginErrorCode = MutableStateFlow<Int?>(null)
-    val loginErrorCode = _loginErrorCode.asStateFlow()
+    private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
+    val loginUiState = _loginUiState.asStateFlow()
 
     private val _lastOAuthProvider = MutableStateFlow<OAuthProvider?>(null)
     val lastOauthProvider = _lastOAuthProvider.asStateFlow()
@@ -37,21 +58,42 @@ class LoginViewModel @Inject constructor(
             authRepository.authenticateWithBackend(provider = oAuthProvider, oauthToken = token)
                 .onSuccess {
                     Log.d(TAG, "login success, provider: $oAuthProvider")
-                    // TODO(@이대근): 홈 화면에 대한 라우팅 신호 전달
+                    _loginUiState.value = LoginUiState.Success
                 }
                 .onFailure {
                     Log.e(TAG, "login failure", it)
 
                     if (it is FeelinServerException) {
                         if (it.description.errorCode == "02000") {
-                            // TODO(@이대근): 회원가입 화면에 대한 라우팅 신호 전달
+                            _loginUiState.value = LoginUiState.SignUpRequired
                             return@onFailure
                         }
+
+                        updateLoginError(
+                            type = LoginErrorType.BACKEND_SERVER,
+                            message = it.description.errorMessage,
+                            code = it.description.errorCode,
+                        )
+                        return@onFailure
                     }
 
-                    _loginErrorCode.value = -1 // 임의값, 프로퍼티 주석 참고
+                    updateLoginError(type = LoginErrorType.UNKNOWN)
                 }
         }
+    }
+
+    fun updateLoginError(type: LoginErrorType, message: String? = null, code: String? = null) {
+        _loginUiState.value = LoginUiState.Error(
+            error = LoginError(
+                type = type,
+                description = message,
+                code = code,
+            )
+        )
+    }
+
+    fun clearLoginUiState() {
+        _loginUiState.value = LoginUiState.Idle
     }
 
     fun continueWithoutLogin() {

@@ -59,11 +59,22 @@ fun LoginScreen(
 
     if (loginUiState is LoginUiState.Error) {
         if ((loginUiState as LoginUiState.Error).error.type == LoginErrorType.BACKEND_SERVER) {
-            // TODO(@이대근): 서버 에러만 표시하는 다이얼로그 표시 2026.03.15.
+            val title = (loginUiState as LoginUiState.Error).error.description
+            val code = (loginUiState as LoginUiState.Error).error.code
+            // MARK(@이대근): 추후 통합된 서버 에러 다이얼로그로 변경 2026.03.15.
+            FeelinModalDialog(
+                title = title!!,
+                description = "에러코드 [$code]",
+                confirmButtonText = "확인",
+                onConfirmButtonClick = {
+                    loginViewModel.clearLoginUiState()
+                },
+                isDismissButtonEnable = false,
+            )
         } else {
             FeelinModalDialog(
-                title = "로그인에 실패했습니다.",
-                description = "로그인을 다시 시도해주세요.",
+                title = "로그인 시도중 오류가 발생했어요.",
+                description = "에러코드 [-1]",
                 confirmButtonText = "확인",
                 onConfirmButtonClick = {
                     loginViewModel.clearLoginUiState()

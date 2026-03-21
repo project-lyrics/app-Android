@@ -56,7 +56,7 @@ class AuthRepository @Inject constructor(
         val result = authRemoteDataSource.signIn(
             provider = provider,
             oAuthToken = oauthToken,
-            deviceId = ""
+            deviceId = "android-develop-test-202603200009"
         ).onFailure { error ->
             if (error is HttpException) {
                 when (error.code()) {

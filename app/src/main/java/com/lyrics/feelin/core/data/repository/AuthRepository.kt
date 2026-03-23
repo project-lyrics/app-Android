@@ -57,22 +57,18 @@ class AuthRepository @Inject constructor(
             provider = provider,
             oAuthToken = oauthToken,
             deviceId = "android-develop-test-202603200009"
-        ).onFailure { error ->
-            if (error is HttpException) {
-                when (error.code()) {
-                    HttpURLConnection.HTTP_UNAUTHORIZED -> {
-                        val errorDto = error.toServerErrorDto()
-                        return Result.failure(exception = FeelinServerException(description = errorDto))
-                    }
-                    HttpURLConnection.HTTP_NOT_FOUND -> {
-                        // 회원가입 필요: OAuth 토큰만 임시 저장
-                        handleRegistrationRequired(provider, oauthToken)
-                        val errorDto = error.toServerErrorDto()
-                        return Result.failure(exception = FeelinServerException(description = errorDto))
-                    }
-                }
-            }
-            return Result.failure(exception = error)
+        )
+
+        val failure = result.exceptionOrNull()?.let { error ->
+            mapAuthenticationFailure(
+                error = error,
+                provider = provider,
+                oauthToken = oauthToken,
+            )
+        }
+
+        if (failure != null) {
+            return Result.failure(exception = failure)
         }
 
         val response = result.getOrThrow()
@@ -89,7 +85,33 @@ class AuthRepository @Inject constructor(
         return Result.success(Unit)
     }
 
-    /** 회원가입이 필요한 경우 OAuth 토큰 임시 저장 */
+    /** 자체 서버 로그인에서 예외가 발생할 때 알맞는 예외를 할당하고 그 이전에 필요한 동작을 진행합니다. */
+    private suspend fun mapAuthenticationFailure(
+        error: Throwable,
+        provider: OAuthProvider,
+        oauthToken: OAuthToken
+    ): Throwable {
+        if (error !is HttpException) {
+            return error
+        }
+
+        return when (error.code()) {
+            HttpURLConnection.HTTP_UNAUTHORIZED -> {
+                val errorDto = error.toServerErrorDto()
+                FeelinServerException(description = errorDto)
+            }
+
+            HttpURLConnection.HTTP_NOT_FOUND -> {
+                handleRegistrationRequired(provider, oauthToken)
+                val errorDto = error.toServerErrorDto()
+                FeelinServerException(description = errorDto)
+            }
+
+            else -> error
+        }
+    }
+
+    /** 자체 로그인 도중 회원가입이 필요한 경우 OAuth 토큰 임시 저장 */
     private suspend fun handleRegistrationRequired(
         provider: OAuthProvider,
         oauthToken: OAuthToken
@@ -175,6 +197,7 @@ class AuthRepository @Inject constructor(
 
     // ========== 회원탈퇴 ==========
 
+    @Suppress("ReturnCount") // TODO(@이대근): 구글 로그인 구현 이후 어노테이션 삭제 2026.03.23.
     suspend fun deleteAccount(): Result<Unit> {
         authRemoteDataSource.deleteAccount().onFailure {
             return Result.failure(exception = it)

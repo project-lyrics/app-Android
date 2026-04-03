@@ -35,6 +35,7 @@ import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 
 const val CARET_ROTATE_TO_RIGHT = 270f
 
@@ -101,31 +102,6 @@ private fun SettingCategoryDivider() {
         color = feelinColors.backgroundTertiary
     )
     Spacer(modifier = Modifier.height(24.dp))
-}
-
-@Composable
-private fun SettingMenuItem(title: String, onClick: () -> Unit) {
-    val feelinColors = LocalFeelinColors.current
-
-    Row(
-        modifier = Modifier
-            .padding(horizontal = 20.dp)
-            .fillMaxWidth()
-            .clickable(onClick = { onClick.invoke() }),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(title, style = FeelinTypography.body1.copy(color = feelinColors.gray09))
-
-        Icon(
-            imageVector = CaretIcon,
-            contentDescription = "enter $title",
-            tint = feelinColors.gray05,
-            modifier = Modifier
-                .size(18.dp)
-                .rotate(CARET_ROTATE_TO_RIGHT)
-        )
-    }
 }
 
 @Composable

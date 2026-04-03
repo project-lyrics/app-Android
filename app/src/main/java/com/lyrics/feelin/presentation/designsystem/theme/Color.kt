@@ -65,6 +65,8 @@ val DarkGray07 = Color(0xFF9292A0)
 val DarkGray08 = Color(0xFFB7B7C5)
 val DarkGray09 = Color(0xFFDCDCE6)
 
+const val KAKAO_YELLOW = 0xFFFFE400
+
 /**
  * Feelin 디자인시스템의 색 토큰입니다.
  *

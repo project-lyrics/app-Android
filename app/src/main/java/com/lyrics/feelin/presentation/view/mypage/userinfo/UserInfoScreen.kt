@@ -32,7 +32,10 @@ import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 import com.lyrics.feelin.presentation.view.mypage.component.UserLoginInfoItem
 
 @Composable
-fun UserInfoScreen(modifier: Modifier = Modifier) {
+fun UserInfoScreen(
+    onBackClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val feelinColors = LocalFeelinColors.current
 
     val loginInfoItem by remember { mutableStateOf(LoginInfoConfigs.kakao) }
@@ -49,7 +52,7 @@ fun UserInfoScreen(modifier: Modifier = Modifier) {
             FeelinTopAppBarWithBack(
                 title = "회원 정보",
                 showDivider = false,
-                onBackClick = { /* TODO: 내비게이션 pop */ }
+                onBackClick = onBackClick
             )
         }
     ) { contentPadding ->
@@ -115,6 +118,6 @@ private fun UserInfoCategoryDivider() {
 @Composable
 private fun UserInfoScreenPreview() {
     FeelinTheme {
-        UserInfoScreen()
+        UserInfoScreen(onBackClick = {})
     }
 }

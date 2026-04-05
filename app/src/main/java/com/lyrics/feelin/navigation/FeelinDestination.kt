@@ -6,6 +6,9 @@ sealed class FeelinDestination(
     // Navigation Graph Routes
     object OnboardingGraph : FeelinDestination(route = "onboarding_graph")
     object MainGraph : FeelinDestination(route = "main_graph")
+    object HomeGraph : FeelinDestination(route = "home_graph")
+    object NoteSearchGraph : FeelinDestination(route = "note_search_graph")
+    object MyPageGraph : FeelinDestination(route = "my_page_graph")
 
     // Onboarding Flow
     object Login : FeelinDestination(route = "login")
@@ -18,4 +21,6 @@ sealed class FeelinDestination(
     object Home : FeelinDestination(route = "home")
     object NoteSearch : FeelinDestination(route = "note_search")
     object MyPage : FeelinDestination(route = "my_page")
+    object Setting : FeelinDestination(route = "setting")
+    object UserInfo : FeelinDestination(route = "user_info")
 }

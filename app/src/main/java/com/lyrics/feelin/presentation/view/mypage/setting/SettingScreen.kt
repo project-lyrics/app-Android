@@ -28,7 +28,11 @@ import com.lyrics.feelin.presentation.view.mypage.component.SettingInfoItem
 import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 
 @Composable
-fun SettingScreen(modifier: Modifier = Modifier) {
+fun SettingScreen(
+    onBackClick: () -> Unit,
+    onUserInfoClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val feelinColors = LocalFeelinColors.current
 
     Scaffold(
@@ -40,7 +44,7 @@ fun SettingScreen(modifier: Modifier = Modifier) {
             FeelinTopAppBarWithBack(
                 title = "설정",
                 showDivider = false,
-                onBackClick = { /* TODO: 내비게이션 pop */ }
+                onBackClick = onBackClick
             )
         }
     ) { contentPadding ->
@@ -50,7 +54,7 @@ fun SettingScreen(modifier: Modifier = Modifier) {
         ) {
             Spacer(modifier = Modifier.height(40.dp))
 
-            SettingMenuItem(title = "회원 정보", onClick = {})
+            SettingMenuItem(title = "회원 정보", onClick = onUserInfoClick)
 
             SettingCategoryDivider()
 
@@ -100,6 +104,9 @@ private fun SettingCategoryDivider() {
 @Composable
 private fun SettingScreenPreview() {
     FeelinTheme {
-        SettingScreen()
+        SettingScreen(
+            onBackClick = {},
+            onUserInfoClick = {},
+        )
     }
 }

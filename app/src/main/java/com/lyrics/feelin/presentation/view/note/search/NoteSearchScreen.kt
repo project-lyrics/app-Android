@@ -1,52 +1,116 @@
 package com.lyrics.feelin.presentation.view.note.search
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
 import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 
+private const val SEARCH_DEBOUNCE_MS = 1000L
+private const val PAGINATION_PREFETCH_THRESHOLD = 3
+
+@OptIn(ExperimentalMaterial3Api::class, FlowPreview::class)
 @Composable
-fun NoteSearchScreen(modifier: Modifier = Modifier) {
+fun NoteSearchScreen(
+    modifier: Modifier = Modifier,
+    viewModel: NoteSearchViewModel = viewModel(),
+) {
+    val viewState by viewModel.viewState.collectAsState()
     val searchState = rememberTextFieldState()
-
-    val feelinColors = LocalFeelinColors.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    val dummySongData by remember {
-        mutableStateOf(
-            @Suppress("MagicNumber") // TODO(@이대근): 더미데이터 삭제시 삭제 2026.04.06.
-            List(12) { index ->
-                MusicComponentData.SearchNoteByMusic(
-                    imageUrl = "https://picsum.photos/200",
-                    songName = "Realize",
-                    artistName = "실리카겔",
-                    noteCount = 999 - index,
-                )
+    LaunchedEffect(Unit) {
+        viewModel.loadInitialNotes()
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { searchState.text.toString() }
+            .drop(1)
+            .debounce(SEARCH_DEBOUNCE_MS)
+            .distinctUntilChanged()
+            .collectLatest { keyword ->
+                viewModel.searchNotes(keyword)
             }
-        )
+    }
+
+    NoteSearchScreenContent(
+        viewState = viewState,
+        searchState = searchState,
+        onRefresh = viewModel::refresh,
+        onLoadNextPage = viewModel::loadNextPage,
+        onSearchClick = { keyboardController?.hide() },
+        onClearClick = { searchState.clearText() },
+        modifier = modifier,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun NoteSearchScreenContent(
+    viewState: NoteSearchViewState,
+    searchState: TextFieldState,
+    onRefresh: () -> Unit,
+    onLoadNextPage: () -> Unit,
+    onSearchClick: () -> Unit,
+    onClearClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val feelinColors = LocalFeelinColors.current
+    val listState = rememberLazyListState()
+    val currentOnLoadNextPage = rememberUpdatedState(onLoadNextPage)
+
+    LaunchedEffect(listState) {
+        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index }
+            .distinctUntilChanged()
+            .collectLatest { lastVisibleItemIndex ->
+                val totalItemsCount = listState.layoutInfo.totalItemsCount
+                if (lastVisibleItemIndex == null || totalItemsCount == 0) return@collectLatest
+
+                if (lastVisibleItemIndex >= totalItemsCount - PAGINATION_PREFETCH_THRESHOLD) {
+                    currentOnLoadNextPage.value()
+                }
+            }
     }
 
     Scaffold(
@@ -70,19 +134,64 @@ fun NoteSearchScreen(modifier: Modifier = Modifier) {
             FeelinSearchInputField(
                 state = searchState,
                 placeholder = "곡 검색",
-                onSearchClick = { keyboardController?.hide() },
-                onClearClick = { searchState.clearText() },
+                onSearchClick = onSearchClick,
+                onClearClick = onClearClick,
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            // TODO: 상단 스크롤로 새로고침
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(
-                    items = dummySongData,
-                    key = { it.hashCode() }
-                ) { song ->
-                    MusicComponent(song)
+            PullToRefreshBox(
+                isRefreshing = viewState.listStatus == NoteSearchListStatus.REFRESHING,
+                onRefresh = onRefresh,
+                modifier = Modifier.weight(1f),
+            ) {
+                when (viewState.screenStatus) {
+                    NoteSearchScreenStatus.INITIAL,
+                    NoteSearchScreenStatus.LOADING -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+
+                    NoteSearchScreenStatus.ERROR -> {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = viewState.errorMessage ?: "오류가 발생했습니다.",
+                            )
+                        }
+                    }
+
+                    NoteSearchScreenStatus.SUCCESS_LOAD -> {
+                        LazyColumn(
+                            state = listState,
+                            modifier = Modifier.fillMaxSize(),
+                        ) {
+                            items(
+                                items = viewState.searchResults,
+                                key = { "${it.songName}-${it.artistName}" },
+                            ) { song ->
+                                MusicComponent(song)
+                            }
+
+                            if (viewState.listStatus == NoteSearchListStatus.NEW_PAGE_LOADING) {
+                                item {
+                                    Box(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .padding(vertical = 16.dp),
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
-                // TODO: 마지막 요소 도달하면 페이지네이션
             }
         }
     }
@@ -93,6 +202,29 @@ fun NoteSearchScreen(modifier: Modifier = Modifier) {
 @Composable
 private fun NoteSearchScreenPreview() {
     FeelinTheme {
-        NoteSearchScreen()
+        val searchState = rememberTextFieldState()
+        NoteSearchScreenContent(
+            viewState = NoteSearchViewState.success(
+                searchResults = previewSongs(),
+                hasNextPage = true,
+            ),
+            searchState = searchState,
+            onRefresh = {},
+            onLoadNextPage = {},
+            onSearchClick = {},
+            onClearClick = { searchState.clearText() },
+        )
+    }
+}
+
+@Suppress("MagicNumber")
+private fun previewSongs(): List<MusicComponentData.SearchNoteByMusic> {
+    return List(8) { index ->
+        MusicComponentData.SearchNoteByMusic(
+            imageUrl = "https://picsum.photos/seed/note-search-preview-$index/200/200",
+            songName = "Realize $index",
+            artistName = "실리카겔",
+            noteCount = 999 - index,
+        )
     }
 }

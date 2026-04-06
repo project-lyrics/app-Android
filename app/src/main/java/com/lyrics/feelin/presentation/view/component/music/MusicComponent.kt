@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -67,6 +68,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
                 }
             )
         }
+
         is MusicComponentData.NoteWriteMusicExist -> {
             MusicComponentLayout(
                 modifier = modifier,
@@ -96,6 +98,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
                 }
             )
         }
+
         is MusicComponentData.SearchList -> {
             MusicComponentLayout(
                 modifier = modifier,
@@ -127,6 +130,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
                 }
             )
         }
+
         is MusicComponentData.SearchNoteByMusic -> {
             MusicComponentLayout(
                 modifier = modifier,
@@ -163,6 +167,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
                 }
             )
         }
+
         is MusicComponentData.NoteComponent -> {
             MusicComponentLayout(
                 modifier = modifier,
@@ -220,11 +225,17 @@ private fun MusicComponentLayout(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                modifier = Modifier.weight(1f),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 leadingContent()
                 Spacer(modifier = Modifier.width(10.dp))
-                textContent()
+                Box(modifier = Modifier.weight(1f)) {
+                    textContent()
+                }
             }
+            Spacer(modifier = Modifier.width(12.dp))
             trailingContent()
         }
         if (showDivider) {
@@ -240,14 +251,18 @@ private fun MusicComponentLayout(
 private fun MusicTextContent(songName: String, artistName: String) {
     val feelinColors = LocalFeelinColors.current
 
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(horizontalAlignment = Alignment.Start) {
         Text(
             text = songName,
-            style = FeelinTypography.body2.copy(color = feelinColors.gray08)
+            style = FeelinTypography.body2.copy(color = feelinColors.gray08),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             text = artistName,
             style = FeelinTypography.caption1.copy(color = feelinColors.gray04),
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
     }
 }

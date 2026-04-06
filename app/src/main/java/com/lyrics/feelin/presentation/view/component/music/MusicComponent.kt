@@ -130,7 +130,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
         is MusicComponentData.SearchNoteByMusic -> {
             MusicComponentLayout(
                 modifier = modifier,
-                showDivider = true,
+                showDivider = false,
                 leadingContent = {
                     AsyncImage(
                         model = state.imageUrl,

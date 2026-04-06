@@ -36,7 +36,7 @@ import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
-import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
 import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen

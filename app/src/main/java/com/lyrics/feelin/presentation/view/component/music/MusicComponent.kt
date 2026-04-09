@@ -3,6 +3,9 @@ package com.lyrics.feelin.presentation.view.component.music
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,9 +21,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,13 +41,32 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
+fun MusicComponent(
+    state: MusicComponentData,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+) {
     val feelinColors = LocalFeelinColors.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val isClickableVariant = state is MusicComponentData.SearchList || state is MusicComponentData.SearchNoteByMusic
+    val clickableModifier = if (isClickableVariant && onClick != null) {
+        modifier
+            .background(if (isPressed) feelinColors.systemPressedGreyScale else Color.Transparent)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            )
+    } else {
+        modifier
+    }
 
     when (state) {
         is MusicComponentData.NoteWriteEmpty -> {
             MusicComponentLayout(
-                modifier = modifier,
+                modifier = clickableModifier,
                 showDivider = true,
                 leadingContent = {
                     Image(
@@ -71,7 +96,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
 
         is MusicComponentData.NoteWriteMusicExist -> {
             MusicComponentLayout(
-                modifier = modifier,
+                modifier = clickableModifier,
                 showDivider = true,
                 leadingContent = {
                     AsyncImage(
@@ -101,7 +126,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
 
         is MusicComponentData.SearchList -> {
             MusicComponentLayout(
-                modifier = modifier,
+                modifier = clickableModifier,
                 showDivider = false,
                 leadingContent = {
                     AsyncImage(
@@ -133,7 +158,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
 
         is MusicComponentData.SearchNoteByMusic -> {
             MusicComponentLayout(
-                modifier = modifier,
+                modifier = clickableModifier,
                 showDivider = false,
                 leadingContent = {
                     AsyncImage(
@@ -170,7 +195,7 @@ fun MusicComponent(state: MusicComponentData, modifier: Modifier = Modifier) {
 
         is MusicComponentData.NoteComponent -> {
             MusicComponentLayout(
-                modifier = modifier,
+                modifier = clickableModifier,
                 showDivider = true,
                 leadingContent = {
                     AsyncImage(

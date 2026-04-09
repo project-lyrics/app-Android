@@ -81,6 +81,7 @@ fun NoteSearchScreen(
         onLoadNextPage = viewModel::loadNextPage,
         onSearchClick = { keyboardController?.hide() },
         onClearClick = { searchState.clearText() },
+        onMusicClick = {},
         modifier = modifier,
     )
 }
@@ -94,6 +95,7 @@ private fun NoteSearchScreenContent(
     onLoadNextPage: () -> Unit,
     onSearchClick: () -> Unit,
     onClearClick: () -> Unit,
+    onMusicClick: (MusicComponentData.SearchNoteByMusic) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -174,7 +176,10 @@ private fun NoteSearchScreenContent(
                                 items = viewState.searchResults,
                                 key = { "${it.songName}-${it.artistName}" },
                             ) { song ->
-                                MusicComponent(song)
+                                MusicComponent(
+                                    state = song,
+                                    onClick = { onMusicClick(song) }
+                                )
                             }
 
                             if (viewState.listStatus == NoteSearchListStatus.NEW_PAGE_LOADING) {
@@ -213,6 +218,7 @@ private fun NoteSearchScreenPreview() {
             onLoadNextPage = {},
             onSearchClick = {},
             onClearClick = { searchState.clearText() },
+            onMusicClick = {},
         )
     }
 }

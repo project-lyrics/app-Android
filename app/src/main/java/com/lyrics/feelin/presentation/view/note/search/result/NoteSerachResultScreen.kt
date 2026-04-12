@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -33,6 +36,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,13 +44,17 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -64,8 +72,9 @@ private enum class HeaderState {
 
 private const val HEADER_EXPAND_OFFSET_THRESHOLD = 50
 private const val COLLAPSED_TOP_BAR_HEIGHT = 56
-private const val TOPIC_FILTER_ROW_HEIGHT = 56
+private const val TOPIC_FILTER_ROW_HEIGHT = 50
 private const val FILTER_ROW_INDEX = 1
+private const val DUMMY_SELECTED_FILTER_INDEX = 1
 
 private val dummyNotes = List(size = 10) { index ->
     if (index % 2 == 0) {
@@ -236,20 +245,57 @@ private fun ExpandedSearchHeader(modifier: Modifier = Modifier) {
 @Composable
 private fun TopicFilterRow(modifier: Modifier = Modifier) {
     val feelinColors = LocalFeelinColors.current
+    val density = LocalDensity.current
+    val selectedIndex = DUMMY_SELECTED_FILTER_INDEX
+    val textWidths = remember { mutableStateMapOf<Int, Int>() }
 
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .height(TOPIC_FILTER_ROW_HEIGHT.dp)
             .background(feelinColors.backgroundPrimary)
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .drawBehind {
+                val strokeWidth = 1.dp.toPx()
+                val y = size.height - strokeWidth / 2
+                drawLine(
+                    color = feelinColors.gray01,
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = strokeWidth
+                )
+            }
+            .padding(horizontal = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(32.dp),
     ) {
         dummyTopicFilters.forEachIndexed { index, label ->
-            TopicFilterChip(
-                text = label,
-                selected = index == 0,
-                modifier = Modifier.padding(end = 8.dp),
-            )
+            val isSelected = index == selectedIndex
+            Box(
+                modifier = Modifier.fillMaxHeight(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(
+                    text = label,
+                    style = FeelinTypography.title3.copy(
+                        color = if (isSelected) feelinColors.gray09 else feelinColors.gray04,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        lineHeight = 20.sp,
+                    ),
+                    onTextLayout = { textLayoutResult ->
+                        textWidths[index] = textLayoutResult.size.width
+                    },
+                )
+                if (isSelected) {
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .width(with(density) { (textWidths[index] ?: 0).toDp() })
+                            .height(2.dp)
+                            .background(feelinColors.gray09)
+                    )
+                }
+            }
         }
     }
 }
@@ -292,37 +338,6 @@ private fun SearchedSongSummaryCard(modifier: Modifier = Modifier) {
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun TopicFilterChip(
-    text: String,
-    selected: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    val feelinColors = LocalFeelinColors.current
-
-    Surface(
-        modifier = modifier,
-        shape = RoundedCornerShape(999.dp),
-        color = if (selected) {
-            feelinColors.gray09
-        } else {
-            feelinColors.gray01
-        },
-    ) {
-        Text(
-            text = text,
-            style = FeelinTypography.caption2.copy(
-                color = if (selected) {
-                    feelinColors.backgroundPrimary
-                } else {
-                    feelinColors.gray05
-                },
-            ),
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
-        )
     }
 }
 

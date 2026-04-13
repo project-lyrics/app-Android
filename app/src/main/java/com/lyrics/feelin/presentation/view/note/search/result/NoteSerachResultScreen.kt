@@ -325,6 +325,7 @@ private fun ExpandedSearchHeader(
     }
 }
 
+// MARK(@이대근): 추후 홈화면과 아티스트 화면에서도 사용해야 하니 컴포넌트화를 고려 2026.04.13.
 @Composable
 private fun TopicFilterRow(
     selectedNoteTopic: NoteTopic,

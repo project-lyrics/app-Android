@@ -4,6 +4,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,11 +29,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -55,13 +58,15 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
+import com.lyrics.feelin.core.domain.enum.NoteTopic
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.util.label
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
-import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
 import kotlinx.coroutines.flow.collectLatest
 
 private enum class HeaderState {
@@ -74,18 +79,9 @@ private const val HEADER_EXPAND_OFFSET_THRESHOLD = 50
 private const val COLLAPSED_TOP_BAR_HEIGHT = 56
 private const val TOPIC_FILTER_ROW_HEIGHT = 50
 private const val FILTER_ROW_INDEX = 1
-private const val DUMMY_SELECTED_FILTER_INDEX = 1
+private const val PAGINATION_PREFETCH_THRESHOLD = 3
 
-private val dummyNotes = List(size = 10) { index ->
-    if (index % 2 == 0) {
-        NoteComponentData.sample()
-    } else {
-        NoteComponentData.sampleNoLyrics()
-    }
-}
-
-// TODO(@이대근): enum화 2026.04.13.
-private val dummyTopicFilters = listOf("전체노트", "해석공유", "자유", "질문")
+private val noteTopicFilters = NoteTopic.entries
 
 /**
  * 검색 결과 화면의 헤더 노출 상태를 계산한다.
@@ -131,7 +127,11 @@ private fun rememberHeaderState(listState: LazyListState): HeaderState {
 }
 
 @Composable
-fun NoteSearchResultScreen(modifier: Modifier = Modifier) {
+fun NoteSearchResultScreen(
+    modifier: Modifier = Modifier,
+    viewModel: NoteSearchResultViewModel = viewModel(),
+) {
+    val viewState by viewModel.viewState.collectAsState()
     val feelinColors = LocalFeelinColors.current
     val density = LocalDensity.current
     val listState = rememberLazyListState()
@@ -149,6 +149,19 @@ fun NoteSearchResultScreen(modifier: Modifier = Modifier) {
             when {
                 filterItem == null -> listState.firstVisibleItemIndex > FILTER_ROW_INDEX
                 else -> filterItem.offset <= pinnedFilterOffsetPx
+            }
+        }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val totalItems = listState.layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: 0
+            lastVisibleItemIndex to totalItems
+        }.collectLatest { (lastVisible, total) ->
+            // 스크롤 끝에 닿고 나서 로드하면 체감 지연이 커서, 마지막 몇 개 전부터 다음 페이지를 미리 요청한다.
+            if (total > 0 && lastVisible >= total - PAGINATION_PREFETCH_THRESHOLD) {
+                viewModel.loadNextPage()
             }
         }
     }
@@ -171,22 +184,85 @@ fun NoteSearchResultScreen(modifier: Modifier = Modifier) {
                     .background(feelinColors.backgroundPrimary),
             ) {
                 item {
-                    ExpandedSearchHeader()
+                    ExpandedSearchHeader(
+                        totalNoteCount = viewState.totalNoteCount,
+                        songSummary = viewState.songSummary,
+                    )
                 }
 
                 item {
                     if (isFilterPinned) {
                         Spacer(modifier = Modifier.height(TOPIC_FILTER_ROW_HEIGHT.dp))
                     } else {
-                        TopicFilterRow()
+                        TopicFilterRow(
+                            selectedNoteTopic = viewState.selectedNoteTopic,
+                            onTopicSelect = viewModel::selectTopic,
+                        )
                     }
                 }
 
-                items(dummyNotes) { note ->
-                    NoteComponent(
-                        noteData = note,
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
-                    )
+                if (
+                    viewState.status == NoteSearchResultStatus.INITIAL ||
+                    viewState.status == NoteSearchResultStatus.LOADING
+                ) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(300.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                } else if (viewState.status == NoteSearchResultStatus.ERROR) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(300.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = viewState.errorMessage ?: "오류가 발생했습니다.",
+                                style = FeelinTypography.body1.copy(color = feelinColors.gray04),
+                            )
+                        }
+                    }
+                } else if (viewState.status == NoteSearchResultStatus.EMPTY) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .height(300.dp),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Text(
+                                text = "작성된 노트가 없어요.",
+                                style = FeelinTypography.body1.copy(color = feelinColors.gray04),
+                            )
+                        }
+                    }
+                } else {
+                    items(viewState.notes) { note ->
+                        NoteComponent(
+                            noteData = note,
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                        )
+                    }
+
+                    if (viewState.isNextPageLoading) {
+                        item {
+                            Box(
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .padding(vertical = 16.dp),
+                                contentAlignment = Alignment.Center,
+                            ) {
+                                CircularProgressIndicator(modifier = Modifier.size(24.dp))
+                            }
+                        }
+                    }
                 }
             }
 
@@ -211,14 +287,21 @@ fun NoteSearchResultScreen(modifier: Modifier = Modifier) {
                     .align(Alignment.TopCenter)
                     .padding(top = pinnedFilterTopPadding),
             ) {
-                TopicFilterRow()
+                TopicFilterRow(
+                    selectedNoteTopic = viewState.selectedNoteTopic,
+                    onTopicSelect = viewModel::selectTopic,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ExpandedSearchHeader(modifier: Modifier = Modifier) {
+private fun ExpandedSearchHeader(
+    totalNoteCount: Int,
+    songSummary: NoteSearchResultSongSummary,
+    modifier: Modifier = Modifier
+) {
     val feelinColors = LocalFeelinColors.current
 
     Column(
@@ -227,13 +310,13 @@ private fun ExpandedSearchHeader(modifier: Modifier = Modifier) {
             .padding(horizontal = 20.dp),
     ) {
         Spacer(modifier = Modifier.height(28.dp))
-        SearchedSongSummaryCard()
+        SearchedSongSummaryCard(songSummary = songSummary)
         Spacer(modifier = Modifier.height(42.dp))
         Text(
             text = buildAnnotatedString {
                 append("노트 ")
                 withStyle(style = SpanStyle(color = feelinColors.brandPrimary)) {
-                    append("13")
+                    append(totalNoteCount.toString())
                 }
             },
             style = FeelinTypography.heading3.copy(color = feelinColors.gray09),
@@ -243,11 +326,14 @@ private fun ExpandedSearchHeader(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun TopicFilterRow(modifier: Modifier = Modifier) {
+private fun TopicFilterRow(
+    selectedNoteTopic: NoteTopic,
+    onTopicSelect: (NoteTopic) -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val feelinColors = LocalFeelinColors.current
     val density = LocalDensity.current
-    val selectedIndex = DUMMY_SELECTED_FILTER_INDEX
-    val textWidths = remember { mutableStateMapOf<Int, Int>() }
+    val textWidths = remember { mutableStateMapOf<NoteTopic, Int>() }
 
     Row(
         modifier = modifier
@@ -268,14 +354,16 @@ private fun TopicFilterRow(modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(32.dp),
     ) {
-        dummyTopicFilters.forEachIndexed { index, label ->
-            val isSelected = index == selectedIndex
+        noteTopicFilters.forEach { topic ->
+            val isSelected = topic == selectedNoteTopic
             Box(
-                modifier = Modifier.fillMaxHeight(),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .clickable { onTopicSelect(topic) },
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = label,
+                    text = topic.label,
                     style = FeelinTypography.title3.copy(
                         color = if (isSelected) feelinColors.gray09 else feelinColors.gray04,
                         fontSize = 14.sp,
@@ -283,14 +371,14 @@ private fun TopicFilterRow(modifier: Modifier = Modifier) {
                         lineHeight = 20.sp,
                     ),
                     onTextLayout = { textLayoutResult ->
-                        textWidths[index] = textLayoutResult.size.width
+                        textWidths[topic] = textLayoutResult.size.width
                     },
                 )
                 if (isSelected) {
                     Box(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
-                            .width(with(density) { (textWidths[index] ?: 0).toDp() })
+                            .width(with(density) { (textWidths[topic] ?: 0).toDp() })
                             .height(2.dp)
                             .background(feelinColors.gray09)
                     )
@@ -301,7 +389,10 @@ private fun TopicFilterRow(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SearchedSongSummaryCard(modifier: Modifier = Modifier) {
+private fun SearchedSongSummaryCard(
+    songSummary: NoteSearchResultSongSummary,
+    modifier: Modifier = Modifier,
+) {
     val feelinColors = LocalFeelinColors.current
 
     Surface(
@@ -314,7 +405,7 @@ private fun SearchedSongSummaryCard(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
         ) {
             AsyncImage(
-                model = "https://i.scdn.co/image/ab67616d0000b2730b1e2a5d990c3e198effa85b",
+                model = songSummary.imageUrl,
                 contentDescription = null,
                 modifier = Modifier
                     .size(72.dp)
@@ -325,13 +416,13 @@ private fun SearchedSongSummaryCard(modifier: Modifier = Modifier) {
                 modifier = Modifier.padding(start = 14.dp),
             ) {
                 Text(
-                    text = "시퍼런 봄",
+                    text = songSummary.title,
                     style = FeelinTypography.title2.copy(color = feelinColors.gray09),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    text = "쏜애플",
+                    text = songSummary.artistName,
                     style = FeelinTypography.body2.copy(color = feelinColors.gray05),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

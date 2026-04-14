@@ -27,6 +27,7 @@ class NoteSearchResultViewModel : ViewModel() {
             _viewState.value = _viewState.value.copy(
                 status = NoteSearchResultStatus.LOADING,
                 notes = emptyList(),
+                totalNoteCount = 0,
                 nextCursor = null,
                 isNextPageLoading = false,
                 errorMessage = null,

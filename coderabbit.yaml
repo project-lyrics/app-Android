@@ -12,6 +12,9 @@ reviews:
     - "!**/R.kt"
     - "!**/*.png"
     - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.webp"
+    - "!**/*.avif"
     - "!**/*.svg"
 
   path_instructions:

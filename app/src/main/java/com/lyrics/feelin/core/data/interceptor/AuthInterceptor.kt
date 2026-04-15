@@ -69,7 +69,7 @@ class TokenAuthenticator @Inject constructor(
     @Suppress("TooGenericExceptionCaught")
     override fun authenticate(route: okhttp3.Route?, response: Response): okhttp3.Request? {
         // 이미 재시도한 경우 중단 (무한 루프 방지)
-        if (response.request.header("Authorization") == null) {
+        if (response.priorResponse != null) {
             return null
         }
 

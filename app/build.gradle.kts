@@ -19,6 +19,15 @@ val localProperties = Properties().apply {
     }
 }
 
+val kakaoNativeAppKey = localProperties
+    .getProperty("kakao.native.app.key.dev")
+    .orEmpty()
+    .ifBlank {
+        error(
+            "Missing Kakao native app key. Set 'kakao.native.app.key.dev' in local.properties."
+        )
+    }
+
 android {
     namespace = "com.lyrics.feelin"
     compileSdk = 36
@@ -33,10 +42,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         // Application 클래스에서 사용할 BuildConfig 생성
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"${localProperties["kakao.native.app.key.dev"]}\"")
+        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoNativeAppKey\"")
 
         // AndroidManifest.xml에서 사용할 placeholder
-        manifestPlaceholders["kakaoNativeAppKey"] = localProperties["kakao.native.app.key.dev"] ?: ""
+        manifestPlaceholders["kakaoNativeAppKey"] = kakaoNativeAppKey
     }
 
     buildTypes {

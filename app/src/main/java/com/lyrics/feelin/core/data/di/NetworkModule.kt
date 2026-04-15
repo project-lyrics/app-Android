@@ -1,6 +1,7 @@
 package com.lyrics.feelin.core.data.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.lyrics.feelin.BuildConfig
 import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
 import com.lyrics.feelin.core.data.interceptor.AppVersionInterceptor
 import com.lyrics.feelin.core.data.interceptor.AuthInterceptor
@@ -28,7 +29,17 @@ object NetworkModule {
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
         val httpLoggingInterceptor =
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            HttpLoggingInterceptor().apply {
+                level = if (BuildConfig.DEBUG) {
+                    HttpLoggingInterceptor.Level.BASIC
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
+                redactHeader("Authorization")
+                redactHeader("Cookie")
+                redactHeader("Proxy-Authorization")
+                redactHeader("Set-Cookie")
+            }
 
         return OkHttpClient.Builder()
             .addInterceptor(appVersionInterceptor)

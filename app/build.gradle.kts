@@ -19,12 +19,15 @@ val localProperties = Properties().apply {
     }
 }
 
+// 로컬은 local.properties를 우선 사용하고, CI는 env로 폴백하되 둘 다 없으면 즉시 실패한다.
 val kakaoNativeAppKey = localProperties
     .getProperty("kakao.native.app.key.dev")
     .orEmpty()
+    .ifBlank { System.getenv("KAKAO_NATIVE_APP_KEY_DEV").orEmpty() }
     .ifBlank {
         error(
-            "Missing Kakao native app key. Set 'kakao.native.app.key.dev' in local.properties."
+            "Missing Kakao native app key. Set 'kakao.native.app.key.dev' in local.properties " +
+                "or KAKAO_NATIVE_APP_KEY_DEV in the environment."
         )
     }
 

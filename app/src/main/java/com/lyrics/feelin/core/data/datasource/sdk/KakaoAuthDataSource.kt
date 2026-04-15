@@ -73,6 +73,6 @@ class KakaoAuthDataSource {
     }
 
     companion object {
-        private const val TAG = "KakaoAuthDataService"
+        private const val TAG = "KakaoAuthDataSource"
     }
 }

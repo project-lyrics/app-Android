@@ -4,12 +4,13 @@ import android.util.Log
 import com.kakao.sdk.common.model.ClientError
 import com.kakao.sdk.common.model.ClientErrorCause
 import com.kakao.sdk.user.UserApiClient
+import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine
 
 @Singleton
-class KakaoAuthDataSource {
+class KakaoAuthDataSource @Inject constructor() {
     suspend fun logout(): Result<Unit> = suspendCancellableCoroutine { continuation ->
         UserApiClient.instance.logout { error ->
             when {

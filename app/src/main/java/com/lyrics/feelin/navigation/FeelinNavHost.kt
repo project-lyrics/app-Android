@@ -77,10 +77,10 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
     composable(FeelinDestination.Login.route) {
         OnboardingScaffold {
             LoginScreen(
-                onSocialLoginClick = {
+                onSignUp = {
                     navController.navigate(FeelinDestination.OnboardingTerms.route)
                 },
-                onContinueWithoutLogin = { navController.navigateToMainGraph() }
+                onContinueToMain = { navController.navigateToMainGraph() }
             )
         }
     }

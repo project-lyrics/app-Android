@@ -1,6 +1,6 @@
 package com.lyrics.feelin.presentation.view.component.note
 
-import com.lyrics.feelin.presentation.view.component.profile.ProfileType
+import com.lyrics.feelin.core.domain.model.ProfileType
 import kotlinx.datetime.LocalDateTime
 
 /**

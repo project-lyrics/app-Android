@@ -55,12 +55,12 @@ import com.lyrics.feelin.core.designsystem.icon.EmptyImageDarkIcon
 import com.lyrics.feelin.core.designsystem.icon.EmptyImageLightIcon
 import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
+import com.lyrics.feelin.core.domain.model.ProfileType
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
-import com.lyrics.feelin.presentation.view.component.profile.ProfileType
 
 private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
 

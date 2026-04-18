@@ -60,10 +60,11 @@ fun LoginScreen(
     if (loginUiState is LoginUiState.Error) {
         if ((loginUiState as LoginUiState.Error).error.type == LoginErrorType.BACKEND_SERVER) {
             val title = (loginUiState as LoginUiState.Error).error.description
+                ?: "로그인 시도중 오류가 발생했어요."
             val code = (loginUiState as LoginUiState.Error).error.code
             // MARK(@이대근): 추후 통합된 서버 에러 다이얼로그로 변경 2026.03.15.
             FeelinModalDialog(
-                title = title!!,
+                title = title,
                 description = "에러코드 [$code]",
                 confirmButtonText = "확인",
                 onConfirmButtonClick = {

@@ -4,6 +4,7 @@ import com.lyrics.feelin.core.data.datasource.local.AuthLocalDataSource
 import com.lyrics.feelin.core.domain.model.OAuthProvider
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -30,6 +31,7 @@ class AuthManager @Inject constructor(
     private val authLocalDataSource: AuthLocalDataSource
 ) {
     private val managerScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    internal val initializationComplete = CompletableDeferred<Unit>()
 
     // ========== 자체 백엔드 서버 JWT (메모리 캐시) ==========
 
@@ -68,30 +70,34 @@ class AuthManager @Inject constructor(
      */
     private fun loadTokensFromStorage() {
         managerScope.launch {
-            // Backend JWT 토큰 로드
-            val accessToken = authLocalDataSource.getAccessToken()
-            _accessToken.value = accessToken
+            try {
+                // Backend JWT 토큰 로드
+                val accessToken = authLocalDataSource.getAccessToken()
+                _accessToken.value = accessToken
 
-            val refreshToken = authLocalDataSource.getRefreshToken()
-            _refreshToken.value = refreshToken
+                val refreshToken = authLocalDataSource.getRefreshToken()
+                _refreshToken.value = refreshToken
 
-            val userId = authLocalDataSource.getUserId()
-            _userId.value = userId
+                val userId = authLocalDataSource.getUserId()
+                _userId.value = userId
 
-            // OAuth 정보 로드
-            val oauthProviderString = authLocalDataSource.getOAuthProvider()
-            _oauthProvider.value = oauthProviderString?.let {
-                OAuthProvider.fromString(it)
+                // OAuth 정보 로드
+                val oauthProviderString = authLocalDataSource.getOAuthProvider()
+                _oauthProvider.value = oauthProviderString?.let {
+                    OAuthProvider.fromString(it)
+                }
+
+                val oauthAccessToken = authLocalDataSource.getOAuthAccessToken()
+                _oauthAccessToken.value = oauthAccessToken
+
+                val oauthRefreshToken = authLocalDataSource.getOAuthRefreshToken()
+                _oauthRefreshToken.value = oauthRefreshToken
+
+                // 로그인 상태 판단: Refresh Token 존재 여부로 결정
+                _isLoggedIn.value = refreshToken != null
+            } finally {
+                initializationComplete.complete(Unit)
             }
-
-            val oauthAccessToken = authLocalDataSource.getOAuthAccessToken()
-            _oauthAccessToken.value = oauthAccessToken
-
-            val oauthRefreshToken = authLocalDataSource.getOAuthRefreshToken()
-            _oauthRefreshToken.value = oauthRefreshToken
-
-            // 로그인 상태 판단: Refresh Token 존재 여부로 결정
-            _isLoggedIn.value = refreshToken != null
         }
     }
 

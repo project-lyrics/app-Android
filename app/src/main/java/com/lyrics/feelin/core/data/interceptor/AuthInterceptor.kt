@@ -34,8 +34,10 @@ class AuthInterceptor @Inject constructor(
         val originalRequest = chain.request()
 
         // Access Token이 없으면 원본 요청 그대로 전송
-        val accessToken = authManager.accessToken.value
-            ?: return chain.proceed(originalRequest)
+        val accessToken = runBlocking {
+            authManager.initializationComplete.await()
+            authManager.accessToken.value
+        } ?: return chain.proceed(originalRequest)
 
         // Authorization 헤더 추가
         val authenticatedRequest = originalRequest.newBuilder()
@@ -73,12 +75,14 @@ class TokenAuthenticator @Inject constructor(
             return null
         }
 
-        // Refresh Token으로 갱신 시도
-        val refreshToken = authManager.refreshToken.value ?: return null
-        val dto = RefreshTokenRequestDto(refreshToken)
-
         return runBlocking {
             try {
+                authManager.initializationComplete.await()
+
+                // Refresh Token으로 갱신 시도
+                val refreshToken = authManager.refreshToken.value ?: return@runBlocking null
+                val dto = RefreshTokenRequestDto(refreshToken)
+
                 // 토큰 재발급 API 호출
                 val tokenResponse = authApiService.get().reIssueToken(dto).body()
                     ?: return@runBlocking null

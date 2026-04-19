@@ -66,7 +66,11 @@ private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = hiltViewModel()) {
+fun MyPageScreen(
+    onSettingClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: MyPageViewModel = hiltViewModel(),
+) {
     val myPageState by viewModel.myPageScreenState.collectAsState()
 
     val feelinColors = LocalFeelinColors.current
@@ -95,7 +99,7 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = hil
                         imageVector = SettingsIconLight,
                         contentDescription = "설정",
                         tint = feelinColors.gray09,
-                        onClick = { viewModel.clearDataStore() } // TODO: 테스트용(로그아웃) - 추후 제거할 것
+                        onClick = onSettingClick
                     )
                     TopBarIconButton(
                         imageVector = NotificationIcon,
@@ -320,6 +324,6 @@ fun MyPageScreen(modifier: Modifier = Modifier, viewModel: MyPageViewModel = hil
 @Composable
 private fun MyPageScreenPreview() {
     FeelinTheme {
-        MyPageScreen()
+        MyPageScreen(onSettingClick = {})
     }
 }

@@ -38,7 +38,7 @@ import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
-import com.lyrics.feelin.presentation.view.note.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
 import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen

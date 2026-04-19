@@ -155,6 +155,7 @@ complexity:
         "**/jvmTest/**",
         "**/jsTest/**",
         "**/iosTest/**",
+        "**/datasource/**", # DataSource 클래스는 함수 수 제한 제외 (CRUD 메서드 다수 포함)
       ]
     thresholdInFiles: 11
     thresholdInClasses: 11
@@ -957,10 +958,11 @@ style:
     active: false
   ReturnCount:
     active: true
-    max: 2
+    max: 3
     excludedFunctions:
       - "equals"
       - "fromProfileType" # ProfileComponentData.fromProfileType 함수 제외
+      - "authenticate" # OkHttp Authenticator RTR 전략에서 조기 리턴 활용
     excludeLabeled: false
     excludeReturnFromLambda: true
     excludeGuardClauses: true

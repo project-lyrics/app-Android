@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.em
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.KAKAO_YELLOW
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray01
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 
@@ -126,8 +127,6 @@ fun SocialLoginButton(
 }
 
 object SocialLoginButtonConfigs {
-    private const val KAKAO_YELLOW = 0xFFFFE400
-
     val Kakao = SocialLoginButtonConfig(
         iconRes = R.drawable.kakao_login_icon,
         text = "카카오로 시작하기",

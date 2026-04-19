@@ -36,6 +36,8 @@ import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
+import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
+import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
@@ -77,10 +79,10 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
     composable(FeelinDestination.Login.route) {
         OnboardingScaffold {
             LoginScreen(
-                onSocialLoginClick = {
+                onSignUp = {
                     navController.navigate(FeelinDestination.OnboardingTerms.route)
                 },
-                onContinueWithoutLogin = { navController.navigateToMainGraph() }
+                onContinueToMain = { navController.navigateToMainGraph() }
             )
         }
     }
@@ -162,33 +164,50 @@ private fun NavHostController.navigateToMainGraph() {
 
 private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
     navigation(
-        startDestination = FeelinDestination.Home.route,
+        startDestination = FeelinDestination.HomeGraph.route,
         route = FeelinDestination.MainGraph.route
     ) {
-        composable(FeelinDestination.Home.route) {
-            MainScaffold(
-                navController = navController,
-                selectedIndex = 0
-            ) {
-                CommunityMainScreen("필릭스", onBack = {})
+        navigation(startDestination = FeelinDestination.Home.route, route = FeelinDestination.HomeGraph.route) {
+            composable(FeelinDestination.Home.route) {
+                MainScaffold(navController = navController, selectedIndex = 0) {
+                    CommunityMainScreen("필릭스", onBack = {})
+                }
             }
         }
 
-        composable(FeelinDestination.NoteSearch.route) {
-            MainScaffold(
-                navController = navController,
-                selectedIndex = 1
-            ) {
-                NoteSearchScreen()
+        navigation(
+            startDestination = FeelinDestination.NoteSearch.route,
+            route = FeelinDestination.NoteSearchGraph.route
+        ) {
+            composable(FeelinDestination.NoteSearch.route) {
+                MainScaffold(navController = navController, selectedIndex = 1) {
+                    NoteSearchScreen()
+                }
             }
         }
 
-        composable(FeelinDestination.MyPage.route) {
-            MainScaffold(
-                navController = navController,
-                selectedIndex = 2
-            ) {
-                MyPageScreen()
+        navigation(startDestination = FeelinDestination.MyPage.route, route = FeelinDestination.MyPageGraph.route) {
+            composable(FeelinDestination.MyPage.route) {
+                MainScaffold(navController = navController, selectedIndex = 2) {
+                    MyPageScreen(
+                        onSettingClick = { navController.navigate(FeelinDestination.Setting.route) }
+                    )
+                }
+            }
+
+            composable(FeelinDestination.Setting.route) {
+                MainScaffold(navController = navController, selectedIndex = 2) {
+                    SettingScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) }
+                    )
+                }
+            }
+
+            composable(FeelinDestination.UserInfo.route) {
+                MainScaffold(navController = navController, selectedIndex = 2) {
+                    UserInfoScreen(onBackClick = { navController.popBackStack() })
+                }
             }
         }
     }
@@ -229,10 +248,10 @@ private fun MainScaffold(
                 onItemSelect = { index ->
                     selectedBottomBarIndex = index
                     val destination = when (index) {
-                        0 -> FeelinDestination.Home.route
-                        1 -> FeelinDestination.NoteSearch.route
-                        2 -> FeelinDestination.MyPage.route
-                        else -> FeelinDestination.Home.route
+                        0 -> FeelinDestination.HomeGraph.route
+                        1 -> FeelinDestination.NoteSearchGraph.route
+                        2 -> FeelinDestination.MyPageGraph.route
+                        else -> FeelinDestination.HomeGraph.route
                     }
                     navController.navigate(destination) {
                         popUpTo(FeelinDestination.MainGraph.route) {

@@ -1,0 +1,99 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+reviews:
+  profile: chill
+  poem: false
+
+  path_filters:
+    - "!**/.gradle/**"
+    - "!**/build/**"
+    - "!**/generated/**"
+    - "!**/R.java"
+    - "!**/R.kt"
+    - "!**/*.png"
+    - "!**/*.jpg"
+    - "!**/*.jpeg"
+    - "!**/*.webp"
+    - "!**/*.avif"
+    - "!**/*.svg"
+
+  path_instructions:
+    - path: "**/*.kt"
+      instructions: |
+        Focus on correctness, performance, and responsibility boundaries.
+
+        Prioritize:
+        - Main-thread blocking work and unsafe threading behavior.
+        - Missing coroutine cancellation or lifecycle-aware coroutine handling.
+        - Context leaks and other Android lifecycle-related leak risks.
+        - State management bugs, null-safety issues, and Compose state misuse.
+        - Unnecessary recomposition, repeated large collection recomputation, and missing remember/derivedStateOf/stable keys where they materially affect behavior or performance.
+        - Cases where a Composable, ViewModel, or utility clearly takes on multiple responsibilities and separation would materially improve maintainability.
+
+        Ignore:
+        - Formatting, import ordering, and other style-only feedback already covered by detekt.
+        - Subjective readability feedback unless it points to a concrete correctness, maintenance, or performance risk.
+
+    - path: "app/src/main/AndroidManifest.xml"
+      instructions: |
+        Focus on Android app exposure and security-sensitive manifest decisions.
+
+        Prioritize:
+        - Exported component decisions and whether external entry points are intentional.
+        - Permission scope that appears broader than the changed functionality requires.
+        - Backup and data extraction related security implications.
+
+        Ignore:
+        - cleartextTrafficPermitted usage for this project.
+
+    - path: "**/*.gradle.kts"
+      instructions: |
+        Review Gradle Kotlin DSL changes for dependency and build configuration risk.
+
+        Prioritize:
+        - Deprecated or risky Gradle/Android configuration.
+        - Duplicate dependencies or inconsistent dependency declarations.
+        - Version changes with meaningful compatibility or maintenance risk.
+
+        Ignore:
+        - Formatting and ordering-only comments.
+
+    - path: "gradle/libs.versions.toml"
+      instructions: |
+        Review version catalog changes for dependency consistency and compatibility risk.
+
+        Prioritize:
+        - Duplicate or conflicting versions.
+        - Inconsistent versions within the same library family.
+        - Introduction of alpha/beta dependencies.
+        - Android Gradle Plugin, Kotlin, and Compose BOM compatibility risks.
+
+    - path: "app/src/main/res/xml/backup_rules.xml"
+      instructions: |
+        Focus on backup scope, sensitive data exposure, and unintended data restoration risk.
+
+    - path: "app/src/main/res/xml/data_extraction_rules.xml"
+      instructions: |
+        Focus on data extraction scope, sensitive data exposure, and unintended device-transfer risk.
+
+    # Keep androidTest included for now. @이대근 2026.04.14.
+    # WHY: current repo has very little instrumentation test code, so preserving review coverage is more valuable than reducing noise.
+    # If UI/instrumentation tests grow noisy later, exclude !**/androidTest/** or narrow review scope instead.
+    - path: "**/androidTest/**/*.kt"
+      instructions: |
+        Focus only on meaningful test logic issues.
+
+        Prioritize:
+        - Missing assertions for the intended behavior.
+        - Assertions or setup that make the test logically invalid.
+
+        Ignore:
+        - Boilerplate, matcher verbosity, and style-only feedback.
+
+  tools:
+    detekt:
+      enabled: true
+      config_file: app/detekt.yml
+
+# MARK: If this project later standardizes string resource usage or multilingual support,
+# add a path instruction for app/src/main/res/values/strings.xml. @이대근 2026.04.14.

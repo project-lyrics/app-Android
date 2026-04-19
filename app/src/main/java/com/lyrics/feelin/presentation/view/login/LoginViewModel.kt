@@ -1,23 +1,99 @@
 package com.lyrics.feelin.presentation.view.login
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerException
+import com.lyrics.feelin.core.data.manager.AuthManager
+import com.lyrics.feelin.core.data.repository.AuthRepository
 import com.lyrics.feelin.core.domain.model.OAuthProvider
+import com.lyrics.feelin.core.domain.model.OAuthToken
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
-class LoginViewModel : ViewModel() {
-    private val _loginErrorCode = MutableStateFlow<Int?>(null)
-    val loginErrorCode = _loginErrorCode.asStateFlow()
+private const val TAG = "LoginViewModel"
+
+enum class LoginErrorType {
+    OAUTH_CLIENT,
+    OAUTH_SERVER,
+    BACKEND_SERVER,
+    UNKNOWN,
+}
+
+data class LoginError(
+    val type: LoginErrorType,
+    /** 에러 설명, 자체 서버에서 받는 에러에만 존재 */
+    val description: String? = null,
+    /** 에러 코드, 자체 서버에서 받는 에러에만 존재 */
+    val code: String? = null,
+)
+
+sealed interface LoginUiState {
+    data object Idle : LoginUiState
+    data object Success : LoginUiState
+    data object SignUpRequired : LoginUiState
+    data class Error(val error: LoginError) : LoginUiState
+}
+
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
+    private val authManager: AuthManager
+) : ViewModel() {
+    private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Idle)
+    val loginUiState = _loginUiState.asStateFlow()
 
     private val _lastOAuthProvider = MutableStateFlow<OAuthProvider?>(null)
     val lastOauthProvider = _lastOAuthProvider.asStateFlow()
 
-    fun kakaoLogin() {
-        TODO("Not yet implemented")
+    fun getLastOAuthProvider() {
+        _lastOAuthProvider.value = authManager.oauthProvider.value
     }
 
-    fun googleLogin() {
-        TODO("Not yet implemented")
+    fun login(oAuthProvider: OAuthProvider, token: OAuthToken) {
+        viewModelScope.launch {
+            authRepository.authenticateWithBackend(provider = oAuthProvider, oauthToken = token)
+                .onSuccess {
+                    Log.d(TAG, "login success, provider: $oAuthProvider")
+                    _loginUiState.value = LoginUiState.Success
+                }
+                .onFailure {
+                    Log.e(TAG, "login failure", it)
+
+                    if (it is FeelinServerException) {
+                        if (it.description.errorCode == "02000") {
+                            _loginUiState.value = LoginUiState.SignUpRequired
+                            return@onFailure
+                        }
+
+                        updateLoginError(
+                            type = LoginErrorType.BACKEND_SERVER,
+                            message = it.description.errorMessage,
+                            code = it.description.errorCode,
+                        )
+                        return@onFailure
+                    }
+
+                    updateLoginError(type = LoginErrorType.UNKNOWN)
+                }
+        }
+    }
+
+    fun updateLoginError(type: LoginErrorType, message: String? = null, code: String? = null) {
+        _loginUiState.value = LoginUiState.Error(
+            error = LoginError(
+                type = type,
+                description = message,
+                code = code,
+            )
+        )
+    }
+
+    fun clearLoginUiState() {
+        _loginUiState.value = LoginUiState.Idle
     }
 
     fun continueWithoutLogin() {

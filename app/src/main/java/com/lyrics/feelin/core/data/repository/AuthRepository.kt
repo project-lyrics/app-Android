@@ -1,5 +1,6 @@
 package com.lyrics.feelin.core.data.repository
 
+import com.lyrics.feelin.core.data.datasource.local.DeviceIdDataStore
 import com.lyrics.feelin.core.data.datasource.remote.AuthRemoteDataSource
 import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerException
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
@@ -33,6 +34,7 @@ class AuthRepository @Inject constructor(
     private val kakaoAuthDataSource: KakaoAuthDataSource,
     @Suppress("UnusedPrivateMember") // TODO(@이대근): 구글 로그인 구현 중 어노테이션 제거할 것. 2025.10.02.
     private val googleAuthDataSource: GoogleAuthDataSource,
+    private val deviceIdDataStore: DeviceIdDataStore,
     private val authRemoteDataSource: AuthRemoteDataSource,
     private val authManager: AuthManager
 ) {
@@ -53,10 +55,12 @@ class AuthRepository @Inject constructor(
         provider: OAuthProvider,
         oauthToken: OAuthToken
     ): Result<Unit> {
+        val deviceId = deviceIdDataStore.getOrCreate()
+
         val result = authRemoteDataSource.signIn(
             provider = provider,
             oAuthToken = oauthToken,
-            deviceId = "android-develop-test-202603200009"
+            deviceId = deviceId
         )
 
         val failure = result.exceptionOrNull()?.let { error ->
@@ -179,7 +183,9 @@ class AuthRepository @Inject constructor(
 
     // ========== 회원가입 ==========
 
-    suspend fun signUp(deviceId: String, signUpData: SignUpData): Result<Unit> {
+    suspend fun signUp(signUpData: SignUpData): Result<Unit> {
+        val deviceId = deviceIdDataStore.getOrCreate()
+
         val tokenResult =
             authRemoteDataSource.signUp(deviceId = deviceId, signUpData = signUpData).onFailure {
                 return Result.failure(exception = it)

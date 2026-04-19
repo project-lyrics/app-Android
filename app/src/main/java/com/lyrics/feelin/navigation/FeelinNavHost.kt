@@ -79,14 +79,10 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
     composable(FeelinDestination.Login.route) {
         OnboardingScaffold {
             LoginScreen(
-                onSocialLoginClick = {
+                onSignUp = {
                     navController.navigate(FeelinDestination.OnboardingTerms.route)
                 },
-                onContinueWithoutLogin = {
-                    navController.navigate(FeelinDestination.MainGraph.route) {
-                        popUpTo(FeelinDestination.OnboardingGraph.route) { inclusive = true }
-                    }
-                }
+                onContinueToMain = { navController.navigateToMainGraph() }
             )
         }
     }
@@ -153,12 +149,16 @@ private fun NavGraphBuilder.onboardingWelcomeScreen(navController: NavHostContro
             WelcomeScreen(
                 onNavigateToMain = {
                     viewModel.completeOnboarding()
-                    navController.navigate(FeelinDestination.MainGraph.route) {
-                        popUpTo(FeelinDestination.OnboardingGraph.route) { inclusive = true }
-                    }
+                    navController.navigateToMainGraph()
                 }
             )
         }
+    }
+}
+
+private fun NavHostController.navigateToMainGraph() {
+    navigate(FeelinDestination.MainGraph.route) {
+        popUpTo(FeelinDestination.OnboardingGraph.route) { inclusive = true }
     }
 }
 

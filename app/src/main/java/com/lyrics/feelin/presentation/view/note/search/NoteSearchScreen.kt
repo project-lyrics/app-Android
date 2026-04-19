@@ -36,7 +36,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
-import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarNoBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
@@ -120,10 +120,9 @@ private fun NoteSearchScreenContent(
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
             .background(color = feelinColors.backgroundPrimary),
         topBar = {
-            FeelinTopAppBarWithBack(
+            FeelinTopAppBarNoBack(
                 title = "노트 검색",
                 showDivider = false,
-                onBackClick = { /* TODO: 이전화면 라우팅*/ }
             )
         }
     ) { contentPadding ->

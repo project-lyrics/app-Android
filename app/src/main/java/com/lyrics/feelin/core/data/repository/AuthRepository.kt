@@ -55,8 +55,7 @@ class AuthRepository @Inject constructor(
     ): Result<Unit> {
         val result = authRemoteDataSource.signIn(
             provider = provider,
-            oAuthToken = oauthToken,
-            deviceId = "android-develop-test-202603200009"
+            oAuthToken = oauthToken
         )
 
         val failure = result.exceptionOrNull()?.let { error ->
@@ -179,9 +178,9 @@ class AuthRepository @Inject constructor(
 
     // ========== 회원가입 ==========
 
-    suspend fun signUp(deviceId: String, signUpData: SignUpData): Result<Unit> {
+    suspend fun signUp(signUpData: SignUpData): Result<Unit> {
         val tokenResult =
-            authRemoteDataSource.signUp(deviceId = deviceId, signUpData = signUpData).onFailure {
+            authRemoteDataSource.signUp(signUpData = signUpData).onFailure {
                 return Result.failure(exception = it)
             }
 

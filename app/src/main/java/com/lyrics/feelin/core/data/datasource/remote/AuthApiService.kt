@@ -3,27 +3,30 @@ package com.lyrics.feelin.core.data.datasource.remote
 import com.lyrics.feelin.core.data.datasource.remote.dto.RefreshTokenRequestDto
 import com.lyrics.feelin.core.data.datasource.remote.dto.ServerStatusResponseDto
 import com.lyrics.feelin.core.data.datasource.remote.dto.SignInRequestDto
+import com.lyrics.feelin.core.data.interceptor.DEVICE_ID_MARKER_HEADER
 import com.lyrics.feelin.core.domain.model.AuthToken
 import com.lyrics.feelin.core.domain.model.SignUpData
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
-import retrofit2.http.Header
+import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface AuthApiService {
     @DELETE("api/v1/auth/delete")
     suspend fun deleteAccount(): Response<ServerStatusResponseDto>
 
+    @Headers("$DEVICE_ID_MARKER_HEADER: true")
     @POST("api/v1/auth/sign-in")
-    suspend fun signIn(@Header("Device-Id") deviceId: String, @Body body: SignInRequestDto): Response<AuthToken>
+    suspend fun signIn(@Body body: SignInRequestDto): Response<AuthToken>
 
     @DELETE("api/v1/auth/sign-out")
     suspend fun signOut(): Response<ServerStatusResponseDto>
 
+    @Headers("$DEVICE_ID_MARKER_HEADER: true")
     @POST("api/v1/auth/sign-up")
-    suspend fun signUp(@Header("Device-Id") deviceId: String, @Body body: SignUpData): Response<AuthToken>
+    suspend fun signUp(@Body body: SignUpData): Response<AuthToken>
 
     @POST("api/v1/auth/token")
     suspend fun reIssueToken(@Body refreshTokenDto: RefreshTokenRequestDto): Response<AuthToken>

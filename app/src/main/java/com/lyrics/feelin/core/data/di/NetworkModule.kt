@@ -5,6 +5,7 @@ import com.lyrics.feelin.BuildConfig
 import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
 import com.lyrics.feelin.core.data.interceptor.AppVersionInterceptor
 import com.lyrics.feelin.core.data.interceptor.AuthInterceptor
+import com.lyrics.feelin.core.data.interceptor.DeviceIdInterceptor
 import com.lyrics.feelin.core.data.interceptor.TokenAuthenticator
 import dagger.Module
 import dagger.Provides
@@ -25,6 +26,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(
         appVersionInterceptor: AppVersionInterceptor,
+        deviceIdInterceptor: DeviceIdInterceptor,
         authInterceptor: AuthInterceptor,
         tokenAuthenticator: TokenAuthenticator
     ): OkHttpClient {
@@ -39,10 +41,12 @@ object NetworkModule {
                 redactHeader("Cookie")
                 redactHeader("Proxy-Authorization")
                 redactHeader("Set-Cookie")
+                redactHeader("Device-Id")
             }
 
         return OkHttpClient.Builder()
             .addInterceptor(appVersionInterceptor)
+            .addInterceptor(deviceIdInterceptor)
             .addInterceptor(authInterceptor)
             .addInterceptor(httpLoggingInterceptor)
             .authenticator(tokenAuthenticator)

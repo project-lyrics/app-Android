@@ -14,10 +14,9 @@ import javax.inject.Singleton
 class AuthRemoteDataSource @Inject constructor(
     private val authApiService: AuthApiService
 ) {
-    suspend fun signIn(provider: OAuthProvider, oAuthToken: OAuthToken, deviceId: String): Result<AuthToken> {
+    suspend fun signIn(provider: OAuthProvider, oAuthToken: OAuthToken): Result<AuthToken> {
         return safeApiCall {
             authApiService.signIn(
-                deviceId = deviceId,
                 body = SignInRequestDto(
                     socialAccessToken = oAuthToken.accessToken,
                     authProvider = provider
@@ -31,8 +30,8 @@ class AuthRemoteDataSource @Inject constructor(
     }
 
     // TODO(@이대근): 온보딩 화면 제작하면서 연동 필요 2025.10.12.
-    suspend fun signUp(deviceId: String, signUpData: SignUpData): Result<AuthToken> {
-        return safeApiCall { authApiService.signUp(deviceId = deviceId, body = signUpData) }
+    suspend fun signUp(signUpData: SignUpData): Result<AuthToken> {
+        return safeApiCall { authApiService.signUp(body = signUpData) }
     }
 
     suspend fun deleteAccount(): Result<ServerStatusResponseDto> {

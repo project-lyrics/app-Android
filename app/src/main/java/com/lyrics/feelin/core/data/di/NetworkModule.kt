@@ -41,6 +41,7 @@ object NetworkModule {
                 redactHeader("Cookie")
                 redactHeader("Proxy-Authorization")
                 redactHeader("Set-Cookie")
+                redactHeader("Device-Id")
             }
 
         return OkHttpClient.Builder()

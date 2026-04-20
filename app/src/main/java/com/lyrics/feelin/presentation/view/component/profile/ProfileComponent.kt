@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lyrics.feelin.core.domain.model.ProfileType
 
 @Composable
 fun ProfileComponent(type: ProfileType, size: Int, modifier: Modifier = Modifier) {

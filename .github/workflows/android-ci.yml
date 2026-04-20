@@ -9,6 +9,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # PR CI는 compile/build 체크만 하므로, fork PR에서는 dummy 값으로도 통과 가능하게 둔다.
+  KAKAO_NATIVE_APP_KEY_DEV: ${{ secrets.KAKAO_NATIVE_APP_KEY_DEV || 'dummy-ci-kakao-key' }}
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

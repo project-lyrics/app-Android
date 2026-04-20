@@ -129,6 +129,7 @@ private fun rememberHeaderState(listState: LazyListState): HeaderState {
 @Composable
 fun NoteSearchResultScreen(
     modifier: Modifier = Modifier,
+    onBackClick: () -> Unit = {},
     viewModel: NoteSearchResultViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -275,7 +276,7 @@ fun NoteSearchResultScreen(
                 FeelinTopAppBarWithBack(
                     title = "노트 검색",
                     showDivider = false,
-                    onBackClick = {},
+                    onBackClick = onBackClick,
                 )
             }
 

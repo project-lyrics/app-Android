@@ -10,6 +10,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.first
 
 private val Context.deviceIdDataStore: DataStore<Preferences> by preferencesDataStore(name = "device_id")
 
@@ -18,16 +19,20 @@ class DeviceIdDataStore @Inject constructor(
     @param:ApplicationContext private val context: Context
 ) {
     suspend fun getOrCreate(): String {
-        var deviceId: String? = null
-
-        context.deviceIdDataStore.edit { preferences ->
-            deviceId = preferences[DEVICE_ID_KEY]
-                ?: UUID.randomUUID().toString().also { generatedDeviceId ->
-                    preferences[DEVICE_ID_KEY] = generatedDeviceId
-                }
+        val existingDeviceId = context.deviceIdDataStore.data.first()[DEVICE_ID_KEY]
+        if (existingDeviceId != null) {
+            return existingDeviceId
         }
 
-        return checkNotNull(deviceId)
+        val generatedDeviceId = UUID.randomUUID().toString()
+        var storedDeviceId = generatedDeviceId
+
+        context.deviceIdDataStore.edit { preferences ->
+            storedDeviceId = preferences[DEVICE_ID_KEY]
+                ?: generatedDeviceId.also { preferences[DEVICE_ID_KEY] = it }
+        }
+
+        return storedDeviceId
     }
 
     companion object {

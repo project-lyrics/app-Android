@@ -75,7 +75,7 @@ private enum class HeaderState {
     BarHidden,
 }
 
-private const val HEADER_EXPAND_OFFSET_THRESHOLD = 50
+private val HEADER_EXPANSION_SCROLL_THRESHOLD = 50.dp
 private const val COLLAPSED_TOP_BAR_HEIGHT = 56
 private const val TOPIC_FILTER_ROW_HEIGHT = 50
 private const val FILTER_ROW_INDEX = 1
@@ -91,6 +91,10 @@ private val noteTopicFilters = NoteTopic.entries
  */
 @Composable
 private fun rememberHeaderState(listState: LazyListState): HeaderState {
+    val density = LocalDensity.current
+    val headerExpansionScrollThresholdPx = with(density) {
+        HEADER_EXPANSION_SCROLL_THRESHOLD.roundToPx()
+    }
     var headerState by remember { mutableStateOf(HeaderState.Expanded) }
     var isScrollingUp by remember { mutableStateOf(true) }
     var previousIndex by remember { mutableIntStateOf(listState.firstVisibleItemIndex) }
@@ -110,7 +114,7 @@ private fun rememberHeaderState(listState: LazyListState): HeaderState {
                 isScrollingUp = true
             }
 
-            headerState = if (currentIndex == 0 && currentOffset < HEADER_EXPAND_OFFSET_THRESHOLD) {
+            headerState = if (currentIndex == 0 && currentOffset < headerExpansionScrollThresholdPx) {
                 HeaderState.Expanded
             } else if (isScrollingUp) {
                 HeaderState.CollapsedBarOnly

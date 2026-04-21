@@ -54,6 +54,7 @@ private const val PAGINATION_PREFETCH_THRESHOLD = 3
 @Composable
 fun NoteSearchScreen(
     modifier: Modifier = Modifier,
+    onMusicClick: (MusicComponentData.SearchNoteByMusic) -> Unit = {},
     viewModel: NoteSearchViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -81,7 +82,7 @@ fun NoteSearchScreen(
         onLoadNextPage = viewModel::loadNextPage,
         onSearchClick = { keyboardController?.hide() },
         onClearClick = { searchState.clearText() },
-        onMusicClick = {},
+        onMusicClick = onMusicClick,
         modifier = modifier,
     )
 }

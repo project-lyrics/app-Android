@@ -20,6 +20,7 @@ sealed class FeelinDestination(
     // Main Flow (with Bottom Navigation)
     object Home : FeelinDestination(route = "home")
     object NoteSearch : FeelinDestination(route = "note_search")
+    object NoteSearchResult : FeelinDestination(route = "note_search_result")
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")

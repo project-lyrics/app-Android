@@ -39,6 +39,7 @@ import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
+import com.lyrics.feelin.presentation.view.note.search.result.NoteSearchResultScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
 import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen
@@ -181,7 +182,17 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         ) {
             composable(FeelinDestination.NoteSearch.route) {
                 MainScaffold(navController = navController, selectedIndex = 1) {
-                    NoteSearchScreen()
+                    NoteSearchScreen(
+                        onMusicClick = {
+                            navController.navigate(FeelinDestination.NoteSearchResult.route)
+                        }
+                    )
+                }
+            }
+
+            composable(FeelinDestination.NoteSearchResult.route) {
+                MainScaffold(navController = navController, selectedIndex = 1) {
+                    NoteSearchResultScreen(onBackClick = { navController.popBackStack() })
                 }
             }
         }

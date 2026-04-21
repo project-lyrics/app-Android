@@ -132,8 +132,8 @@ private fun rememberHeaderState(listState: LazyListState): HeaderState {
 
 @Composable
 fun NoteSearchResultScreen(
+    onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    onBackClick: () -> Unit = {},
     viewModel: NoteSearchResultViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -447,6 +447,6 @@ private fun SearchedSongSummaryCard(
 @Composable
 private fun NoteSearchResultScreenPreview() {
     FeelinTheme {
-        NoteSearchResultScreen()
+        NoteSearchResultScreen(onBackClick = {})
     }
 }

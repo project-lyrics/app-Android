@@ -1,5 +1,6 @@
 package com.lyrics.feelin.presentation.view.onboarding
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerException
@@ -16,6 +17,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+
+private const val TAG = "OnboardingViewModel"
 
 @HiltViewModel
 class OnboardingViewModel @Inject constructor(
@@ -102,9 +105,10 @@ class OnboardingViewModel @Inject constructor(
                             profileType = profileType,
                             state = updatedState,
                         )
-                    }.onSuccess {
-                        _onboardingUiState.value = OnboardingUiState.SignUpSuccess
-                    }.onFailure(::updateSignUpError)
+                    }.onFailure { error ->
+                        Log.e(TAG, "Failed to sync local onboarding cache after signup", error)
+                    }
+                    _onboardingUiState.value = OnboardingUiState.SignUpSuccess
                 }
                 .onFailure(::updateSignUpError)
         }

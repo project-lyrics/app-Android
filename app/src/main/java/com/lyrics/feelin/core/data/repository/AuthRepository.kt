@@ -181,6 +181,11 @@ class AuthRepository @Inject constructor(
     suspend fun signUp(signUpData: SignUpData): Result<Unit> {
         val tokenResult =
             authRemoteDataSource.signUp(signUpData = signUpData).onFailure {
+                if (it is HttpException) {
+                    return Result.failure(
+                        exception = FeelinServerException(description = it.toServerErrorDto()),
+                    )
+                }
                 return Result.failure(exception = it)
             }
 

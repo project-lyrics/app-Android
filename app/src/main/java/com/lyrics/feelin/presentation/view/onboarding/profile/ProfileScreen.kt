@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
@@ -39,6 +40,7 @@ import com.lyrics.feelin.core.designsystem.component.ProfileCharacter
 import com.lyrics.feelin.core.designsystem.component.ProfileCharacterBottomSheet
 import com.lyrics.feelin.core.designsystem.component.validateNickname
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon
+import com.lyrics.feelin.core.domain.model.ProfileType
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
@@ -46,8 +48,12 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 @Composable
 fun ProfileScreen(
     onBackClick: () -> Unit,
-    onCompleteClick: (nickname: String, profileIndex: Int) -> Unit,
-    modifier: Modifier = Modifier
+    onCompleteClick: (nickname: String, profileType: ProfileType) -> Unit,
+    modifier: Modifier = Modifier,
+    isLoading: Boolean = false,
+    errorTitle: String? = null,
+    errorDescription: String? = null,
+    onErrorConfirmClick: () -> Unit = {},
 ) {
     val feelinColors = LocalFeelinColors.current
     val nicknameState = remember { TextFieldState(initialText = "") }
@@ -55,7 +61,8 @@ fun ProfileScreen(
     var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_1) }
 
     val isNicknameValid = nicknameState.text.isNotEmpty() &&
-        validateNickname(nicknameState.text) == NicknameValidationResult.Valid
+        validateNickname(nicknameState.text) == NicknameValidationResult.Valid &&
+        !isLoading
 
     Column(
         modifier = modifier
@@ -118,7 +125,12 @@ fun ProfileScreen(
             CompleteButton(
                 text = "완료",
                 enabled = isNicknameValid,
-                onClick = { onCompleteClick(nicknameState.text.toString(), selectedProfile.ordinal) }
+                onClick = {
+                    onCompleteClick(
+                        nicknameState.text.toString(),
+                        selectedProfile.profileType,
+                    )
+                }
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -133,6 +145,16 @@ fun ProfileScreen(
                 showBottomSheet = false
             },
             selectedProfile = selectedProfile
+        )
+    }
+
+    if (errorTitle != null && errorDescription != null) {
+        FeelinModalDialog(
+            title = errorTitle,
+            description = errorDescription,
+            confirmButtonText = "확인",
+            onConfirmButtonClick = onErrorConfirmClick,
+            isDismissButtonEnable = false,
         )
     }
 }

@@ -1,5 +1,11 @@
 package com.lyrics.feelin.core.domain.model
 
+/**
+ * 회원가입 약관 UI와 서버 전송 payload를 함께 정의한다.
+ *
+ * enum 선언 순서는 OnboardingTermsScreen 표시 순서이자
+ * SignUpData.terms 생성 순서로 그대로 사용되므로 서버 계약 변경 없이 재정렬하지 않는다.
+ */
 enum class SignUpTerm(
     val title: String,
     val agreement: String,

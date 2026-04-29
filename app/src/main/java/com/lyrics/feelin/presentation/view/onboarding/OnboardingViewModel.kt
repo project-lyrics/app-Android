@@ -106,6 +106,8 @@ class OnboardingViewModel @Inject constructor(
                             state = updatedState,
                         )
                     }.onFailure { error ->
+                        // 서버 회원가입과 JWT 저장이 이미 끝난 상태라서,
+                        // 임시 로컬 캐시 동기화 실패만으로 가입 완료 플로우를 되돌리지 않는다.
                         Log.e(TAG, "Failed to sync local onboarding cache after signup", error)
                     }
                     _onboardingUiState.value = OnboardingUiState.SignUpSuccess

@@ -26,5 +26,12 @@ sealed interface OnboardingUiState {
     data class Error(
         val title: String,
         val description: String,
+        val kind: Kind,
     ) : OnboardingUiState
+
+    sealed interface Kind {
+        data object MissingRequiredTerms : Kind
+
+        data object General : Kind
+    }
 }

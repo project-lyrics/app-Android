@@ -70,6 +70,7 @@ class OnboardingViewModel @Inject constructor(
             _onboardingUiState.value = OnboardingUiState.Error(
                 title = "필수 약관 동의가 필요해요.",
                 description = "에러코드 [-1]",
+                kind = OnboardingUiState.Kind.MissingRequiredTerms,
             )
             return
         }
@@ -78,6 +79,7 @@ class OnboardingViewModel @Inject constructor(
             _onboardingUiState.value = OnboardingUiState.Error(
                 title = "회원가입에 필요한 로그인 정보가 없어요.",
                 description = "에러코드 [-1]",
+                kind = OnboardingUiState.Kind.General,
             )
             return
         }
@@ -143,11 +145,13 @@ class OnboardingViewModel @Inject constructor(
             OnboardingUiState.Error(
                 title = throwable.description.errorMessage,
                 description = "에러코드 [${throwable.description.errorCode}]",
+                kind = OnboardingUiState.Kind.General,
             )
         } else {
             OnboardingUiState.Error(
                 title = "회원가입 시도중 오류가 발생했어요.",
                 description = "에러코드 [-1]",
+                kind = OnboardingUiState.Kind.General,
             )
         }
     }

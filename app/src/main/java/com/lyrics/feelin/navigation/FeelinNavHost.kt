@@ -162,7 +162,17 @@ private fun NavGraphBuilder.onboardingProfileScreen(navController: NavHostContro
                 isLoading = onboardingUiState is OnboardingUiState.SigningUp,
                 errorTitle = (onboardingUiState as? OnboardingUiState.Error)?.title,
                 errorDescription = (onboardingUiState as? OnboardingUiState.Error)?.description,
-                onErrorConfirmClick = viewModel::clearOnboardingUiState,
+                onErrorConfirmClick = {
+                    val errorState = onboardingUiState as? OnboardingUiState.Error
+                    viewModel.clearOnboardingUiState()
+
+                    if (errorState?.kind == OnboardingUiState.Kind.MissingRequiredTerms) {
+                        navController.navigate(FeelinDestination.OnboardingTerms.route) {
+                            popUpTo(FeelinDestination.OnboardingTerms.route) { inclusive = false }
+                            launchSingleTop = true
+                        }
+                    }
+                },
             )
         }
     }

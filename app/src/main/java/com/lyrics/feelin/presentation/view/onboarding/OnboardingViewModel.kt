@@ -59,6 +59,10 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun signUp(nickname: String, profileType: ProfileType) {
+        if (_onboardingUiState.value is OnboardingUiState.SigningUp) {
+            return
+        }
+
         val oauthAccessToken = authManager.oauthAccessToken.value
         val oauthProvider = authManager.oauthProvider.value
         val updatedState = _onboardingState.value.copy(

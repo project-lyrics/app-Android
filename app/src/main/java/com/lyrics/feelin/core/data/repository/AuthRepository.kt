@@ -13,6 +13,7 @@ import com.lyrics.feelin.util.toServerErrorDto
 import java.net.HttpURLConnection
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 
@@ -179,24 +180,37 @@ class AuthRepository @Inject constructor(
     // ========== 회원가입 ==========
 
     suspend fun signUp(signUpData: SignUpData): Result<Unit> {
-        val tokenResult =
-            authRemoteDataSource.signUp(signUpData = signUpData).onFailure {
-                if (it is HttpException) {
-                    return Result.failure(
-                        exception = FeelinServerException(description = it.toServerErrorDto()),
-                    )
+        val tokenResult = authRemoteDataSource.signUp(signUpData = signUpData)
+        val failure = tokenResult.exceptionOrNull()?.let(::mapSignUpFailure)
+
+        if (failure != null) {
+            return Result.failure(exception = failure)
+        }
+
+        val token = tokenResult.getOrThrow()
+        return runCatching {
+            authManager.saveServerToken(
+                accessToken = token.accessToken,
+                refreshToken = token.refreshToken,
+                userId = token.userId,
+            )
+        }.fold(
+            onSuccess = { Result.success(Unit) },
+            onFailure = { exception ->
+                if (exception is CancellationException) {
+                    throw exception
                 }
-                return Result.failure(exception = it)
-            }
-
-        val token = tokenResult.getOrNull()!!
-        authManager.saveServerToken(
-            accessToken = token.accessToken,
-            refreshToken = token.refreshToken,
-            userId = token.userId,
+                Result.failure(exception = exception)
+            },
         )
+    }
 
-        return Result.success(Unit)
+    private fun mapSignUpFailure(throwable: Throwable): Throwable {
+        return if (throwable is HttpException) {
+            FeelinServerException(description = throwable.toServerErrorDto())
+        } else {
+            throwable
+        }
     }
 
     // ========== 회원탈퇴 ==========

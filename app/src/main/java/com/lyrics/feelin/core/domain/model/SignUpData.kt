@@ -8,8 +8,8 @@ data class SignUpData(
     val authProvider: OAuthProvider,
     val nickname: String,
     val profileCharacter: ProfileType,
-    val gender: Gender,
-    val birthYear: String,
+    val gender: Gender?,
+    val birthYear: String?,
     val terms: List<TermAgreementStatus>,
     val isAdmin: Boolean = false,
 )

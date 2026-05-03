@@ -6,6 +6,8 @@ import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 
+// TODO(@이대근): 앱을 사용할때만 보여주도록(회원정보 화면 등) 인메모리 저장소 기반으로 변경 2026.05.03.
+
 @Singleton
 class UserRepository @Inject constructor(
     private val userPreferencesDataStore: UserPreferencesDataStore

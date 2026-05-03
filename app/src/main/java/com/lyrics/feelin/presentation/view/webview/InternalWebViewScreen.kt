@@ -1,9 +1,9 @@
 package com.lyrics.feelin.presentation.view.webview
 
 import android.annotation.SuppressLint
+import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
@@ -28,95 +28,6 @@ import com.lyrics.feelin.core.designsystem.icon.RefreshIcon
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 private const val WEB_VIEW_TITLE = "notion.so"
-private const val WEB_VIEW_NOTION_LAYOUT_PATCH_SCRIPT = """
-    (function() {
-        var styleId = 'feelin-notion-layout-patch';
-        var css = [
-            'html, body {',
-            '  height: auto !important;',
-            '  min-height: 100% !important;',
-            '  overflow-y: auto !important;',
-            '}',
-            '.notion-frame, .notion-scroller {',
-            '  height: auto !important;',
-            '  min-height: 100vh !important;',
-            '}',
-            '.notion-scroller {',
-            '  overflow-y: auto !important;',
-            '}',
-            '.notion-page-content {',
-            '  min-height: 100vh !important;',
-            '}'
-        ].join('\n');
-
-        function upsertStyle() {
-            var style = document.getElementById(styleId);
-            if (!style) {
-                style = document.createElement('style');
-                style.id = styleId;
-                document.head.appendChild(style);
-            }
-            if (style.textContent !== css) {
-                style.textContent = css;
-            }
-        }
-
-        function patchElement(selector) {
-            var element = document.querySelector(selector);
-            if (!element) {
-                return false;
-            }
-            setImportantStyle(element, 'height', 'auto');
-            setImportantStyle(element, 'min-height', '100vh');
-            return true;
-        }
-
-        function setImportantStyle(element, name, value) {
-            if (
-                element.style.getPropertyValue(name) !== value ||
-                element.style.getPropertyPriority(name) !== 'important'
-            ) {
-                element.style.setProperty(name, value, 'important');
-            }
-        }
-
-        function patchLayout() {
-            upsertStyle();
-            patchElement('.notion-frame');
-            patchElement('.notion-scroller');
-        }
-
-        patchLayout();
-        window.requestAnimationFrame(patchLayout);
-        window.setTimeout(patchLayout, 500);
-        window.setTimeout(patchLayout, 1000);
-
-        if (!window.__feelinNotionLayoutObserver) {
-            window.__feelinNotionLayoutPatchScheduled = false;
-            window.__feelinNotionLayoutObserver = new MutationObserver(function() {
-                if (window.__feelinNotionLayoutPatchScheduled) {
-                    return;
-                }
-                window.__feelinNotionLayoutPatchScheduled = true;
-                window.requestAnimationFrame(function() {
-                    window.__feelinNotionLayoutPatchScheduled = false;
-                    patchLayout();
-                });
-            });
-            window.__feelinNotionLayoutObserver.observe(document.documentElement, {
-                attributes: true,
-                childList: true,
-                subtree: true
-            });
-        }
-
-        return 'patched';
-    })();
-"""
-
-private fun WebView.patchNotionLayout() {
-    evaluateJavascript(WEB_VIEW_NOTION_LAYOUT_PATCH_SCRIPT, null)
-}
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -167,12 +78,11 @@ fun InternalWebViewScreen(
                 factory = { context ->
                     WebView(context).apply {
                         webView = this
-                        webViewClient = object : WebViewClient() {
-                            override fun onPageFinished(view: WebView?, url: String?) {
-                                super.onPageFinished(view, url)
-                                view?.patchNotionLayout()
-                            }
-                        }
+                        // Notion의 full-height 레이아웃이 Android WebView에서 0px로 접히지 않도록 명시한다.
+                        layoutParams = ViewGroup.LayoutParams(
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT,
+                        )
                         settings.javaScriptEnabled = true
                         settings.domStorageEnabled = true
                         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW

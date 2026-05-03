@@ -7,12 +7,12 @@ enum class SettingLegalLink(
 ) {
     SERVICE_USAGE(
         title = "서비스 이용 약관",
-        url = "https://www.notion.so/Feelin-424aa52fb951444fa95f3966672ec670?pvs=4",
+        url = "https://zircon-taste-62f.notion.site/Feelin-424aa52fb951444fa95f3966672ec670",
         opensInternally = true,
     ),
     PERSONAL_INFO(
         title = "개인정보처리방침",
-        url = "https://www.notion.so/Feelin-2f586ef1b7c947d89ad8cac8a83b61d1?pvs=4",
+        url = "https://zircon-taste-62f.notion.site/Feelin-2f586ef1b7c947d89ad8cac8a83b61d1",
         opensInternally = true,
     ),
     SERVICE_INQUIRY(

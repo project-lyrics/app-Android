@@ -124,7 +124,7 @@ private fun NavGraphBuilder.onboardingTermsScreen(navController: NavHostControll
                 onAllCheckedChange = viewModel::setAllTermsAgreed,
                 onTermCheckedChange = viewModel::setTermAgreed,
                 onDetailClick = { term ->
-                    navController.navigate(FeelinDestination.InternalWebView.createRoute(term.agreement))
+                    navController.navigate(FeelinDestination.InternalWebView.createRoute(term.webViewUrl))
                 },
             )
         }

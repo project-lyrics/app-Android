@@ -126,6 +126,11 @@ class OnboardingViewModel @Inject constructor(
         _onboardingUiState.value = OnboardingUiState.Idle
     }
 
+    fun resetOnboardingState() {
+        _onboardingState.value = OnboardingState()
+        _onboardingUiState.value = OnboardingUiState.Idle
+    }
+
     private suspend fun syncLocalUserData(
         nickname: String,
         profileType: ProfileType,

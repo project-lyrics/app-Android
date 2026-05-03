@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -55,7 +56,6 @@ import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen
 import com.lyrics.feelin.presentation.view.onboarding.terms.OnboardingTermsScreen
 import com.lyrics.feelin.presentation.view.onboarding.welcome.WelcomeScreen
 import com.lyrics.feelin.presentation.view.webview.InternalWebViewScreen
-import androidx.core.net.toUri
 
 @Composable
 fun FeelinNavHost(

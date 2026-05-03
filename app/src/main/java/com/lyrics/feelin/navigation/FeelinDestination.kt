@@ -1,8 +1,14 @@
 package com.lyrics.feelin.navigation
 
+import android.net.Uri
+
 sealed class FeelinDestination(
     val route: String,
 ) {
+    companion object {
+        private const val WEB_VIEW_URL_ARGUMENT = "url"
+    }
+
     // Navigation Graph Routes
     object OnboardingGraph : FeelinDestination(route = "onboarding_graph")
     object MainGraph : FeelinDestination(route = "main_graph")
@@ -24,4 +30,14 @@ sealed class FeelinDestination(
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")
+
+    object InternalWebView : FeelinDestination(
+        route = "internal_webview?$WEB_VIEW_URL_ARGUMENT={$WEB_VIEW_URL_ARGUMENT}"
+    ) {
+        const val UrlArgument = WEB_VIEW_URL_ARGUMENT
+
+        fun createRoute(url: String): String {
+            return "internal_webview?$UrlArgument=${Uri.encode(url)}"
+        }
+    }
 }

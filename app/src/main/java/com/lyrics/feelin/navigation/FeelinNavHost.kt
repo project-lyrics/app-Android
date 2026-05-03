@@ -130,12 +130,10 @@ private fun NavGraphBuilder.onboardingGenderAgeScreen(navController: NavHostCont
             OnboardingGenderAgeScreen(
                 onBackClick = { navController.popBackStack() },
                 onSkipClick = {
-                    // TODO(@이대근): 화면 이동 이외 부분을 화면 내부에 연결 2026.05.03.
                     viewModel.clearGenderAndBirthYear()
                     navController.navigate(FeelinDestination.OnboardingProfile.route)
                 },
                 onNextClick = { gender, birthYear ->
-                    // TODO(@이대근): 화면 이동 이외 부분을 화면 내부에 연결 2026.05.03.
                     viewModel.saveGenderAndBirthYear(gender, birthYear)
                     navController.navigate(FeelinDestination.OnboardingProfile.route)
                 }

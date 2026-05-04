@@ -49,11 +49,12 @@ fun FeelinNicknameInputField(
     state: TextFieldState,
     modifier: Modifier = Modifier,
     placeholder: String = "",
-    onClearClick: () -> Unit = {}
+    onClearClick: () -> Unit = {},
+    isEnabled: Boolean = true
 ) {
     val feelinColors = LocalFeelinColors.current
 
-    val textColor = feelinColors.gray08
+    val textColor = if (isEnabled) feelinColors.gray08 else feelinColors.gray03
     val placeholderColor = feelinColors.gray03
     val clearButtonColor = feelinColors.gray03
     val errorColor = feelinColors.alertWarning
@@ -71,7 +72,6 @@ fun FeelinNicknameInputField(
 
     BasicTextField(
         state = state,
-        modifier = modifier,
         lineLimits = TextFieldLineLimits.SingleLine,
         keyboardOptions = KeyboardOptions(
             imeAction = ImeAction.Done,
@@ -95,7 +95,8 @@ fun FeelinNicknameInputField(
                         clearIconColor = clearButtonColor,
                         innerTextField = innerTextField,
                         onClearButtonClick = { onClearClick.invoke() },
-                        clearButtonInteractionSource = interactionSource
+                        clearButtonInteractionSource = interactionSource,
+                        showClearButton = isEnabled
                     )
                 }
 
@@ -141,6 +142,18 @@ private fun FeelinNicknameInputFieldPreview() {
     FeelinTheme {
         FeelinNicknameInputField(
             state = TextFieldState(initialText = "실리카겔짱"),
+            placeholder = "닉네임"
+        )
+    }
+}
+
+@Preview(name = "비활성화 상태")
+@Composable
+private fun FeelinNicknameInvalidPreview() {
+    FeelinTheme {
+        FeelinNicknameInputField(
+
+            state = TextFieldState(initialText = ""),
             placeholder = "닉네임"
         )
     }

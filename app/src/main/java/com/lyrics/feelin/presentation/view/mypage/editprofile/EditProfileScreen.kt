@@ -119,7 +119,8 @@ fun EditProfileScreen(
                     state = nicknameState,
                     modifier = Modifier.fillMaxWidth(),
                     placeholder = "닉네임",
-                    onClearClick = { nicknameState.edit { replace(0, length, "") } }
+                    onClearClick = { nicknameState.edit { replace(0, length, "") } },
+                    isEnabled = hasChanges
                 )
             }
 

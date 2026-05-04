@@ -29,7 +29,8 @@ fun RowScope.InnerTextFieldComponent(
     innerTextField: @Composable (() -> Unit),
     onClearButtonClick: () -> Unit,
     clearButtonInteractionSource: MutableInteractionSource?,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    showClearButton: Boolean = true
 ) {
     Box(modifier = Modifier.weight(1f)) {
         if (isTextEmpty) {
@@ -43,7 +44,7 @@ fun RowScope.InnerTextFieldComponent(
     }
 
     // 클리어 버튼 (입력값 있을 때만 표시)
-    if (!isTextEmpty) {
+    if (!isTextEmpty && showClearButton) {
         Spacer(modifier = Modifier.width(8.dp))
 
         Icon(

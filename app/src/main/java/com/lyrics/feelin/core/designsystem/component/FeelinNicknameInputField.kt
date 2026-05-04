@@ -152,9 +152,9 @@ private fun FeelinNicknameInputFieldPreview() {
 private fun FeelinNicknameInvalidPreview() {
     FeelinTheme {
         FeelinNicknameInputField(
-
             state = TextFieldState(initialText = ""),
-            placeholder = "닉네임"
+            placeholder = "닉네임",
+            isEnabled = false
         )
     }
 }

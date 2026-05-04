@@ -71,6 +71,7 @@ fun FeelinNicknameInputField(
     }
 
     BasicTextField(
+        modifier = modifier,
         state = state,
         lineLimits = TextFieldLineLimits.SingleLine,
         keyboardOptions = KeyboardOptions(

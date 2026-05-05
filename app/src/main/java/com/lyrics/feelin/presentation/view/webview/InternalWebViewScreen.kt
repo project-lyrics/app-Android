@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -22,6 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
 import com.lyrics.feelin.core.designsystem.icon.RefreshIcon
@@ -37,6 +40,7 @@ fun InternalWebViewScreen(
     modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
+    val isDarkTheme = isSystemInDarkTheme()
     var webView by remember { mutableStateOf<WebView?>(null) }
 
     DisposableEffect(Unit) {
@@ -88,10 +92,12 @@ fun InternalWebViewScreen(
                         settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
                         settings.allowFileAccess = false
                         settings.allowContentAccess = false
+                        applyDarkTheme(isDarkTheme = isDarkTheme)
                         loadUrl(url)
                     }
                 },
                 update = { view ->
+                    view.applyDarkTheme(isDarkTheme = isDarkTheme)
                     if (view.url != url) {
                         view.loadUrl(url)
                     }
@@ -101,5 +107,22 @@ fun InternalWebViewScreen(
                     .background(color = feelinColors.backgroundPrimary),
             )
         }
+    }
+}
+
+// TODO(@이대근): 웹뷰 내부에서 다크모드를 전환 가능하게 하려면 뷰시스템 테마 설정(themes.xml)에 다크모드를 활성화해야함. 2026.05.05.
+@Suppress("DEPRECATION") // MARK(@이대근): 구버전 시스템의 웹뷰 다크모드 설정을 위함 2026.05.05.
+private fun WebView.applyDarkTheme(isDarkTheme: Boolean) {
+    if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+        WebSettingsCompat.setAlgorithmicDarkeningAllowed(settings, isDarkTheme)
+    } else if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+        WebSettingsCompat.setForceDark(
+            settings,
+            if (isDarkTheme) {
+                WebSettingsCompat.FORCE_DARK_ON
+            } else {
+                WebSettingsCompat.FORCE_DARK_OFF
+            },
+        )
     }
 }

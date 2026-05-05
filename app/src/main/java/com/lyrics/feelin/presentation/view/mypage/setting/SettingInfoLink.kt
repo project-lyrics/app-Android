@@ -16,7 +16,7 @@ enum class SettingInfoLink(
         opensInternally = true,
     ),
     FAQ(
-        title = "FAQ",
+        title = "자주 묻는 질문",
         url = "https://noon-spaghetti-8cf.notion.site/34b546f268d58034a86cd07ca5605468",
         opensInternally = true
     ),

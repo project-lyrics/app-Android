@@ -1,7 +1,5 @@
 package com.lyrics.feelin.navigation
 
-import android.content.ActivityNotFoundException
-import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Box
@@ -24,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -42,6 +39,7 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
+import com.lyrics.feelin.presentation.util.openExternalBrowser
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
@@ -273,15 +271,7 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
                         navController.navigate(FeelinDestination.InternalWebView.createRoute(url))
                     },
                     onExternalBrowserClick = { url ->
-                        runCatching {
-                            context.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()))
-                        }.onFailure { throwable ->
-                            if (throwable is ActivityNotFoundException) {
-                                Log.w("FeelinNavHost", "No browser found for url: $url", throwable)
-                            } else {
-                                throw throwable
-                            }
-                        }
+                        context.openExternalBrowser(url)
                     },
                 )
             }

@@ -66,7 +66,7 @@ fun InternalWebViewScreen(
                     TopBarIconButton(
                         imageVector = RefreshIcon,
                         onClick = { webView?.reload() },
-                        contentDescription = "Refresh",
+                        contentDescription = "새로고침",
                         tint = feelinColors.gray09,
                     )
                 },

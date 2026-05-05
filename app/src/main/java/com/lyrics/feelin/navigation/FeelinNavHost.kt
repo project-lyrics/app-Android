@@ -1,6 +1,5 @@
 package com.lyrics.feelin.navigation
 
-import android.net.Uri
 import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
@@ -295,11 +294,9 @@ private fun NavGraphBuilder.internalWebViewScreen(navController: NavHostControll
             }
         ),
     ) { backStackEntry ->
-        val url = Uri.decode(
-            backStackEntry.arguments
-                ?.getString(FeelinDestination.InternalWebView.UrlArgument)
-                .orEmpty()
-        )
+        val url = backStackEntry.arguments
+            ?.getString(FeelinDestination.InternalWebView.UrlArgument)
+            .orEmpty()
 
         InternalWebViewScreen(
             url = url,

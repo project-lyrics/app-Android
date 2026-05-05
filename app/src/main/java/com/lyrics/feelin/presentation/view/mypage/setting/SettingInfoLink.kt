@@ -17,7 +17,7 @@ enum class SettingInfoLink(
     ),
     FAQ(
         title = "자주 묻는 질문",
-        url = "https://noon-spaghetti-8cf.notion.site/34b546f268d58034a86cd07ca5605468",
+        url = "https://noon-spaghetti-8cf.notion.site/357546f268d580d18a56ded47121c7ab",
         opensInternally = true
     ),
     SERVICE_INQUIRY(

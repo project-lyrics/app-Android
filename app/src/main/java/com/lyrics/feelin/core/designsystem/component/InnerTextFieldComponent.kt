@@ -32,7 +32,7 @@ fun RowScope.InnerTextFieldComponent(
     modifier: Modifier = Modifier,
     showClearButton: Boolean = true
 ) {
-    Box(modifier = Modifier.weight(1f)) {
+    Box(modifier = modifier.weight(1f)) {
         if (isTextEmpty) {
             Text(
                 text = placeholder,

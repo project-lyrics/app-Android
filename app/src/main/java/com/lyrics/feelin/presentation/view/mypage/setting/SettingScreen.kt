@@ -60,7 +60,7 @@ fun SettingScreen(
 
             SettingCategoryDivider()
 
-            SettingLegalLink.entries.forEachIndexed { index, link ->
+            SettingInfoLink.entries.forEachIndexed { index, link ->
                 SettingMenuItem(
                     title = link.title,
                     onClick = {
@@ -71,7 +71,7 @@ fun SettingScreen(
                         }
                     },
                 )
-                if (index < SettingLegalLink.entries.lastIndex) {
+                if (index < SettingInfoLink.entries.lastIndex) {
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }

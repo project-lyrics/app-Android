@@ -17,7 +17,9 @@ enum class SignUpTerm(
     /**
      * 실제로 웹뷰에 표시하는 URL
      *
-     * Compose + WebView에서는 리다이렉트 완료 후의 퍼블릭 URL이 안정적으로 표시되어 분리한다.
+     * WebView에 WebViewClient를 할당해도
+     * Notion 원본 URL을 직접 열면 리다이렉트 안내 화면이 간헐적으로 노출될 수 있어,
+     * 서버 전송용 agreement와 화면 표시용 URL을 분리한다.
      * */
     val webViewUrl: String = agreement,
     val required: Boolean = true,

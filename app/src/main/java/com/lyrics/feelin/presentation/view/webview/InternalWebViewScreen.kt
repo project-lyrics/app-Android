@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.ViewGroup
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -82,6 +83,7 @@ fun InternalWebViewScreen(
                 factory = { context ->
                     WebView(context).apply {
                         webView = this
+                        webViewClient = WebViewClient()
                         // Notion의 full-height 레이아웃이 Android WebView에서 0px로 접히지 않도록 명시한다.
                         layoutParams = ViewGroup.LayoutParams(
                             ViewGroup.LayoutParams.MATCH_PARENT,

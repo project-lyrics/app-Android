@@ -108,3 +108,7 @@ val WritingIcon: ImageVector
 val FindSquareIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.find_square)
+
+val RefreshIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.refresh)

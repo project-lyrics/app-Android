@@ -18,14 +18,17 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.lyrics.feelin.core.designsystem.component.BottomNavItem
 import com.lyrics.feelin.core.designsystem.component.FeelinBottomNavigation
@@ -35,6 +38,7 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
+import com.lyrics.feelin.presentation.util.openExternalBrowser
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
@@ -48,6 +52,7 @@ import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGender
 import com.lyrics.feelin.presentation.view.onboarding.profile.ProfileScreen
 import com.lyrics.feelin.presentation.view.onboarding.terms.OnboardingTermsScreen
 import com.lyrics.feelin.presentation.view.onboarding.welcome.WelcomeScreen
+import com.lyrics.feelin.presentation.view.webview.InternalWebViewScreen
 
 @Composable
 fun FeelinNavHost(
@@ -63,6 +68,8 @@ fun FeelinNavHost(
         onboardingNavGraph(navController)
 
         mainNavGraph(navController)
+
+        internalWebViewScreen(navController)
     }
 }
 
@@ -113,7 +120,9 @@ private fun NavGraphBuilder.onboardingTermsScreen(navController: NavHostControll
                 termAgreements = onboardingState.termAgreements,
                 onAllCheckedChange = viewModel::setAllTermsAgreed,
                 onTermCheckedChange = viewModel::setTermAgreed,
-                onDetailClick = {},
+                onDetailClick = { term ->
+                    navController.navigate(FeelinDestination.InternalWebView.createRoute(term.webViewUrl))
+                },
             )
         }
     }
@@ -236,30 +245,63 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
             }
         }
 
-        navigation(startDestination = FeelinDestination.MyPage.route, route = FeelinDestination.MyPageGraph.route) {
-            composable(FeelinDestination.MyPage.route) {
-                MainScaffold(navController = navController, selectedIndex = 2) {
-                    MyPageScreen(
-                        onSettingClick = { navController.navigate(FeelinDestination.Setting.route) }
-                    )
-                }
-            }
+        myPageNavGraph(navController)
+    }
+}
 
-            composable(FeelinDestination.Setting.route) {
-                MainScaffold(navController = navController, selectedIndex = 2) {
-                    SettingScreen(
-                        onBackClick = { navController.popBackStack() },
-                        onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) }
-                    )
-                }
-            }
-
-            composable(FeelinDestination.UserInfo.route) {
-                MainScaffold(navController = navController, selectedIndex = 2) {
-                    UserInfoScreen(onBackClick = { navController.popBackStack() })
-                }
+private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
+    navigation(startDestination = FeelinDestination.MyPage.route, route = FeelinDestination.MyPageGraph.route) {
+        composable(FeelinDestination.MyPage.route) {
+            MainScaffold(navController = navController, selectedIndex = 2) {
+                MyPageScreen(
+                    onSettingClick = { navController.navigate(FeelinDestination.Setting.route) }
+                )
             }
         }
+
+        composable(FeelinDestination.Setting.route) {
+            val context = LocalContext.current
+
+            MainScaffold(navController = navController, selectedIndex = 2) {
+                SettingScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) },
+                    onInternalWebViewClick = { url ->
+                        navController.navigate(FeelinDestination.InternalWebView.createRoute(url))
+                    },
+                    onExternalBrowserClick = { url ->
+                        context.openExternalBrowser(url)
+                    },
+                )
+            }
+        }
+
+        composable(FeelinDestination.UserInfo.route) {
+            MainScaffold(navController = navController, selectedIndex = 2) {
+                UserInfoScreen(onBackClick = { navController.popBackStack() })
+            }
+        }
+    }
+}
+
+private fun NavGraphBuilder.internalWebViewScreen(navController: NavHostController) {
+    composable(
+        route = FeelinDestination.InternalWebView.route,
+        arguments = listOf(
+            navArgument(FeelinDestination.InternalWebView.UrlArgument) {
+                type = NavType.StringType
+                defaultValue = ""
+            }
+        ),
+    ) { backStackEntry ->
+        val url = backStackEntry.arguments
+            ?.getString(FeelinDestination.InternalWebView.UrlArgument)
+            .orEmpty()
+
+        InternalWebViewScreen(
+            url = url,
+            onCloseClick = { navController.popBackStack() },
+        )
     }
 }
 

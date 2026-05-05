@@ -31,6 +31,8 @@ import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 fun SettingScreen(
     onBackClick: () -> Unit,
     onUserInfoClick: () -> Unit,
+    onInternalWebViewClick: (String) -> Unit,
+    onExternalBrowserClick: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -58,11 +60,21 @@ fun SettingScreen(
 
             SettingCategoryDivider()
 
-            SettingMenuItem(title = "서비스 이용 약관", onClick = {})
-            Spacer(modifier = Modifier.height(16.dp))
-            SettingMenuItem(title = "개인정보처리방침", onClick = {})
-            Spacer(modifier = Modifier.height(16.dp))
-            SettingMenuItem(title = "서비스 문의하기", onClick = {})
+            SettingInfoLink.entries.forEachIndexed { index, link ->
+                SettingMenuItem(
+                    title = link.title,
+                    onClick = {
+                        if (link.opensInternally) {
+                            onInternalWebViewClick(link.url)
+                        } else {
+                            onExternalBrowserClick(link.url)
+                        }
+                    },
+                )
+                if (index < SettingInfoLink.entries.lastIndex) {
+                    Spacer(modifier = Modifier.height(16.dp))
+                }
+            }
 
             SettingCategoryDivider()
 
@@ -107,6 +119,8 @@ private fun SettingScreenPreview() {
         SettingScreen(
             onBackClick = {},
             onUserInfoClick = {},
+            onInternalWebViewClick = {},
+            onExternalBrowserClick = {},
         )
     }
 }

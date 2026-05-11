@@ -5,6 +5,7 @@ import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerE
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
 import com.lyrics.feelin.core.data.datasource.sdk.KakaoAuthDataSource
 import com.lyrics.feelin.core.data.manager.AuthManager
+import com.lyrics.feelin.core.data.manager.AuthTokenRefresher
 import com.lyrics.feelin.core.domain.model.AuthToken
 import com.lyrics.feelin.core.domain.model.OAuthProvider
 import com.lyrics.feelin.core.domain.model.OAuthToken
@@ -35,13 +36,53 @@ class AuthRepository @Inject constructor(
     @Suppress("UnusedPrivateMember") // TODO(@이대근): 구글 로그인 구현 중 어노테이션 제거할 것. 2025.10.02.
     private val googleAuthDataSource: GoogleAuthDataSource,
     private val authRemoteDataSource: AuthRemoteDataSource,
-    private val authManager: AuthManager
+    private val authManager: AuthManager,
+    private val authTokenRefresher: AuthTokenRefresher
 ) {
     // ========== 로그인 상태 노출 ==========
 
     val isLoggedIn: StateFlow<Boolean> = authManager.isLoggedIn
 
     val userId: StateFlow<Long?> = authManager.userId
+
+    // ========== 자동 로그인 ==========
+
+    suspend fun restoreSession(): Result<Unit> {
+        authManager.initializationComplete.await()
+
+        val result = when {
+            !authManager.hasRefreshToken() -> {
+                Result.failure(exception = IllegalStateException("Refresh token is missing"))
+            }
+
+            !authManager.hasValidAccessToken() -> {
+                refreshSession()
+            }
+
+            authRemoteDataSource.validateToken().getOrNull()?.status == true -> {
+                Result.success(Unit)
+            }
+
+            else -> {
+                refreshSession()
+            }
+        }
+
+        return result
+    }
+
+    private suspend fun refreshSession(): Result<Unit> {
+        return authTokenRefresher.refreshServerToken()
+            .fold(
+                onSuccess = { Result.success(Unit) },
+                onFailure = { exception ->
+                    if (exception is CancellationException) {
+                        throw exception
+                    }
+                    Result.failure(exception = exception)
+                },
+            )
+    }
 
     // ========== 로그인 ==========
 

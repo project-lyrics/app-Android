@@ -20,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,10 +55,26 @@ fun LoginScreen(
     onSignUp: () -> Unit,
     onContinueToMain: () -> Unit,
     modifier: Modifier = Modifier,
+    showAutoLoginFailedDialog: Boolean = false,
     loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsState()
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
+    var isAutoLoginFailedDialogVisible by remember(showAutoLoginFailedDialog) {
+        mutableStateOf(showAutoLoginFailedDialog)
+    }
+
+    if (isAutoLoginFailedDialogVisible) {
+        FeelinModalDialog(
+            title = "로그인이 만료되었습니다.",
+            description = "다시 로그인해 주세요.",
+            confirmButtonText = "확인",
+            onConfirmButtonClick = {
+                isAutoLoginFailedDialogVisible = false
+            },
+            isDismissButtonEnable = false,
+        )
+    }
 
     if (loginUiState is LoginUiState.Error) {
         if ((loginUiState as LoginUiState.Error).error.type == LoginErrorType.BACKEND_SERVER) {

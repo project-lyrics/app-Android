@@ -2,11 +2,13 @@ package com.lyrics.feelin.core.data.manager
 
 import com.lyrics.feelin.core.data.datasource.remote.AuthRemoteDataSource
 import com.lyrics.feelin.core.domain.model.AuthToken
+import com.lyrics.feelin.util.toServerErrorDto
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import retrofit2.HttpException
 
 @Singleton
 class AuthTokenRefresher @Inject constructor(
@@ -52,15 +54,31 @@ class AuthTokenRefresher @Inject constructor(
                         if (exception is CancellationException) {
                             throw exception
                         }
-                        clearTokensAndFail(exception)
+                        handleRefreshFailure(exception)
                     },
                 )
+        }
+    }
+
+    private suspend fun handleRefreshFailure(exception: Throwable): Result<AuthToken> {
+        return if (shouldClearTokens(exception)) {
+            clearTokensAndFail(exception)
+        } else {
+            Result.failure(exception)
         }
     }
 
     private suspend fun clearTokensAndFail(exception: Throwable): Result<AuthToken> {
         authManager.clearTokens()
         return Result.failure(exception)
+    }
+
+    private fun shouldClearTokens(exception: Throwable): Boolean {
+        return if (exception is HttpException) {
+            exception.toServerErrorDto().errorCode in TERMINAL_AUTH_ERROR_CODES
+        } else {
+            false
+        }
     }
 
     private fun createCachedAuthToken(
@@ -82,6 +100,15 @@ class AuthTokenRefresher @Inject constructor(
             accessToken = accessToken,
             refreshToken = refreshToken,
             userId = userId,
+        )
+    }
+
+    companion object {
+        private val TERMINAL_AUTH_ERROR_CODES = setOf(
+            "01001",
+            "01002",
+            "01004",
+            "01008",
         )
     }
 }

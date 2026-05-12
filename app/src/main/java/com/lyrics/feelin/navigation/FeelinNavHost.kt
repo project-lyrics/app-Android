@@ -58,13 +58,15 @@ import com.lyrics.feelin.presentation.view.webview.InternalWebViewScreen
 fun FeelinNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = FeelinDestination.OnboardingGraph.route,
+    startDestination: String = FeelinDestination.Splash.route,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier.fillMaxSize()
     ) {
+        splashScreen(navController)
+
         onboardingNavGraph(navController)
 
         mainNavGraph(navController)
@@ -93,15 +95,49 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
         }
         val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
 
-        OnboardingScaffold {
-            LoginScreen(
-                onSignUp = {
-                    viewModel.resetOnboardingState()
-                    navController.navigate(FeelinDestination.OnboardingTerms.route)
-                },
-                onContinueToMain = { navController.navigateToMainGraph() }
-            )
+        LoginScreenRoute(navController = navController, viewModel = viewModel)
+    }
+
+    composable(
+        route = FeelinDestination.Login.routeWithDialogReason,
+        arguments = listOf(
+            navArgument(FeelinDestination.Login.DialogReasonArgument) {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
         }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+        val dialogReason = backStackEntry.arguments
+            ?.getString(FeelinDestination.Login.DialogReasonArgument)
+
+        LoginScreenRoute(
+            navController = navController,
+            viewModel = viewModel,
+            dialogReason = dialogReason,
+        )
+    }
+}
+
+@Composable
+private fun LoginScreenRoute(
+    navController: NavHostController,
+    viewModel: OnboardingViewModel,
+    dialogReason: String? = null,
+) {
+    OnboardingScaffold {
+        val showAutoLoginFailedDialog = dialogReason == FeelinDestination.Login.AutoLoginFailedDialogReason
+
+        LoginScreen(
+            showAutoLoginFailedDialog = showAutoLoginFailedDialog,
+            onSignUp = {
+                viewModel.resetOnboardingState()
+                navController.navigate(FeelinDestination.OnboardingTerms.route)
+            },
+            onContinueToMain = { navController.navigateToMainGraph() }
+        )
     }
 }
 

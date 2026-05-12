@@ -18,6 +18,12 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 
+sealed interface RestoreSessionResult {
+    data object Authenticated : RestoreSessionResult
+    data object Unauthenticated : RestoreSessionResult
+    data object Failed : RestoreSessionResult
+}
+
 /**
  * 인증 비즈니스 로직을 담당하는 Repository
  *
@@ -47,39 +53,38 @@ class AuthRepository @Inject constructor(
 
     // ========== 자동 로그인 ==========
 
-    suspend fun restoreSession(): Result<Unit> {
+    suspend fun restoreSession(): RestoreSessionResult {
         authManager.initializationComplete.await()
 
-        val result = when {
+        return when {
             !authManager.hasRefreshToken() -> {
-                Result.failure(exception = IllegalStateException("Refresh token is missing"))
+                RestoreSessionResult.Unauthenticated
             }
 
             !authManager.hasValidAccessToken() -> {
-                refreshSession()
+                restoreSessionWithRefresh()
             }
 
             authRemoteDataSource.validateToken().getOrNull()?.status == true -> {
-                Result.success(Unit)
+                RestoreSessionResult.Authenticated
             }
 
             else -> {
-                refreshSession()
+                restoreSessionWithRefresh()
             }
         }
-
-        return result
     }
 
-    private suspend fun refreshSession(): Result<Unit> {
+    private suspend fun restoreSessionWithRefresh(): RestoreSessionResult {
         return authTokenRefresher.refreshServerToken()
             .fold(
-                onSuccess = { Result.success(Unit) },
+                onSuccess = { RestoreSessionResult.Authenticated },
                 onFailure = { exception ->
                     if (exception is CancellationException) {
                         throw exception
                     }
-                    Result.failure(exception = exception)
+                    authManager.clearTokens()
+                    RestoreSessionResult.Failed
                 },
             )
     }

@@ -78,6 +78,14 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    /**
+     * 앱 시작 자동 로그인은 복구 실패를 세션 종료로 취급합니다.
+     *
+     * 런타임 401 재인증은 일시 실패 시 토큰을 보존하지만,
+     * 앱 시작 단계에서는 사용자에게 메인 화면을 보여주기 전에 세션 사용 가능 여부를 확정해야 합니다.
+     * 따라서 refresh 실패 원인이 네트워크 오류인지 서버 인증 오류인지와 무관하게
+     * 로컬 토큰을 비우고 로그인 화면으로 보냅니다.
+     */
     private suspend fun restoreSessionWithRefresh(): RestoreSessionResult {
         return authTokenRefresher.refreshServerToken()
             .fold(

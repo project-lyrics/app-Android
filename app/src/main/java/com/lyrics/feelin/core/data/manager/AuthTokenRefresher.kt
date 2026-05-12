@@ -15,6 +15,14 @@ class AuthTokenRefreshException(
     cause: Throwable,
 ) : Exception(cause)
 
+/**
+ * 서버 JWT 재발급 공통 경로입니다.
+ *
+ * 이 클래스는 런타임 401 재인증에서도 사용되므로
+ * 일시적인 네트워크/서버 실패만으로는 저장된 refresh token을 삭제하지 않습니다.
+ * 토큰 만료·무효처럼 서버가 세션 종료를 확정한 인증 에러 코드에만 토큰을 정리하고,
+ * 앱 시작 자동 로그인의 더 강한 실패 정책은 [AuthRepository.restoreSession]에서 조합합니다.
+ */
 @Singleton
 class AuthTokenRefresher @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource,
@@ -68,6 +76,7 @@ class AuthTokenRefresher @Inject constructor(
     private suspend fun handleRefreshFailure(exception: Throwable): Result<AuthToken> {
         val refreshException = exception.toAuthTokenRefreshException()
 
+        // 401 재인증 경로에서는 일시 실패 후 다음 요청에서 다시 복구할 수 있도록 토큰을 보존합니다.
         return if (refreshException.errorCode in TERMINAL_AUTH_ERROR_CODES) {
             clearTokensAndFail(refreshException)
         } else {

@@ -10,6 +10,11 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import retrofit2.HttpException
 
+class AuthTokenRefreshException(
+    val errorCode: String?,
+    cause: Throwable,
+) : Exception(cause)
+
 @Singleton
 class AuthTokenRefresher @Inject constructor(
     private val authRemoteDataSource: AuthRemoteDataSource,
@@ -61,10 +66,12 @@ class AuthTokenRefresher @Inject constructor(
     }
 
     private suspend fun handleRefreshFailure(exception: Throwable): Result<AuthToken> {
-        return if (shouldClearTokens(exception)) {
-            clearTokensAndFail(exception)
+        val refreshException = exception.toAuthTokenRefreshException()
+
+        return if (refreshException.errorCode in TERMINAL_AUTH_ERROR_CODES) {
+            clearTokensAndFail(refreshException)
         } else {
-            Result.failure(exception)
+            Result.failure(refreshException)
         }
     }
 
@@ -73,12 +80,17 @@ class AuthTokenRefresher @Inject constructor(
         return Result.failure(exception)
     }
 
-    private fun shouldClearTokens(exception: Throwable): Boolean {
-        return if (exception is HttpException) {
-            exception.toServerErrorDto().errorCode in TERMINAL_AUTH_ERROR_CODES
+    private fun Throwable.toAuthTokenRefreshException(): AuthTokenRefreshException {
+        val errorCode = if (this is HttpException) {
+            toServerErrorDto().errorCode
         } else {
-            false
+            null
         }
+
+        return AuthTokenRefreshException(
+            errorCode = errorCode,
+            cause = this,
+        )
     }
 
     private fun createCachedAuthToken(

@@ -5,6 +5,7 @@ import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerE
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
 import com.lyrics.feelin.core.data.datasource.sdk.KakaoAuthDataSource
 import com.lyrics.feelin.core.data.manager.AuthManager
+import com.lyrics.feelin.core.data.manager.AuthTokenRefreshException
 import com.lyrics.feelin.core.data.manager.AuthTokenRefresher
 import com.lyrics.feelin.core.domain.model.AuthToken
 import com.lyrics.feelin.core.domain.model.OAuthProvider
@@ -18,10 +19,12 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 
+private const val UNKNOWN_SERVER_ERROR_CODE = "-1"
+
 sealed interface RestoreSessionResult {
     data object Authenticated : RestoreSessionResult
     data object Unauthenticated : RestoreSessionResult
-    data object Failed : RestoreSessionResult
+    data class Failed(val errorCode: String) : RestoreSessionResult
 }
 
 /**
@@ -84,7 +87,7 @@ class AuthRepository @Inject constructor(
                         throw exception
                     }
                     authManager.clearTokens()
-                    RestoreSessionResult.Failed
+                    RestoreSessionResult.Failed(errorCode = exception.toServerErrorCode())
                 },
             )
     }
@@ -286,5 +289,13 @@ class AuthRepository @Inject constructor(
         authManager.clearTokens()
 
         return Result.success(Unit)
+    }
+}
+
+private fun Throwable.toServerErrorCode(): String {
+    return when (this) {
+        is AuthTokenRefreshException -> errorCode ?: UNKNOWN_SERVER_ERROR_CODE
+        is HttpException -> toServerErrorDto().errorCode
+        else -> UNKNOWN_SERVER_ERROR_CODE
     }
 }

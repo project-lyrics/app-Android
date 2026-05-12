@@ -37,10 +37,8 @@ internal fun NavGraphBuilder.splashScreen(navController: NavHostController) {
 }
 
 private val SplashUiState.NavigateToLogin.loginRoute: String
-    get() = if (showAutoLoginFailedDialog) {
-        FeelinDestination.Login.createRoute(
-            FeelinDestination.Login.AutoLoginFailedDialogReason
-        )
+    get() = if (autoLoginFailedErrorCode != null) {
+        FeelinDestination.Login.createRoute(autoLoginFailedErrorCode)
     } else {
         FeelinDestination.Login.route
     }

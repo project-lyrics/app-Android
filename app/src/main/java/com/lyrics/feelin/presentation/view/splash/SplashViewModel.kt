@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.lyrics.feelin.core.data.repository.AuthRepository
 import com.lyrics.feelin.core.data.repository.RestoreSessionResult
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +13,7 @@ import kotlinx.coroutines.launch
 sealed interface SplashUiState {
     data object CheckingSession : SplashUiState
     data object NavigateToMain : SplashUiState
-    data class NavigateToLogin(val showAutoLoginFailedDialog: Boolean) : SplashUiState
+    data class NavigateToLogin(val autoLoginFailedErrorCode: String?) : SplashUiState
 }
 
 @HiltViewModel
@@ -30,13 +29,13 @@ class SplashViewModel @Inject constructor(
 
     private fun restoreSession() {
         viewModelScope.launch {
-            val nextState = when (authRepository.restoreSession()) {
+            val nextState = when (val restoreSessionResult = authRepository.restoreSession()) {
                 RestoreSessionResult.Authenticated -> SplashUiState.NavigateToMain
                 RestoreSessionResult.Unauthenticated -> {
-                    SplashUiState.NavigateToLogin(showAutoLoginFailedDialog = false)
+                    SplashUiState.NavigateToLogin(autoLoginFailedErrorCode = null)
                 }
-                RestoreSessionResult.Failed -> {
-                    SplashUiState.NavigateToLogin(showAutoLoginFailedDialog = true)
+                is RestoreSessionResult.Failed -> {
+                    SplashUiState.NavigateToLogin(autoLoginFailedErrorCode = restoreSessionResult.errorCode)
                 }
             }
             _splashUiState.value = nextState

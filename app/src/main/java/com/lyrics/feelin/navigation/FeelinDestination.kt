@@ -20,13 +20,12 @@ sealed class FeelinDestination(
 
     // Onboarding Flow
     object Login : FeelinDestination(route = LOGIN_ROUTE) {
-        const val DialogReasonArgument = "dialogReason"
-        const val AutoLoginFailedDialogReason = "auto_login_failed"
+        const val AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT = "autoLoginFailedErrorCode"
 
-        val routeWithDialogReason = "$LOGIN_ROUTE/{$DialogReasonArgument}"
+        const val ROUTE_WITH_AUTO_LOGIN_FAILED_ERROR_CODE = "$LOGIN_ROUTE/{$AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT}"
 
-        fun createRoute(dialogReason: String): String {
-            return "$LOGIN_ROUTE/${Uri.encode(dialogReason)}"
+        fun createRoute(autoLoginFailedErrorCode: String): String {
+            return "$LOGIN_ROUTE/${Uri.encode(autoLoginFailedErrorCode)}"
         }
     }
     object OnboardingTerms : FeelinDestination(route = "onboarding_terms")

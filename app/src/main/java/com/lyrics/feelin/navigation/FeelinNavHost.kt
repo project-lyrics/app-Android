@@ -99,9 +99,9 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
     }
 
     composable(
-        route = FeelinDestination.Login.routeWithDialogReason,
+        route = FeelinDestination.Login.ROUTE_WITH_AUTO_LOGIN_FAILED_ERROR_CODE,
         arguments = listOf(
-            navArgument(FeelinDestination.Login.DialogReasonArgument) {
+            navArgument(FeelinDestination.Login.AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT) {
                 type = NavType.StringType
             }
         )
@@ -110,13 +110,13 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
             navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
         }
         val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
-        val dialogReason = backStackEntry.arguments
-            ?.getString(FeelinDestination.Login.DialogReasonArgument)
+        val autoLoginFailedErrorCode = backStackEntry.arguments
+            ?.getString(FeelinDestination.Login.AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT)
 
         LoginScreenRoute(
             navController = navController,
             viewModel = viewModel,
-            dialogReason = dialogReason,
+            autoLoginFailedErrorCode = autoLoginFailedErrorCode,
         )
     }
 }
@@ -125,13 +125,11 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
 private fun LoginScreenRoute(
     navController: NavHostController,
     viewModel: OnboardingViewModel,
-    dialogReason: String? = null,
+    autoLoginFailedErrorCode: String? = null,
 ) {
     OnboardingScaffold {
-        val showAutoLoginFailedDialog = dialogReason == FeelinDestination.Login.AutoLoginFailedDialogReason
-
         LoginScreen(
-            showAutoLoginFailedDialog = showAutoLoginFailedDialog,
+            autoLoginFailedErrorCode = autoLoginFailedErrorCode,
             onSignUp = {
                 viewModel.resetOnboardingState()
                 navController.navigate(FeelinDestination.OnboardingTerms.route)

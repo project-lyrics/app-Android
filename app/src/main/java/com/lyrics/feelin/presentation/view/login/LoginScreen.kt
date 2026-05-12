@@ -47,6 +47,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
 
 private const val TAG = "LoginScreen"
+private const val UNKNOWN_AUTO_LOGIN_ERROR_CODE = "-1"
 
 // 로그인 화면은 테마 미 적용입니다. @이대근 2025.09.15.
 
@@ -55,19 +56,19 @@ fun LoginScreen(
     onSignUp: () -> Unit,
     onContinueToMain: () -> Unit,
     modifier: Modifier = Modifier,
-    showAutoLoginFailedDialog: Boolean = false,
+    autoLoginFailedErrorCode: String? = null,
     loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsState()
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
-    var isAutoLoginFailedDialogVisible by remember(showAutoLoginFailedDialog) {
-        mutableStateOf(showAutoLoginFailedDialog)
+    var isAutoLoginFailedDialogVisible by remember(autoLoginFailedErrorCode) {
+        mutableStateOf(autoLoginFailedErrorCode != null)
     }
 
     if (isAutoLoginFailedDialogVisible) {
         FeelinModalDialog(
-            title = "로그인이 만료되었습니다.",
-            description = "다시 로그인해 주세요.",
+            title = "장시간 서비스를 이용하지 않아\n로그인 정보가 만료되었어요.",
+            description = "에러코드 [${autoLoginFailedErrorCode ?: UNKNOWN_AUTO_LOGIN_ERROR_CODE}]",
             confirmButtonText = "확인",
             onConfirmButtonClick = {
                 isAutoLoginFailedDialogVisible = false

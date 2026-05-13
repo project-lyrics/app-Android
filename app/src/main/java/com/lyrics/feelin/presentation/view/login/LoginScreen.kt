@@ -20,6 +20,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -44,6 +47,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray05
 
 private const val TAG = "LoginScreen"
+private const val UNKNOWN_AUTO_LOGIN_ERROR_CODE = "-1"
 
 // 로그인 화면은 테마 미 적용입니다. @이대근 2025.09.15.
 
@@ -52,10 +56,26 @@ fun LoginScreen(
     onSignUp: () -> Unit,
     onContinueToMain: () -> Unit,
     modifier: Modifier = Modifier,
+    autoLoginFailedErrorCode: String? = null,
     loginViewModel: LoginViewModel = hiltViewModel<LoginViewModel>()
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsState()
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
+    var isAutoLoginFailedDialogVisible by rememberSaveable(autoLoginFailedErrorCode) {
+        mutableStateOf(autoLoginFailedErrorCode != null)
+    }
+
+    if (isAutoLoginFailedDialogVisible) {
+        FeelinModalDialog(
+            title = "장시간 서비스를 이용하지 않아\n로그인 정보가 만료되었어요.",
+            description = "에러코드 [${autoLoginFailedErrorCode ?: UNKNOWN_AUTO_LOGIN_ERROR_CODE}]",
+            confirmButtonText = "확인",
+            onConfirmButtonClick = {
+                isAutoLoginFailedDialogVisible = false
+            },
+            isDismissButtonEnable = false,
+        )
+    }
 
     if (loginUiState is LoginUiState.Error) {
         if ((loginUiState as LoginUiState.Error).error.type == LoginErrorType.BACKEND_SERVER) {

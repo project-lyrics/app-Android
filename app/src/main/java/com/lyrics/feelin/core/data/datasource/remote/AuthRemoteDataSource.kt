@@ -1,5 +1,6 @@
 package com.lyrics.feelin.core.data.datasource.remote
 
+import com.lyrics.feelin.core.data.datasource.remote.dto.RefreshTokenRequestDto
 import com.lyrics.feelin.core.data.datasource.remote.dto.ServerStatusResponseDto
 import com.lyrics.feelin.core.data.datasource.remote.dto.SignInRequestDto
 import com.lyrics.feelin.core.data.util.safeApiCall
@@ -27,6 +28,18 @@ class AuthRemoteDataSource @Inject constructor(
 
     suspend fun signOut(): Result<ServerStatusResponseDto> {
         return safeApiCall { authApiService.signOut() }
+    }
+
+    suspend fun validateToken(): Result<ServerStatusResponseDto> {
+        return safeApiCall { authApiService.validateToken() }
+    }
+
+    suspend fun reIssueToken(refreshToken: String): Result<AuthToken> {
+        return safeApiCall {
+            authApiService.reIssueToken(
+                refreshTokenDto = RefreshTokenRequestDto(refreshToken = refreshToken)
+            )
+        }
     }
 
     // TODO(@이대근): 온보딩 화면 제작하면서 연동 필요 2025.10.12.

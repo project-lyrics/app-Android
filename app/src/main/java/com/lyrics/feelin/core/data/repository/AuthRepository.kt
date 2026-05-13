@@ -5,6 +5,8 @@ import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerE
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
 import com.lyrics.feelin.core.data.datasource.sdk.KakaoAuthDataSource
 import com.lyrics.feelin.core.data.manager.AuthManager
+import com.lyrics.feelin.core.data.manager.AuthTokenRefreshException
+import com.lyrics.feelin.core.data.manager.AuthTokenRefresher
 import com.lyrics.feelin.core.domain.model.AuthToken
 import com.lyrics.feelin.core.domain.model.OAuthProvider
 import com.lyrics.feelin.core.domain.model.OAuthToken
@@ -16,6 +18,14 @@ import javax.inject.Singleton
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
+
+private const val UNKNOWN_SERVER_ERROR_CODE = "-1"
+
+sealed interface RestoreSessionResult {
+    data object Authenticated : RestoreSessionResult
+    data object Unauthenticated : RestoreSessionResult
+    data class Failed(val errorCode: String) : RestoreSessionResult
+}
 
 /**
  * 인증 비즈니스 로직을 담당하는 Repository
@@ -35,13 +45,70 @@ class AuthRepository @Inject constructor(
     @Suppress("UnusedPrivateMember") // TODO(@이대근): 구글 로그인 구현 중 어노테이션 제거할 것. 2025.10.02.
     private val googleAuthDataSource: GoogleAuthDataSource,
     private val authRemoteDataSource: AuthRemoteDataSource,
-    private val authManager: AuthManager
+    private val authManager: AuthManager,
+    private val authTokenRefresher: AuthTokenRefresher
 ) {
     // ========== 로그인 상태 노출 ==========
 
     val isLoggedIn: StateFlow<Boolean> = authManager.isLoggedIn
 
     val userId: StateFlow<Long?> = authManager.userId
+
+    // ========== 자동 로그인 ==========
+
+    @Suppress("TooGenericExceptionCaught")
+    suspend fun restoreSession(): RestoreSessionResult {
+        authManager.initializationComplete.await()
+
+        return try {
+            when {
+                !authManager.hasRefreshToken() -> {
+                    RestoreSessionResult.Unauthenticated
+                }
+
+                !authManager.hasValidAccessToken() -> {
+                    restoreSessionWithRefresh()
+                }
+
+                authRemoteDataSource.validateToken().getOrNull()?.status == true -> {
+                    RestoreSessionResult.Authenticated
+                }
+
+                else -> {
+                    restoreSessionWithRefresh()
+                }
+            }
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            runCatching {
+                authManager.clearTokens()
+            }
+            RestoreSessionResult.Failed(errorCode = exception.toServerErrorCode())
+        }
+    }
+
+    /**
+     * 앱 시작 자동 로그인은 복구 실패를 세션 종료로 취급합니다.
+     *
+     * 런타임 401 재인증은 일시 실패 시 토큰을 보존하지만,
+     * 앱 시작 단계에서는 사용자에게 메인 화면을 보여주기 전에 세션 사용 가능 여부를 확정해야 합니다.
+     * 따라서 refresh 실패 원인이 네트워크 오류인지 서버 인증 오류인지와 무관하게
+     * 로컬 토큰을 비우고 로그인 화면으로 보냅니다.
+     */
+    private suspend fun restoreSessionWithRefresh(): RestoreSessionResult {
+        return authTokenRefresher.refreshServerToken()
+            .fold(
+                onSuccess = { RestoreSessionResult.Authenticated },
+                onFailure = { exception ->
+                    if (exception is CancellationException) {
+                        throw exception
+                    }
+                    authManager.clearTokens()
+                    RestoreSessionResult.Failed(errorCode = exception.toServerErrorCode())
+                },
+            )
+    }
 
     // ========== 로그인 ==========
 
@@ -240,5 +307,13 @@ class AuthRepository @Inject constructor(
         authManager.clearTokens()
 
         return Result.success(Unit)
+    }
+}
+
+private fun Throwable.toServerErrorCode(): String {
+    return when (this) {
+        is AuthTokenRefreshException -> errorCode ?: UNKNOWN_SERVER_ERROR_CODE
+        is HttpException -> toServerErrorDto().errorCode
+        else -> UNKNOWN_SERVER_ERROR_CODE
     }
 }

@@ -58,13 +58,15 @@ import com.lyrics.feelin.presentation.view.webview.InternalWebViewScreen
 fun FeelinNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController(),
-    startDestination: String = FeelinDestination.OnboardingGraph.route,
+    startDestination: String = FeelinDestination.Splash.route,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier.fillMaxSize()
     ) {
+        splashScreen(navController)
+
         onboardingNavGraph(navController)
 
         mainNavGraph(navController)
@@ -93,15 +95,47 @@ private fun NavGraphBuilder.loginScreen(navController: NavHostController) {
         }
         val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
 
-        OnboardingScaffold {
-            LoginScreen(
-                onSignUp = {
-                    viewModel.resetOnboardingState()
-                    navController.navigate(FeelinDestination.OnboardingTerms.route)
-                },
-                onContinueToMain = { navController.navigateToMainGraph() }
-            )
+        LoginScreenRoute(navController = navController, viewModel = viewModel)
+    }
+
+    composable(
+        route = FeelinDestination.Login.ROUTE_WITH_AUTO_LOGIN_FAILED_ERROR_CODE,
+        arguments = listOf(
+            navArgument(FeelinDestination.Login.AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT) {
+                type = NavType.StringType
+            }
+        )
+    ) { backStackEntry ->
+        val parentEntry = remember(backStackEntry) {
+            navController.getBackStackEntry(FeelinDestination.OnboardingGraph.route)
         }
+        val viewModel: OnboardingViewModel = hiltViewModel(parentEntry)
+        val autoLoginFailedErrorCode = backStackEntry.arguments
+            ?.getString(FeelinDestination.Login.AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT)
+
+        LoginScreenRoute(
+            navController = navController,
+            viewModel = viewModel,
+            autoLoginFailedErrorCode = autoLoginFailedErrorCode,
+        )
+    }
+}
+
+@Composable
+private fun LoginScreenRoute(
+    navController: NavHostController,
+    viewModel: OnboardingViewModel,
+    autoLoginFailedErrorCode: String? = null,
+) {
+    OnboardingScaffold {
+        LoginScreen(
+            autoLoginFailedErrorCode = autoLoginFailedErrorCode,
+            onSignUp = {
+                viewModel.resetOnboardingState()
+                navController.navigate(FeelinDestination.OnboardingTerms.route)
+            },
+            onContinueToMain = { navController.navigateToMainGraph() }
+        )
     }
 }
 

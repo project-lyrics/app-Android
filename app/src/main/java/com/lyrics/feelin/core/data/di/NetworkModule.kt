@@ -58,7 +58,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://api.feelinapp.com/") // TODO(@이대근): productFlavor 변수화 필요 2025.10.05.
+            .baseUrl("http://dev.feelinapp.com/") // TODO(@이대근): productFlavor 변수화 필요 2025.10.05.
             .addConverterFactory(
                 Json.asConverterFactory(
                     "application/json; charset=UTF-8".toMediaType()

@@ -1,18 +1,17 @@
 package com.lyrics.feelin.core.data.interceptor
 
 import android.util.Log
-import com.lyrics.feelin.core.data.datasource.remote.AuthApiService
-import com.lyrics.feelin.core.data.datasource.remote.dto.RefreshTokenRequestDto
 import com.lyrics.feelin.core.data.manager.AuthManager
+import com.lyrics.feelin.core.data.manager.AuthTokenRefresher
 import dagger.Lazy
 import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.runBlocking
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.Response
-import retrofit2.HttpException
 
 /**
  * 모든 API 요청에 Access Token을 자동으로 추가합니다.
@@ -57,7 +56,7 @@ class AuthInterceptor @Inject constructor(
  * - 갱신 실패 시 null 반환 (로그아웃 처리는 상위 레이어에서)
  *
  * **주의:**
- * - AuthApiService를 Lazy 주입 (순환 참조 방지)
+ * - AuthTokenRefresher를 Lazy 주입 (순환 참조 방지)
  *
  * **Detekt Suppression:**
  * - `TooGenericExceptionCaught`: 토큰 갱신 실패 시 모든 예외를 동일하게 처리 (null 반환).
@@ -65,45 +64,37 @@ class AuthInterceptor @Inject constructor(
 @Singleton
 class TokenAuthenticator @Inject constructor(
     private val authManager: AuthManager,
-    private val authApiService: Lazy<AuthApiService>
+    private val authTokenRefresher: Lazy<AuthTokenRefresher>
 ) : Authenticator {
 
     @Suppress("TooGenericExceptionCaught")
     override fun authenticate(route: okhttp3.Route?, response: Response): okhttp3.Request? {
         // 이미 재시도한 경우 중단 (무한 루프 방지)
-        if (response.priorResponse != null) {
+        if (response.priorResponse != null || response.request.url.encodedPath == TOKEN_REISSUE_PATH) {
             return null
         }
 
         return runBlocking {
             try {
                 authManager.initializationComplete.await()
-
-                // Refresh Token으로 갱신 시도
-                val refreshToken = authManager.refreshToken.value ?: return@runBlocking null
-                val dto = RefreshTokenRequestDto(refreshToken)
-
-                // 토큰 재발급 API 호출
-                val tokenResponse = authApiService.get().reIssueToken(dto).body()
-                    ?: return@runBlocking null
-
-                // 새 토큰 저장
-                authManager.updateAccessToken(
-                    newAccessToken = tokenResponse.accessToken
-                )
-                authManager.updateRefreshToken(
-                    newRefreshToken = tokenResponse.refreshToken
-                )
+                val staleAccessToken = response.request.header("Authorization")
+                    ?.removePrefix(BEARER_PREFIX)
+                val refreshResult = authTokenRefresher.get()
+                    .refreshServerToken(staleAccessToken = staleAccessToken)
+                val tokenResponse = refreshResult.getOrNull()
+                    ?: run {
+                        refreshResult.exceptionOrNull()?.let { error ->
+                            Log.w(TAG, "Token refresh failed", error)
+                        }
+                        return@runBlocking null
+                    }
 
                 // 재시도 요청 생성
                 response.request.newBuilder()
                     .header("Authorization", "Bearer ${tokenResponse.accessToken}")
                     .build()
-            } catch (e: HttpException) {
-                // HTTP 에러 (401, 403 등) - 토큰이 완전히 만료됨
-                // null 반환 → 원래 401이 상위로 전달 → 로그아웃 처리
-                Log.w(TAG, "Token refresh failed", e)
-                null
+            } catch (e: CancellationException) {
+                throw e
             } catch (e: IOException) {
                 // 네트워크 오류 - 재시도하지 않고 실패 처리
                 Log.w(TAG, "Token refresh failed", e)
@@ -118,5 +109,7 @@ class TokenAuthenticator @Inject constructor(
 
     companion object {
         private const val TAG = "TokenAuthenticator"
+        private const val BEARER_PREFIX = "Bearer "
+        private const val TOKEN_REISSUE_PATH = "/api/v1/auth/token"
     }
 }

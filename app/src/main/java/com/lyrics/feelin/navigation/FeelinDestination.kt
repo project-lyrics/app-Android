@@ -6,10 +6,12 @@ sealed class FeelinDestination(
     val route: String,
 ) {
     companion object {
+        private const val LOGIN_ROUTE = "login"
         private const val WEB_VIEW_URL_ARGUMENT = "url"
     }
 
     // Navigation Graph Routes
+    object Splash : FeelinDestination(route = "splash")
     object OnboardingGraph : FeelinDestination(route = "onboarding_graph")
     object MainGraph : FeelinDestination(route = "main_graph")
     object HomeGraph : FeelinDestination(route = "home_graph")
@@ -17,7 +19,15 @@ sealed class FeelinDestination(
     object MyPageGraph : FeelinDestination(route = "my_page_graph")
 
     // Onboarding Flow
-    object Login : FeelinDestination(route = "login")
+    object Login : FeelinDestination(route = LOGIN_ROUTE) {
+        const val AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT = "autoLoginFailedErrorCode"
+
+        const val ROUTE_WITH_AUTO_LOGIN_FAILED_ERROR_CODE = "$LOGIN_ROUTE/{$AUTO_LOGIN_FAILED_ERROR_CODE_ARGUMENT}"
+
+        fun createRoute(autoLoginFailedErrorCode: String): String {
+            return "$LOGIN_ROUTE/${Uri.encode(autoLoginFailedErrorCode)}"
+        }
+    }
     object OnboardingTerms : FeelinDestination(route = "onboarding_terms")
     object OnboardingGenderAge : FeelinDestination(route = "onboarding_gender_age")
     object OnboardingProfile : FeelinDestination(route = "onboarding_profile")

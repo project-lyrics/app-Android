@@ -56,25 +56,35 @@ class AuthRepository @Inject constructor(
 
     // ========== 자동 로그인 ==========
 
+    @Suppress("TooGenericExceptionCaught")
     suspend fun restoreSession(): RestoreSessionResult {
         authManager.initializationComplete.await()
 
-        return when {
-            !authManager.hasRefreshToken() -> {
-                RestoreSessionResult.Unauthenticated
-            }
+        return try {
+            when {
+                !authManager.hasRefreshToken() -> {
+                    RestoreSessionResult.Unauthenticated
+                }
 
-            !authManager.hasValidAccessToken() -> {
-                restoreSessionWithRefresh()
-            }
+                !authManager.hasValidAccessToken() -> {
+                    restoreSessionWithRefresh()
+                }
 
-            authRemoteDataSource.validateToken().getOrNull()?.status == true -> {
-                RestoreSessionResult.Authenticated
-            }
+                authRemoteDataSource.validateToken().getOrNull()?.status == true -> {
+                    RestoreSessionResult.Authenticated
+                }
 
-            else -> {
-                restoreSessionWithRefresh()
+                else -> {
+                    restoreSessionWithRefresh()
+                }
             }
+        } catch (exception: CancellationException) {
+            throw exception
+        } catch (exception: Exception) {
+            runCatching {
+                authManager.clearTokens()
+            }
+            RestoreSessionResult.Failed(errorCode = exception.toServerErrorCode())
         }
     }
 

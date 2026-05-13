@@ -107,6 +107,55 @@ fun ProfileCharacterBottomSheet(
 }
 
 @Composable
+private fun ProfileCharacterBottomSheetContent(
+    onDismiss: () -> Unit,
+    onSelectProfile: (ProfileCharacter) -> Unit,
+    selectedProfile: ProfileCharacter?,
+    modifier: Modifier = Modifier
+) {
+    val colors = LocalFeelinColors.current
+    val isDarkMode = LocalDarkTheme.current
+    var internalSelectedProfile by remember { mutableStateOf(selectedProfile) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            ProfileBottomSheetHeader(
+                onDismiss = onDismiss,
+                titleColor = colors.gray09,
+                iconColor = colors.gray09
+            )
+
+            ProfileCharacterList(
+                selectedProfile = internalSelectedProfile,
+                onProfileClick = { profile -> internalSelectedProfile = profile },
+                isDarkMode = isDarkMode
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        ProfileSelectButton(
+            onClick = { internalSelectedProfile?.let { onSelectProfile(it) } },
+            enabled = internalSelectedProfile != null,
+            backgroundColor = colors.systemActivate,
+            textColor = LightGray00
+        )
+
+        Spacer(modifier = Modifier.height(23.dp))
+    }
+}
+
+@Composable
 private fun ProfileBottomSheetHeader(
     onDismiss: () -> Unit,
     titleColor: Color,
@@ -246,10 +295,10 @@ private fun ProfileSelectButton(
 @Preview(name = "Light Mode - Profile 1 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewLight() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_1) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_1) }
 
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
@@ -264,10 +313,10 @@ private fun ProfileCharacterBottomSheetPreviewLight() {
 )
 @Composable
 private fun ProfileCharacterBottomSheetPreviewDark() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_2) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_2) }
 
     FeelinTheme(darkTheme = true) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
@@ -279,9 +328,10 @@ private fun ProfileCharacterBottomSheetPreviewDark() {
 @Composable
 private fun ProfileCharacterBottomSheetPreviewNoSelection() {
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
-            onSelectProfile = { }
+            onSelectProfile = { },
+            selectedProfile = null
         )
     }
 }
@@ -289,13 +339,30 @@ private fun ProfileCharacterBottomSheetPreviewNoSelection() {
 @Preview(name = "Light Mode - Profile 3 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewProfile3() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_3) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_3) }
 
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
+        )
+    }
+}
+
+// 좁은 화면에서 레이아웃 확인용 Preview
+@Preview(
+    name = "Narrow Screen (320dp)",
+    showBackground = true,
+    widthDp = 320
+)
+@Composable
+private fun ProfileCharacterBottomSheetPreviewNarrow() {
+    FeelinTheme(darkTheme = false) {
+        ProfileCharacterBottomSheetContent(
+            onDismiss = { },
+            onSelectProfile = { },
+            selectedProfile = ProfileCharacter.PROFILE_1
         )
     }
 }

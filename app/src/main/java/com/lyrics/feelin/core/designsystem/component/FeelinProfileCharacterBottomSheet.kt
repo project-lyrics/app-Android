@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -210,12 +212,13 @@ private fun ProfileCharacterList(
 }
 
 /**
- * 레이어 구조의 프로필 선택 아이템
+ * 레이어 구조의 프로필 선택 아이템.
  *
  * @param profile 프로필 캐릭터
  * @param isSelected 선택 상태
+ * @param isDarkMode 다크모드 여부
  * @param onClick 클릭 콜백
- * @param modifier Modifier
+ * @param modifier Modifier (보통 weight를 받음)
  */
 @Composable
 fun ProfileSelectItemLayered(
@@ -226,9 +229,7 @@ fun ProfileSelectItemLayered(
     modifier: Modifier = Modifier
 ) {
     val colors = LocalFeelinColors.current
-
     val imageRes = profile.getDrawableRes(isSelected, isDarkMode)
-
     val outerCircleColor = if (isSelected) {
         colors.brandPrimary
     } else {
@@ -237,33 +238,24 @@ fun ProfileSelectItemLayered(
 
     Box(
         modifier = modifier
-            .size(84.dp)
-            .clickable { onClick() },
+            .aspectRatio(1f)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .border(width = 2.dp, color = outerCircleColor, shape = CircleShape)
+            .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
-        Box(
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = "프로필 ${profile.id}",
             modifier = Modifier
-                .size(80.dp)
-                .border(width = 2.dp, outerCircleColor, CircleShape),
+                .fillMaxSize()
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
-
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = "프로필 ${profile.id}",
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
     }
 }
+
 
 @Composable
 private fun ProfileSelectButton(
@@ -350,7 +342,6 @@ private fun ProfileCharacterBottomSheetPreviewProfile3() {
     }
 }
 
-// 좁은 화면에서 레이아웃 확인용 Preview
 @Preview(
     name = "Narrow Screen (320dp)",
     showBackground = true,

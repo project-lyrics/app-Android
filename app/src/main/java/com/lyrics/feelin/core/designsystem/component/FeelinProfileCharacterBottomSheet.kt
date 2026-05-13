@@ -1,8 +1,11 @@
 package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -230,18 +233,25 @@ fun ProfileSelectItemLayered(
 ) {
     val colors = LocalFeelinColors.current
     val imageRes = profile.getDrawableRes(isSelected, isDarkMode)
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
     val outerCircleColor = if (isSelected) {
         colors.brandPrimary
     } else {
         colors.systemDisable
     }
+    val pressedBackgroundColor = if (isPressed) colors.systemPressedGreyScale else Color.Transparent
 
     Box(
         modifier = modifier
             .aspectRatio(1f)
             .clip(CircleShape)
-            .clickable { onClick() }
+            .background(color = pressedBackgroundColor, shape = CircleShape)
             .border(width = 2.dp, color = outerCircleColor, shape = CircleShape)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { onClick() }
             .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
@@ -255,7 +265,6 @@ fun ProfileSelectItemLayered(
         )
     }
 }
-
 
 @Composable
 private fun ProfileSelectButton(

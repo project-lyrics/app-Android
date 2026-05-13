@@ -79,10 +79,15 @@ class TokenAuthenticator @Inject constructor(
                 authManager.initializationComplete.await()
                 val staleAccessToken = response.request.header("Authorization")
                     ?.removePrefix(BEARER_PREFIX)
-                val tokenResponse = authTokenRefresher.get()
+                val refreshResult = authTokenRefresher.get()
                     .refreshServerToken(staleAccessToken = staleAccessToken)
-                    .getOrNull()
-                    ?: return@runBlocking null
+                val tokenResponse = refreshResult.getOrNull()
+                    ?: run {
+                        refreshResult.exceptionOrNull()?.let { error ->
+                            Log.w(TAG, "Token refresh failed", error)
+                        }
+                        return@runBlocking null
+                    }
 
                 // 재시도 요청 생성
                 response.request.newBuilder()

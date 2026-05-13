@@ -21,7 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +61,7 @@ fun LoginScreen(
 ) {
     val loginUiState by loginViewModel.loginUiState.collectAsState()
     val lastOAuthProvider by loginViewModel.lastOauthProvider.collectAsState()
-    var isAutoLoginFailedDialogVisible by remember(autoLoginFailedErrorCode) {
+    var isAutoLoginFailedDialogVisible by rememberSaveable(autoLoginFailedErrorCode) {
         mutableStateOf(autoLoginFailedErrorCode != null)
     }
 

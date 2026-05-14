@@ -1,13 +1,18 @@
 package com.lyrics.feelin.core.designsystem.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -107,6 +112,55 @@ fun ProfileCharacterBottomSheet(
 }
 
 @Composable
+private fun ProfileCharacterBottomSheetContent(
+    onDismiss: () -> Unit,
+    onSelectProfile: (ProfileCharacter) -> Unit,
+    selectedProfile: ProfileCharacter?,
+    modifier: Modifier = Modifier
+) {
+    val colors = LocalFeelinColors.current
+    val isDarkMode = LocalDarkTheme.current
+    var internalSelectedProfile by remember { mutableStateOf(selectedProfile) }
+
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            ProfileBottomSheetHeader(
+                onDismiss = onDismiss,
+                titleColor = colors.gray09,
+                iconColor = colors.gray09
+            )
+
+            ProfileCharacterList(
+                selectedProfile = internalSelectedProfile,
+                onProfileClick = { profile -> internalSelectedProfile = profile },
+                isDarkMode = isDarkMode
+            )
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        ProfileSelectButton(
+            onClick = { internalSelectedProfile?.let { onSelectProfile(it) } },
+            enabled = internalSelectedProfile != null,
+            backgroundColor = colors.systemActivate,
+            textColor = LightGray00
+        )
+
+        Spacer(modifier = Modifier.height(23.dp))
+    }
+}
+
+@Composable
 private fun ProfileBottomSheetHeader(
     onDismiss: () -> Unit,
     titleColor: Color,
@@ -161,12 +215,13 @@ private fun ProfileCharacterList(
 }
 
 /**
- * 레이어 구조의 프로필 선택 아이템
+ * 레이어 구조의 프로필 선택 아이템.
  *
  * @param profile 프로필 캐릭터
  * @param isSelected 선택 상태
+ * @param isDarkMode 다크모드 여부
  * @param onClick 클릭 콜백
- * @param modifier Modifier
+ * @param modifier Modifier (보통 weight를 받음)
  */
 @Composable
 fun ProfileSelectItemLayered(
@@ -177,42 +232,37 @@ fun ProfileSelectItemLayered(
     modifier: Modifier = Modifier
 ) {
     val colors = LocalFeelinColors.current
-
     val imageRes = profile.getDrawableRes(isSelected, isDarkMode)
-
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
     val outerCircleColor = if (isSelected) {
         colors.brandPrimary
     } else {
         colors.systemDisable
     }
+    val pressedBackgroundColor = if (isPressed) colors.systemPressedGreyScale else Color.Transparent
 
     Box(
         modifier = modifier
-            .size(84.dp)
-            .clickable { onClick() },
+            .aspectRatio(1f)
+            .clip(CircleShape)
+            .background(color = pressedBackgroundColor, shape = CircleShape)
+            .border(width = 2.dp, color = outerCircleColor, shape = CircleShape)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null
+            ) { onClick() }
+            .padding(4.dp),
         contentAlignment = Alignment.Center
     ) {
-        Box(
+        Image(
+            painter = painterResource(id = imageRes),
+            contentDescription = "프로필 ${profile.id}",
             modifier = Modifier
-                .size(80.dp)
-                .border(width = 2.dp, outerCircleColor, CircleShape),
+                .fillMaxSize()
+                .clip(CircleShape),
+            contentScale = ContentScale.Crop
         )
-
-        Box(
-            modifier = Modifier
-                .size(72.dp)
-                .padding(2.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            Image(
-                painter = painterResource(id = imageRes),
-                contentDescription = "프로필 ${profile.id}",
-                modifier = Modifier
-                    .size(72.dp)
-                    .clip(CircleShape),
-                contentScale = ContentScale.Crop
-            )
-        }
     }
 }
 
@@ -246,10 +296,10 @@ private fun ProfileSelectButton(
 @Preview(name = "Light Mode - Profile 1 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewLight() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_1) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_1) }
 
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
@@ -264,10 +314,10 @@ private fun ProfileCharacterBottomSheetPreviewLight() {
 )
 @Composable
 private fun ProfileCharacterBottomSheetPreviewDark() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_2) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_2) }
 
     FeelinTheme(darkTheme = true) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
@@ -279,9 +329,10 @@ private fun ProfileCharacterBottomSheetPreviewDark() {
 @Composable
 private fun ProfileCharacterBottomSheetPreviewNoSelection() {
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
-            onSelectProfile = { }
+            onSelectProfile = { },
+            selectedProfile = null
         )
     }
 }
@@ -289,13 +340,29 @@ private fun ProfileCharacterBottomSheetPreviewNoSelection() {
 @Preview(name = "Light Mode - Profile 3 Selected", showBackground = true)
 @Composable
 private fun ProfileCharacterBottomSheetPreviewProfile3() {
-    var selectedProfile by remember { mutableStateOf(ProfileCharacter.PROFILE_3) }
+    var selectedProfile by remember { mutableStateOf<ProfileCharacter?>(ProfileCharacter.PROFILE_3) }
 
     FeelinTheme(darkTheme = false) {
-        ProfileCharacterBottomSheet(
+        ProfileCharacterBottomSheetContent(
             onDismiss = { },
             onSelectProfile = { selectedProfile = it },
             selectedProfile = selectedProfile
+        )
+    }
+}
+
+@Preview(
+    name = "Narrow Screen (320dp)",
+    showBackground = true,
+    widthDp = 320
+)
+@Composable
+private fun ProfileCharacterBottomSheetPreviewNarrow() {
+    FeelinTheme(darkTheme = false) {
+        ProfileCharacterBottomSheetContent(
+            onDismiss = { },
+            onSelectProfile = { },
+            selectedProfile = ProfileCharacter.PROFILE_1
         )
     }
 }

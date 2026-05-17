@@ -2,6 +2,7 @@ package com.lyrics.feelin.presentation.view.mypage
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.lyrics.feelin.core.data.repository.AuthRepository
 import com.lyrics.feelin.core.data.repository.UserRepository
 import com.lyrics.feelin.core.domain.model.ProfileType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,10 +15,14 @@ import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MyPageViewModel @Inject constructor(
+    private val authRepository: AuthRepository,
     private val userRepository: UserRepository
 ) : ViewModel() {
     private val _myPageScreenStatus: MutableStateFlow<MyPageScreenState> = MutableStateFlow(MyPageScreenState.initial())
     val myPageScreenState: StateFlow<MyPageScreenState> = _myPageScreenStatus.asStateFlow()
+
+    private val _logoutStatus: MutableStateFlow<MyPageLogoutStatus> = MutableStateFlow(MyPageLogoutStatus.IDLE)
+    val logoutStatus: StateFlow<MyPageLogoutStatus> = _logoutStatus.asStateFlow()
 
     fun loadMyPageData() {
         viewModelScope.launch {
@@ -54,6 +59,22 @@ class MyPageViewModel @Inject constructor(
             userRepository.logout()
             _myPageScreenStatus.value = _logoutSample
         }
+    }
+
+    fun logout() {
+        if (_logoutStatus.value == MyPageLogoutStatus.LOADING) return
+
+        viewModelScope.launch {
+            _logoutStatus.value = MyPageLogoutStatus.LOADING
+            authRepository.logout()
+            userRepository.logout()
+            _myPageScreenStatus.value = _logoutSample
+            _logoutStatus.value = MyPageLogoutStatus.SUCCESS
+        }
+    }
+
+    fun clearLogoutStatus() {
+        _logoutStatus.value = MyPageLogoutStatus.IDLE
     }
 
     private val _logoutSample = MyPageScreenState(

@@ -41,7 +41,9 @@ import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
 import com.lyrics.feelin.presentation.util.openExternalBrowser
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
+import com.lyrics.feelin.presentation.view.mypage.MyPageLogoutStatus
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
+import com.lyrics.feelin.presentation.view.mypage.MyPageViewModel
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
@@ -285,27 +287,49 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
 private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
     navigation(startDestination = FeelinDestination.MyPage.route, route = FeelinDestination.MyPageGraph.route) {
-        composable(FeelinDestination.MyPage.route) {
+        composable(FeelinDestination.MyPage.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(FeelinDestination.MyPageGraph.route)
+            }
+            val viewModel: MyPageViewModel = hiltViewModel(parentEntry)
+
             MainScaffold(navController = navController, selectedIndex = 2) {
                 MyPageScreen(
-                    onSettingClick = { navController.navigate(FeelinDestination.Setting.route) }
+                    onSettingClick = { navController.navigate(FeelinDestination.Setting.route) },
+                    viewModel = viewModel,
                 )
             }
         }
 
-        composable(FeelinDestination.Setting.route) {
+        composable(FeelinDestination.Setting.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(FeelinDestination.MyPageGraph.route)
+            }
+            val viewModel: MyPageViewModel = hiltViewModel(parentEntry)
+            val logoutStatus by viewModel.logoutStatus.collectAsState()
             val context = LocalContext.current
+
+            LaunchedEffect(logoutStatus) {
+                if (logoutStatus == MyPageLogoutStatus.SUCCESS) {
+                    viewModel.clearLogoutStatus()
+                    navController.navigate(FeelinDestination.OnboardingGraph.route) {
+                        popUpTo(FeelinDestination.MainGraph.route) { inclusive = true }
+                    }
+                }
+            }
 
             MainScaffold(navController = navController, selectedIndex = 2) {
                 SettingScreen(
                     onBackClick = { navController.popBackStack() },
                     onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) },
+                    onLogoutClick = viewModel::logout,
                     onInternalWebViewClick = { url ->
                         navController.navigate(FeelinDestination.InternalWebView.createRoute(url))
                     },
                     onExternalBrowserClick = { url ->
                         context.openExternalBrowser(url)
                     },
+                    isLogoutLoading = logoutStatus == MyPageLogoutStatus.LOADING,
                 )
             }
         }

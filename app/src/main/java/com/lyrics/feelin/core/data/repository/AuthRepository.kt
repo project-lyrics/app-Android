@@ -212,33 +212,28 @@ class AuthRepository @Inject constructor(
      * 로그아웃
      *
      * **플로우:**
-     * 1. Backend에 로그아웃 요청 (옵션)
+     * 1. Backend에 로그아웃 요청
      * 2. SDK 로그아웃 (Kakao/Google)
-     * 3. AuthManager에서 토큰 삭제
+     * 3. 성공/실패 여부와 무관하게 AuthManager에서 토큰 삭제
      */
-    @Suppress("ReturnCount") // TODO(@이대근): 구글 로그인 구현 이후 어노테이션 삭제 2025.10.04.
     suspend fun logout(): Result<Unit> {
-        // 1. Backend 로그아웃
-        authRemoteDataSource.signOut().onFailure {
-            return Result.failure(exception = it)
-        }
+        authRemoteDataSource.signOut()
 
-        // 2. SDK 로그아웃
         when (authManager.oauthProvider.value) {
             OAuthProvider.KAKAO -> {
                 kakaoAuthDataSource.logout()
             }
 
             OAuthProvider.GOOGLE -> {
-                return Result.failure(exception = NotImplementedError("Google login not implemented yet"))
+                // MARK(@이대근): Google login not implemented yet 2025.10.04.
+                Unit
             }
 
             null -> {
-                return Result.failure(exception = IllegalStateException("OAuth provider is null"))
+                Unit
             }
         }
 
-        // 3. 토큰 삭제
         authManager.clearTokens()
 
         return Result.success(Unit)

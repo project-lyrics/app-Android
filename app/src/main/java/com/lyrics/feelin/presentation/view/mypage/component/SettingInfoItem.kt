@@ -26,12 +26,18 @@ fun SettingInfoItem(
     title: String,
     modifier: Modifier = Modifier,
     titleColor: Color? = null,
+    onClick: (() -> Unit)? = null,
     trailingContent: @Composable (RowScope.() -> Unit)? = null,
 ) {
     val feelinColors = LocalFeelinColors.current
+    val rowModifier = if (onClick != null) {
+        modifier.clickable(onClick = onClick)
+    } else {
+        modifier
+    }
 
     MyPageItemRowShell(
-        modifier = modifier,
+        modifier = rowModifier,
         leadingContent = {
             Text(
                 text = title,

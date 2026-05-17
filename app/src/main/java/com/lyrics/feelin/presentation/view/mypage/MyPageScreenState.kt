@@ -18,6 +18,12 @@ enum class MyPageTabScreenStatus {
     ERROR,
 }
 
+enum class MyPageLogoutStatus {
+    IDLE,
+    LOADING,
+    SUCCESS,
+}
+
 data class MyPageScreenState(
     val status: MyPageScreenStatus,
     val tabStatus: MyPageTabScreenStatus,

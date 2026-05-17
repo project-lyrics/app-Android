@@ -133,6 +133,7 @@ fun SettingScreen(
         }
 
         if (isLogoutLoading) {
+            // FIXME(@이대근): 화면 전역으로 오버레이가 적용되지 않아 하단바를 선택할 수 있음 2026.05.17.
             LogoutLoadingOverlay()
         }
     }

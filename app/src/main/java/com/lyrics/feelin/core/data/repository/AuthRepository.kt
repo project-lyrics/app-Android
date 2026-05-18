@@ -221,30 +221,33 @@ class AuthRepository @Inject constructor(
     suspend fun logout() {
         val provider = authManager.oauthProvider.value
 
-        authRemoteDataSource.signOut()
-            .onFailure { error ->
-                Log.w(TAG, "logout: Backend sign-out failed", error)
-            }
+        try {
+            authRemoteDataSource.signOut()
+                .onFailure { error ->
+                    Log.w(TAG, "logout: Backend sign-out failed", error)
+                }
 
-        when (provider) {
-            OAuthProvider.KAKAO -> {
-                kakaoAuthDataSource.logout()
-                    .onFailure { error ->
-                        Log.w(TAG, "logout: Kakao SDK logout failed", error)
-                    }
-            }
+            when (provider) {
+                OAuthProvider.KAKAO -> {
+                    kakaoAuthDataSource.logout()
+                        .onFailure { error ->
+                            Log.w(TAG, "logout: Kakao SDK logout failed", error)
+                        }
+                }
 
-            OAuthProvider.GOOGLE -> {
-                // MARK(@이대근): Google login not implemented yet 2025.10.04.
-                Unit
-            }
+                OAuthProvider.GOOGLE -> {
+                    // MARK(@이대근): Google login not implemented yet 2025.10.04.
+                    Unit
+                }
 
-            null -> {
-                Unit
+                null -> {
+                    Unit
+                }
             }
+        } finally {
+            // Cancellation can skip Result.onFailure, but local session cleanup must still run.
+            authManager.clearTokens()
         }
-
-        authManager.clearTokens()
     }
 
     // ========== 회원가입 ==========

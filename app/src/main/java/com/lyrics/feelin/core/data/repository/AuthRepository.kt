@@ -1,5 +1,6 @@
 package com.lyrics.feelin.core.data.repository
 
+import android.util.Log
 import com.lyrics.feelin.core.data.datasource.remote.AuthRemoteDataSource
 import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerException
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 
 private const val UNKNOWN_SERVER_ERROR_CODE = "-1"
+private const val TAG = "AuthRepository"
 
 sealed interface RestoreSessionResult {
     data object Authenticated : RestoreSessionResult
@@ -216,14 +218,20 @@ class AuthRepository @Inject constructor(
      * 2. SDK 로그아웃 (Kakao/Google)
      * 3. 성공/실패 여부와 무관하게 AuthManager에서 토큰 삭제
      */
-    suspend fun logout(): Result<Unit> {
+    suspend fun logout() {
         val provider = authManager.oauthProvider.value
 
         authRemoteDataSource.signOut()
+            .onFailure { error ->
+                Log.w(TAG, "logout: Backend sign-out failed", error)
+            }
 
         when (provider) {
             OAuthProvider.KAKAO -> {
                 kakaoAuthDataSource.logout()
+                    .onFailure { error ->
+                        Log.w(TAG, "logout: Kakao SDK logout failed", error)
+                    }
             }
 
             OAuthProvider.GOOGLE -> {
@@ -237,8 +245,6 @@ class AuthRepository @Inject constructor(
         }
 
         authManager.clearTokens()
-
-        return Result.success(Unit)
     }
 
     // ========== 회원가입 ==========

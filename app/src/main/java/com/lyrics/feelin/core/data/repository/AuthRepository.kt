@@ -217,9 +217,11 @@ class AuthRepository @Inject constructor(
      * 3. 성공/실패 여부와 무관하게 AuthManager에서 토큰 삭제
      */
     suspend fun logout(): Result<Unit> {
+        val provider = authManager.oauthProvider.value
+
         authRemoteDataSource.signOut()
 
-        when (authManager.oauthProvider.value) {
+        when (provider) {
             OAuthProvider.KAKAO -> {
                 kakaoAuthDataSource.logout()
             }

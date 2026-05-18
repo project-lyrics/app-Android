@@ -65,19 +65,11 @@ class MyPageViewModel @Inject constructor(
         if (_logoutStatus.value == MyPageLogoutStatus.LOADING) return
 
         viewModelScope.launch {
-            var isLogoutCompleted = false
             _logoutStatus.value = MyPageLogoutStatus.LOADING
-            try {
-                authRepository.logout()
-                userRepository.logout()
-                _myPageScreenStatus.value = _logoutSample
-                _logoutStatus.value = MyPageLogoutStatus.SUCCESS
-                isLogoutCompleted = true
-            } finally {
-                if (!isLogoutCompleted && _logoutStatus.value == MyPageLogoutStatus.LOADING) {
-                    _logoutStatus.value = MyPageLogoutStatus.IDLE
-                }
-            }
+            authRepository.logout()
+            userRepository.logout()
+            _myPageScreenStatus.value = _logoutSample
+            _logoutStatus.value = MyPageLogoutStatus.SUCCESS
         }
     }
 

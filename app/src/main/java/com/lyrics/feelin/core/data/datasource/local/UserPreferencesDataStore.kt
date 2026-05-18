@@ -68,6 +68,7 @@ class UserPreferencesDataStore @Inject constructor(
     }
 }
 
+// TODO(@이대근): 도메인 모델로 격상 및 실제 서버에서 받는 사용자 데이터를 저장 가능하도록 형식 변경 2026.05.14.
 data class UserData(
     val gender: String? = null,
     val birthYear: Int? = null,

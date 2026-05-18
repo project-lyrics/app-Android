@@ -21,7 +21,7 @@ val DarkBackgroundTertiary = Color(0xFF2A2A2E)
 val LightSystemModal = Color(0xFFFFFFFF)
 val DarkSystemModal = Color(0xFF494955)
 
-val CommonSystemDim = Color(0x10122366)
+val CommonSystemDim = Color(0x66101223)
 
 val CommonPoint = Color(0xFFFA5454)
 

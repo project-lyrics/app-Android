@@ -1,5 +1,6 @@
 package com.lyrics.feelin.core.data.repository
 
+import android.util.Log
 import com.lyrics.feelin.core.data.datasource.remote.AuthRemoteDataSource
 import com.lyrics.feelin.core.data.datasource.remote.dto.exception.FeelinServerException
 import com.lyrics.feelin.core.data.datasource.sdk.GoogleAuthDataSource
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import retrofit2.HttpException
 
 private const val UNKNOWN_SERVER_ERROR_CODE = "-1"
+private const val TAG = "AuthRepository"
 
 sealed interface RestoreSessionResult {
     data object Authenticated : RestoreSessionResult
@@ -212,36 +214,40 @@ class AuthRepository @Inject constructor(
      * 로그아웃
      *
      * **플로우:**
-     * 1. Backend에 로그아웃 요청 (옵션)
+     * 1. Backend에 로그아웃 요청
      * 2. SDK 로그아웃 (Kakao/Google)
-     * 3. AuthManager에서 토큰 삭제
+     * 3. 성공/실패 여부와 무관하게 AuthManager에서 토큰 삭제
      */
-    @Suppress("ReturnCount") // TODO(@이대근): 구글 로그인 구현 이후 어노테이션 삭제 2025.10.04.
-    suspend fun logout(): Result<Unit> {
-        // 1. Backend 로그아웃
-        authRemoteDataSource.signOut().onFailure {
-            return Result.failure(exception = it)
+    suspend fun logout() {
+        val provider = authManager.oauthProvider.value
+
+        try {
+            authRemoteDataSource.signOut()
+                .onFailure { error ->
+                    Log.w(TAG, "logout: Backend sign-out failed", error)
+                }
+
+            when (provider) {
+                OAuthProvider.KAKAO -> {
+                    kakaoAuthDataSource.logout()
+                        .onFailure { error ->
+                            Log.w(TAG, "logout: Kakao SDK logout failed", error)
+                        }
+                }
+
+                OAuthProvider.GOOGLE -> {
+                    // MARK(@이대근): Google login not implemented yet 2025.10.04.
+                    Unit
+                }
+
+                null -> {
+                    Unit
+                }
+            }
+        } finally {
+            // Cancellation can skip Result.onFailure, but local session cleanup must still run.
+            authManager.clearTokens()
         }
-
-        // 2. SDK 로그아웃
-        when (authManager.oauthProvider.value) {
-            OAuthProvider.KAKAO -> {
-                kakaoAuthDataSource.logout()
-            }
-
-            OAuthProvider.GOOGLE -> {
-                return Result.failure(exception = NotImplementedError("Google login not implemented yet"))
-            }
-
-            null -> {
-                return Result.failure(exception = IllegalStateException("OAuth provider is null"))
-            }
-        }
-
-        // 3. 토큰 삭제
-        authManager.clearTokens()
-
-        return Result.success(Unit)
     }
 
     // ========== 회원가입 ==========

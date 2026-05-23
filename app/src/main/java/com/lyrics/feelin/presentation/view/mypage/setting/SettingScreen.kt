@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -24,10 +23,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.PointerEventPass
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.R
@@ -46,7 +42,6 @@ fun SettingScreen(
     onInternalWebViewClick: (String) -> Unit,
     onExternalBrowserClick: (String) -> Unit,
     modifier: Modifier = Modifier,
-    isLogoutLoading: Boolean = false,
 ) {
     val feelinColors = LocalFeelinColors.current
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
@@ -131,38 +126,6 @@ fun SettingScreen(
                 Spacer(modifier = Modifier.height(22.dp))
             }
         }
-
-        if (isLogoutLoading) {
-            // FIXME(@이대근): 화면 전역으로 오버레이가 적용되지 않아 하단바를 선택할 수 있음 2026.05.17.
-            LogoutLoadingOverlay()
-        }
-    }
-}
-
-@Composable
-private fun LogoutLoadingOverlay(
-    modifier: Modifier = Modifier,
-) {
-    val feelinColors = LocalFeelinColors.current
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(feelinColors.dim)
-            .clearAndSetSemantics { }
-            .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val event = awaitPointerEvent(PointerEventPass.Initial)
-                        event.changes.forEach { pointerInputChange ->
-                            pointerInputChange.consume()
-                        }
-                    }
-                }
-            },
-        contentAlignment = Alignment.Center,
-    ) {
-        CircularProgressIndicator()
     }
 }
 

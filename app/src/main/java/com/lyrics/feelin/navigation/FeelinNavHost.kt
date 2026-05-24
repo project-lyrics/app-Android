@@ -1,14 +1,18 @@
 package com.lyrics.feelin.navigation
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,8 +21,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -38,6 +47,7 @@ import com.lyrics.feelin.core.designsystem.icon.MyPageActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.MyPageInactiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingActiveIcon
 import com.lyrics.feelin.core.designsystem.icon.NoteSearchingInactiveIcon
+import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.util.openExternalBrowser
 import com.lyrics.feelin.presentation.view.community.CommunityMainScreen
 import com.lyrics.feelin.presentation.view.login.LoginScreen
@@ -318,7 +328,11 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
                 }
             }
 
-            MainScaffold(navController = navController, selectedIndex = 2) {
+            MainScaffold(
+                navController = navController,
+                selectedIndex = 2,
+                isBlockingLoading = logoutStatus == MyPageLogoutStatus.LOADING
+            ) {
                 SettingScreen(
                     onBackClick = { navController.popBackStack() },
                     onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) },
@@ -329,7 +343,6 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
                     onExternalBrowserClick = { url ->
                         context.openExternalBrowser(url)
                     },
-                    isLogoutLoading = logoutStatus == MyPageLogoutStatus.LOADING,
                 )
             }
         }
@@ -367,6 +380,7 @@ private fun NavGraphBuilder.internalWebViewScreen(navController: NavHostControll
 private fun MainScaffold(
     navController: NavHostController,
     selectedIndex: Int,
+    isBlockingLoading: Boolean = false,
     content: @Composable () -> Unit
 ) {
     var selectedBottomBarIndex by remember { mutableIntStateOf(selectedIndex) }
@@ -388,51 +402,81 @@ private fun MainScaffold(
         )
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            FeelinBottomNavigation(
-                modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
-                items = bottomBarItems,
-                selectedIndex = selectedBottomBarIndex,
-                onItemSelect = { index ->
-                    selectedBottomBarIndex = index
-                    val destination = when (index) {
-                        0 -> FeelinDestination.HomeGraph.route
-                        1 -> FeelinDestination.NoteSearchGraph.route
-                        2 -> FeelinDestination.MyPageGraph.route
-                        else -> FeelinDestination.HomeGraph.route
-                    }
-                    navController.navigate(destination) {
-                        popUpTo(FeelinDestination.MainGraph.route) {
-                            saveState = true
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            bottomBar = {
+                FeelinBottomNavigation(
+                    modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
+                    items = bottomBarItems,
+                    selectedIndex = selectedBottomBarIndex,
+                    onItemSelect = { index ->
+                        selectedBottomBarIndex = index
+                        val destination = when (index) {
+                            0 -> FeelinDestination.HomeGraph.route
+                            1 -> FeelinDestination.NoteSearchGraph.route
+                            2 -> FeelinDestination.MyPageGraph.route
+                            else -> FeelinDestination.HomeGraph.route
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-            )
-        },
-        contentWindowInsets = WindowInsets(0)
-    ) { paddingValues ->
-        // WindowInsets.navigationBars가 30dp 이하인 경우 Scaffold paddingValues 사용
-        var bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-        if (bottomPadding <= 30.dp) {
-            bottomPadding = paddingValues.calculateBottomPadding()
-        }
-        Log.d("FeelinNavHost", "MainScaffold: bottomPadding=$bottomPadding")
-
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    top = paddingValues.calculateTopPadding(),
-                    start = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                    end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
-                    bottom = bottomPadding
+                        navController.navigate(destination) {
+                            popUpTo(FeelinDestination.MainGraph.route) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
                 )
-        ) {
-            content()
+            },
+            contentWindowInsets = WindowInsets(0)
+        ) { paddingValues ->
+            // WindowInsets.navigationBars가 30dp 이하인 경우 Scaffold paddingValues 사용
+            var bottomPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+            if (bottomPadding <= 30.dp) {
+                bottomPadding = paddingValues.calculateBottomPadding()
+            }
+            Log.d("FeelinNavHost", "MainScaffold: bottomPadding=$bottomPadding")
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(
+                        top = paddingValues.calculateTopPadding(),
+                        start = paddingValues.calculateStartPadding(LayoutDirection.Ltr),
+                        end = paddingValues.calculateEndPadding(LayoutDirection.Ltr),
+                        bottom = bottomPadding
+                    )
+            ) {
+                content()
+            }
+        }
+
+        BackHandler(enabled = isBlockingLoading) { }
+
+        if (isBlockingLoading) {
+            val feelinColors = LocalFeelinColors.current
+
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(feelinColors.dim)
+                    .clearAndSetSemantics {
+                        stateDescription = "로딩 중입니다"
+                    }
+                    .pointerInput(Unit) {
+                        awaitPointerEventScope {
+                            while (true) {
+                                val event = awaitPointerEvent(PointerEventPass.Initial)
+                                event.changes.forEach { pointerInputChange ->
+                                    pointerInputChange.consume()
+                                }
+                            }
+                        }
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 }

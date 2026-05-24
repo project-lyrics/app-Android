@@ -27,6 +27,7 @@ import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -459,7 +460,9 @@ private fun MainScaffold(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(feelinColors.dim)
-                    .clearAndSetSemantics { }
+                    .clearAndSetSemantics {
+                        stateDescription = "로딩 중입니다"
+                    }
                     .pointerInput(Unit) {
                         awaitPointerEventScope {
                             while (true) {

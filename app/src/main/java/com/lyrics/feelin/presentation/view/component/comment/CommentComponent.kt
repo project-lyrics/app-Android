@@ -63,7 +63,7 @@ fun CommentComponent(
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = commentData.createdAt.compareNowToUser(),
-                    style = FeelinTypography.caption2.copy(color = feelinColors.gray03),
+                    style = FeelinTypography.caption1.copy(color = feelinColors.gray03),
                 )
             }
             Icon(

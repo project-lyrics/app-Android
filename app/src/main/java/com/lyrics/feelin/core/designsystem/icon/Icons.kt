@@ -112,3 +112,7 @@ val FindSquareIcon: ImageVector
 val RefreshIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.refresh)
+
+val MeatballIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.meatball_light)

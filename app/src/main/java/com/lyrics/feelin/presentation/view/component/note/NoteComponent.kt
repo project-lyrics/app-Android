@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.R
+import com.lyrics.feelin.core.designsystem.icon.MeatballIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
@@ -62,11 +64,11 @@ fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
                     style = FeelinTypography.caption2.copy(color = feelinColors.gray03),
                 )
             }
-            Image(
-                painter = painterResource(R.drawable.meetball_light),
+            Icon(
+                imageVector = MeatballIcon,
                 contentDescription = "${noteData.song.name} menu",
                 modifier = Modifier.size(24.dp),
-                colorFilter = ColorFilter.tint(feelinColors.gray03),
+                tint = feelinColors.gray03,
             )
         }
         Text(

@@ -267,6 +267,8 @@ Temporary Items
 # oh-my-openagent files
 .sisyphus
 .sisyphus/**
+.omo
+.omo/**
 
 # antigravity cli files
 .antigravitycli

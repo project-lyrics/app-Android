@@ -22,9 +22,12 @@ data class CommentComponentData(
     val isMine: Boolean,
 ) {
     companion object {
-        fun sample(isMine: Boolean = false): CommentComponentData {
+        fun sample(
+            id: Long = 1L,
+            isMine: Boolean = false
+        ): CommentComponentData {
             return CommentComponentData(
-                id = 1L,
+                id = id,
                 content = "전 T + Tik Tak Tok도 좋더라고요~",
                 createdAt = LocalDateTime.parse(input = "2024-01-15T14:30:00"),
                 writer = CommentWriterData.sample(),

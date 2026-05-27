@@ -103,7 +103,7 @@ fun CommentInputField(
             modifier = Modifier
                 .size(32.dp)
                 .background(
-                    color = if (isSendEnabled) feelinColors.systemDisable else feelinColors.systemActivate,
+                    color = if (isSendEnabled) feelinColors.systemActivate else feelinColors.systemDisable,
                     shape = CircleShape
                 )
                 .clickable(

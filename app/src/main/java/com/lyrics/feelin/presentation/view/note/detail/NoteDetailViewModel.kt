@@ -28,18 +28,14 @@ class NoteDetailViewModel : ViewModel() {
         profileCharacterType = ProfileType.SHORT_HAIR,
     )
 
-    init {
-        loadNoteDetail()
-    }
-
-    fun loadNoteDetail() {
+    fun loadNoteDetail(noteId: Long) {
         loadJob?.cancel()
         loadJob = viewModelScope.launch {
             _viewState.value = NoteDetailViewState.loading()
             delay(LOAD_DELAY_MS)
             val comments = dummyComments()
             _viewState.value = NoteDetailViewState.success(
-                note = NoteComponentData.sample().copy(commentsCount = comments.size),
+                note = NoteComponentData.sample().copy(id = noteId, commentsCount = comments.size),
                 comments = comments,
             )
         }

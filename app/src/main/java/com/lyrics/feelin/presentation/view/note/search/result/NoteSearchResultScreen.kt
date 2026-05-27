@@ -134,6 +134,7 @@ private fun rememberHeaderState(listState: LazyListState): HeaderState {
 fun NoteSearchResultScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onNoteClick: (Long) -> Unit = {},
     viewModel: NoteSearchResultViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -252,7 +253,7 @@ fun NoteSearchResultScreen(
                     items(viewState.notes) { note ->
                         NoteComponent(
                             noteData = note,
-                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
+                            onClick = { onNoteClick(it.id) },
                         )
                     }
 

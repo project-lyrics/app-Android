@@ -25,6 +25,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -47,12 +48,17 @@ import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
 
 @Composable
 fun NoteDetailScreen(
+    noteId: Long,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: NoteDetailViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val commentInputState = remember { TextFieldState() }
+
+    LaunchedEffect(noteId) {
+        viewModel.loadNoteDetail(noteId)
+    }
 
     NoteDetailContent(
         viewState = viewState,

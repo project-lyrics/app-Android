@@ -7,6 +7,8 @@ sealed class FeelinDestination(
 ) {
     companion object {
         private const val LOGIN_ROUTE = "login"
+        private const val NOTE_DETAIL_ROUTE = "note_detail"
+        private const val NOTE_ID_ARGUMENT = "noteId"
         private const val WEB_VIEW_URL_ARGUMENT = "url"
     }
 
@@ -37,6 +39,13 @@ sealed class FeelinDestination(
     object Home : FeelinDestination(route = "home")
     object NoteSearch : FeelinDestination(route = "note_search")
     object NoteSearchResult : FeelinDestination(route = "note_search_result")
+    object NoteDetail : FeelinDestination(route = "$NOTE_DETAIL_ROUTE/{$NOTE_ID_ARGUMENT}") {
+        const val NoteIdArgument = NOTE_ID_ARGUMENT
+
+        fun createRoute(noteId: Long): String {
+            return "$NOTE_DETAIL_ROUTE/$noteId"
+        }
+    }
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")

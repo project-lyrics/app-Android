@@ -69,6 +69,7 @@ private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
 fun MyPageScreen(
     onSettingClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onNoteClick: (Long) -> Unit = {},
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val myPageState by viewModel.myPageScreenState.collectAsState()
@@ -281,7 +282,10 @@ fun MyPageScreen(
                                     }
 
                                     items(items = myPageState.notes!!) {
-                                        NoteComponent(noteData = it)
+                                        NoteComponent(
+                                            noteData = it,
+                                            onClick = { note -> onNoteClick(note.id) },
+                                        )
                                     }
                                 }
                             }

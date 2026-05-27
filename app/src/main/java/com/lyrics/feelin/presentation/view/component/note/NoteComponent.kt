@@ -2,6 +2,7 @@ package com.lyrics.feelin.presentation.view.component.note
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,10 +40,20 @@ import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 import com.lyrics.feelin.util.compareNowToUser
 
 @Composable
-fun NoteComponent(noteData: NoteComponentData, modifier: Modifier = Modifier) {
+fun NoteComponent(
+    noteData: NoteComponentData,
+    modifier: Modifier = Modifier,
+    onClick: ((NoteComponentData) -> Unit)? = null,
+) {
     val feelinColors = LocalFeelinColors.current
 
-    Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
+    val clickableModifier = if (onClick == null) {
+        modifier
+    } else {
+        modifier.clickable { onClick(noteData) }
+    }
+
+    Column(modifier = clickableModifier.padding(horizontal = 20.dp, vertical = 24.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

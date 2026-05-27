@@ -83,8 +83,10 @@ private fun NoteDetailContent(
 
     Scaffold(
         modifier = modifier
+            .background(color = feelinColors.backgroundPrimary)
+            .imePadding()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-            .background(color = feelinColors.backgroundPrimary),
+            .fillMaxSize(),
         topBar = {
             FeelinTopAppBarWithBack(
                 title = "노트",
@@ -98,13 +100,12 @@ private fun NoteDetailContent(
                 CommentInputField(
                     state = commentInputState,
                     onSendClick = onSendComment,
-                    modifier = Modifier
-                        .background(feelinColors.backgroundPrimary)
-                        .imePadding(),
+                    modifier = Modifier.background(feelinColors.backgroundPrimary),
                 )
             }
         },
         containerColor = feelinColors.backgroundPrimary,
+        contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
         when (viewState.status) {
             NoteDetailStatus.INITIAL,

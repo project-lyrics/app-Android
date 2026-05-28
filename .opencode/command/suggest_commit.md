@@ -42,7 +42,6 @@ git diff --cached
 - refactor: 리팩터링
 - ci: CI 설정 변경
 - test: 테스트 변경
-- perf: 성능 개선
 
 ## Step 3: Generate Commit Message
 

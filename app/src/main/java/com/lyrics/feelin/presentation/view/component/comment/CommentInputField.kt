@@ -50,7 +50,8 @@ fun CommentInputField(
     val feelinColors = LocalFeelinColors.current
     val sendInteractionSource = remember { MutableInteractionSource() }
     val clearInteractionSource = remember { MutableInteractionSource() }
-    val inputStatus = if (state.text.isEmpty()) CommentInputStatus.Waiting else CommentInputStatus.Writing
+    val trimmedText = state.text.trim().toString()
+    val inputStatus = if (trimmedText.isEmpty()) CommentInputStatus.Waiting else CommentInputStatus.Writing
     val isSendEnabled = inputStatus == CommentInputStatus.Writing
 
     Row(
@@ -111,7 +112,7 @@ fun CommentInputField(
                     interactionSource = sendInteractionSource,
                     indication = null,
                     onClick = {
-                        onSendClick(state.text.toString())
+                        onSendClick(trimmedText)
                         state.clearText()
                     },
                 ),

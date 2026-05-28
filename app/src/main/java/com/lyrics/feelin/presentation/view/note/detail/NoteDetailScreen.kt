@@ -85,6 +85,7 @@ private fun NoteDetailContent(
     Scaffold(
         modifier = modifier
             .background(color = feelinColors.backgroundPrimary)
+            .navigationBarsPadding()
             .imePadding()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
             .fillMaxSize(),
@@ -101,9 +102,7 @@ private fun NoteDetailContent(
                 CommentInputField(
                     state = commentInputState,
                     onSendClick = onSendComment,
-                    modifier = Modifier
-                        .background(feelinColors.backgroundPrimary)
-                        .navigationBarsPadding(),
+                    modifier = Modifier.background(feelinColors.backgroundPrimary),
                 )
             }
         },

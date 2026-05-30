@@ -84,7 +84,6 @@ private fun NoteDetailContent(
 
     Scaffold(
         modifier = modifier
-            .background(color = feelinColors.backgroundPrimary)
             .navigationBarsPadding()
             .imePadding()
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
@@ -150,8 +149,7 @@ private fun NoteDetailSuccessContent(
     LazyColumn(
         modifier = Modifier
             .padding(innerPadding)
-            .fillMaxSize()
-            .background(feelinColors.backgroundPrimary),
+            .fillMaxSize(),
     ) {
         item {
             NoteComponent(noteData = viewState.note)

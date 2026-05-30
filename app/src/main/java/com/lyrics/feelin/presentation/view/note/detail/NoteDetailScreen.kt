@@ -36,7 +36,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
@@ -52,7 +52,7 @@ fun NoteDetailScreen(
     noteId: Long,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: NoteDetailViewModel = viewModel(),
+    viewModel: NoteDetailViewModel = hiltViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
     val commentInputState = remember { TextFieldState() }

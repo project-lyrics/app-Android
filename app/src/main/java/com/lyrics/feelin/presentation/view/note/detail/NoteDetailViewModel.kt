@@ -6,6 +6,8 @@ import com.lyrics.feelin.core.domain.model.ProfileType
 import com.lyrics.feelin.presentation.view.component.comment.CommentComponentData
 import com.lyrics.feelin.presentation.view.component.comment.CommentWriterData
 import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +16,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.datetime.LocalDateTime
 
-class NoteDetailViewModel : ViewModel() {
+@HiltViewModel
+class NoteDetailViewModel @Inject constructor() : ViewModel() {
 
     private val _viewState = MutableStateFlow(NoteDetailViewState.initial())
     val viewState: StateFlow<NoteDetailViewState> = _viewState.asStateFlow()

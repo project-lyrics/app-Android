@@ -125,9 +125,9 @@ private fun NoteDetailContent(
 }
 
 @Composable
-private fun NoteDetailLoadingContent(innerPadding: PaddingValues) {
+private fun NoteDetailLoadingContent(innerPadding: PaddingValues, modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(innerPadding)
             .fillMaxSize(),
         contentAlignment = Alignment.Center,
@@ -141,13 +141,14 @@ private fun NoteDetailSuccessContent(
     viewState: NoteDetailViewState,
     onCommentMoreClick: (CommentComponentData) -> Unit,
     innerPadding: PaddingValues,
+    modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
     val comments = viewState.comments
     val hasComments = comments.isNotEmpty()
 
     LazyColumn(
-        modifier = Modifier
+        modifier = modifier
             .padding(innerPadding)
             .fillMaxSize(),
     ) {
@@ -207,11 +208,15 @@ private fun CommentSectionHeader(commentCount: Int, modifier: Modifier = Modifie
 }
 
 @Composable
-private fun NoteDetailErrorContent(errorMessage: String?, innerPadding: PaddingValues) {
+private fun NoteDetailErrorContent(
+    errorMessage: String?,
+    innerPadding: PaddingValues,
+    modifier: Modifier = Modifier,
+) {
     val feelinColors = LocalFeelinColors.current
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(innerPadding)
             .fillMaxSize(),
         contentAlignment = Alignment.Center,

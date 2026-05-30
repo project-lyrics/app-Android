@@ -70,6 +70,7 @@ fun CommunityMainScreen(
     artistName: String,
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
+    onNoteClick: (Long) -> Unit = {},
     viewModel: CommunityViewModel = viewModel()
 ) {
     val listState = rememberLazyListState()
@@ -285,7 +286,10 @@ fun CommunityMainScreen(
 
                     // 노트 목록
                     items(items = communityViewState.noteState.notes) { note ->
-                        NoteComponent(noteData = note)
+                        NoteComponent(
+                            noteData = note,
+                            onClick = { onNoteClick(it.id) },
+                        )
                     }
                 }
             }

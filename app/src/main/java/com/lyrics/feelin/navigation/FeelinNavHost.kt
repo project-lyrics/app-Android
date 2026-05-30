@@ -56,6 +56,7 @@ import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageViewModel
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
+import com.lyrics.feelin.presentation.view.note.detail.NoteDetailScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.note.search.result.NoteSearchResultScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingUiState
@@ -265,7 +266,13 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         navigation(startDestination = FeelinDestination.Home.route, route = FeelinDestination.HomeGraph.route) {
             composable(FeelinDestination.Home.route) {
                 MainScaffold(navController = navController, selectedIndex = 0) {
-                    CommunityMainScreen("필릭스", onBack = {})
+                    CommunityMainScreen(
+                        artistName = "필릭스",
+                        onBack = {},
+                        onNoteClick = { noteId ->
+                            navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
+                        },
+                    )
                 }
             }
         }
@@ -286,9 +293,28 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
 
             composable(FeelinDestination.NoteSearchResult.route) {
                 MainScaffold(navController = navController, selectedIndex = 1) {
-                    NoteSearchResultScreen(onBackClick = { navController.popBackStack() })
+                    NoteSearchResultScreen(
+                        onBackClick = { navController.popBackStack() },
+                        onNoteClick = { noteId ->
+                            navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
+                        },
+                    )
                 }
             }
+        }
+
+        composable(
+            route = FeelinDestination.NoteDetail.route,
+            arguments = listOf(navArgument(FeelinDestination.NoteDetail.NoteIdArgument) { type = NavType.LongType }),
+        ) { backStackEntry ->
+            val noteId = backStackEntry.arguments
+                ?.getLong(FeelinDestination.NoteDetail.NoteIdArgument)
+                ?: return@composable
+
+            NoteDetailScreen(
+                noteId = noteId,
+                onBackClick = { navController.popBackStack() },
+            )
         }
 
         myPageNavGraph(navController)
@@ -306,6 +332,9 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
             MainScaffold(navController = navController, selectedIndex = 2) {
                 MyPageScreen(
                     onSettingClick = { navController.navigate(FeelinDestination.Setting.route) },
+                    onNoteClick = { noteId ->
+                        navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
+                    },
                     viewModel = viewModel,
                 )
             }

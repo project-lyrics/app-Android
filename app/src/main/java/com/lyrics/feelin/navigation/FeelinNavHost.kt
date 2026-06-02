@@ -317,6 +317,8 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
             )
         }
 
+        noteFormNavGraph(navController)
+
         myPageNavGraph(navController)
     }
 }

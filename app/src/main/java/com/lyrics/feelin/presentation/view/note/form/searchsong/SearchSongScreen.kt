@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,6 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarDefaults
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
@@ -69,15 +71,21 @@ fun SearchSongScreen(
             .statusBarsPadding()
     ) {
         FeelinTopAppBarWithBack(
-            title = "노래 추가",
+            title = "곡 추가",
             onBackClick = onBackClick,
-            modifier = Modifier.padding(horizontal = 20.dp)
+            showDivider = false,
+            paddingValues = PaddingValues(
+                horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+                vertical = 10.dp,
+            ),
+            modifier = Modifier,
         )
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(16.dp))
 
-        val currentOnSearchQueryChange by androidx.compose.runtime.rememberUpdatedState(onSearchQueryChange)
+        val currentOnSearchQueryChange by rememberUpdatedState(onSearchQueryChange)
         val searchFieldState = rememberTextFieldState(initialText = uiState.searchQuery)
+
         LaunchedEffect(searchFieldState) {
             snapshotFlow { searchFieldState.text }.collectLatest {
                 currentOnSearchQueryChange(it.toString())
@@ -86,17 +94,16 @@ fun SearchSongScreen(
 
         FeelinSearchInputField(
             state = searchFieldState,
-            placeholder = "가수, 노래제목 검색",
+            placeholder = "곡 검색",
             modifier = Modifier.padding(horizontal = 20.dp)
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
 
         if (uiState.searchQuery.isNotEmpty() && uiState.searchResults.isEmpty()) {
             Box(
                 modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
+                // MARK(@이대근): 실제 피그마 디자인과 배치가 약간 다름 2026.06.03.
                 Text(
                     text = "검색 결과가 없어요",
                     style = FeelinTypography.body1,
@@ -107,8 +114,8 @@ fun SearchSongScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
+                contentPadding = PaddingValues(horizontal = 20.dp, vertical = 16.dp),
+                verticalArrangement = Arrangement.Top
             ) {
                 items(uiState.searchResults) { song ->
                     MusicComponent(

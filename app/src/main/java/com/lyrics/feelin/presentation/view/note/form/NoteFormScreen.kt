@@ -12,6 +12,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -30,6 +31,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -40,16 +42,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheet
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheetAction
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarDefaults
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
@@ -132,16 +137,20 @@ fun NoteFormScreen(
             actions = {
                 Text(
                     text = "완료",
-                    style = FeelinTypography.title3,
-                    color = if (isCompleteEnabled) colors.brandPrimary else colors.systemDisable,
+                    style = FeelinTypography.body1,
+                    color = if (isCompleteEnabled) colors.systemActivate else colors.systemDisable,
                     modifier = Modifier.clickable(
                         enabled = isCompleteEnabled,
                         onClick = onCompleteClick
                     )
                 )
             },
-            modifier = Modifier.padding(horizontal = 20.dp),
-            showDivider = true
+            paddingValues = PaddingValues(
+                horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+                vertical = 10.dp,
+            ),
+            modifier = Modifier,
+            showDivider = false
         )
 
         Column(
@@ -149,15 +158,13 @@ fun NoteFormScreen(
                 .fillMaxWidth()
                 .weight(1f)
                 .verticalScroll(scrollState)
-                .padding(horizontal = 20.dp, vertical = 24.dp)
+                .padding(horizontal = 20.dp)
         ) {
             // Category Selector
             Row(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(colors.gray01)
                     .clickable(onClick = onCategorySheetOpen)
-                    .padding(horizontal = 12.dp, vertical = 8.dp),
+                    .padding(vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -168,39 +175,37 @@ fun NoteFormScreen(
                         else -> "주제를 선택해 주세요"
                     },
                     style = FeelinTypography.body2,
-                    color = if (uiState.selectedTopic != null) colors.gray09 else colors.gray04
+                    color = colors.gray08
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     imageVector = CaretIcon,
                     contentDescription = "카테고리 선택",
-                    tint = colors.gray04,
+                    tint = colors.gray08,
                     modifier = Modifier.size(16.dp)
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Song Component
+            // Song Component - delete row
             if (uiState.isSongDeleteVisible) {
+                HorizontalDivider(color = colors.gray01, thickness = 1.dp)
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalArrangement = Arrangement.End,
+                        .padding(vertical = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "선택한 노래 삭제",
-                        style = FeelinTypography.caption1,
-                        color = colors.gray04,
+                        text = "곡",
+                        style = FeelinTypography.title3.copy(lineHeight = 20.sp),
+                        color = colors.gray08,
                         modifier = Modifier.clickable(onClick = onSongDelete)
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
                     Icon(
                         imageVector = CloseIcon,
                         contentDescription = "삭제",
-                        tint = colors.gray04,
+                        tint = colors.gray08,
                         modifier = Modifier
                             .size(16.dp)
                             .clickable(onClick = onSongDelete)
@@ -208,6 +213,7 @@ fun NoteFormScreen(
                 }
             }
 
+            // Song Component
             Box(
                 modifier = Modifier.clickable(
                     enabled = uiState.isSongSelectable,
@@ -219,12 +225,13 @@ fun NoteFormScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
+            // Lyrics Component
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(4.dp))
                     .height(132.dp)
             ) {
                 Image(
@@ -256,10 +263,11 @@ fun NoteFormScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             if (uiState.lyrics.isEmpty()) {
+                                // TODO(@이대근): 입력 상태로 focus될때 나오지 않아야함 2026.06.04.
                                 Text(
-                                    text = "가사를 입력해 주세요",
+                                    text = "좋아하는 가사를 적어주세요 (선택)",
                                     style = FeelinTypography.body1,
-                                    color = if (uiState.lyricsBackground == LyricsBackground.BLACK) colors.gray05 else colors.gray04,
+                                    color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
                                     textAlign = TextAlign.Center
                                 )
                             }
@@ -267,36 +275,36 @@ fun NoteFormScreen(
                         }
                     }
                 )
+                Text(
+                    text = "${uiState.lyrics.length}/$NOTE_FORM_LYRICS_MAX_LENGTH",
+                    style = FeelinTypography.caption1,
+                    color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
+                    modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 16.dp, end = 20.dp)
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.End),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                    LyricsActionButton(
-                        text = "가사 배경",
-                        icon = { WritingIcon },
-                        onClick = onLyricsBackgroundSheetOpen,
-                    )
-                    LyricsActionButton(
-                        text = "가사 검색",
-                        icon = { SearchIcon },
-                        onClick = onLyricsSearchSheetOpen,
-                    )
-                }
-
-                Text(
-                    text = "${uiState.lyrics.length}/$NOTE_FORM_LYRICS_MAX_LENGTH",
-                    style = FeelinTypography.caption1,
-                    color = colors.gray04
+                LyricsActionButton(
+                    text = "가사 배경",
+                    isEnable = uiState.lyrics.isNotEmpty(),
+                    icon = { WritingIcon },
+                    onClick = onLyricsBackgroundSheetOpen,
+                )
+                LyricsActionButton(
+                    text = "가사 검색",
+                    isEnable = true,
+                    icon = { SearchIcon },
+                    onClick = onLyricsSearchSheetOpen,
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             // Body Input Area
             BasicTextField(
@@ -308,17 +316,17 @@ fun NoteFormScreen(
                         onBodyChange(it.take(NOTE_FORM_BODY_MAX_LENGTH))
                     }
                 },
-                textStyle = FeelinTypography.body1.copy(color = colors.gray09),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
+                textStyle = FeelinTypography.body3.copy(color = colors.gray08),
+                // TODO(@이대근): 남은 영역 전체를 차지하도록 해야함 2026.06.04.
+                modifier = Modifier.fillMaxWidth().height(200.dp),
                 decorationBox = { innerTextField ->
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
                         if (uiState.body.isEmpty()) {
+                            // TODO(@이대근): 카테고리 선택마다 플레이스홀더 문자열이 바뀌어야함 2026.06.04.
                             Text(
-                                text = "어떤 감상을 남기고 싶나요?",
-                                style = FeelinTypography.body1,
-                                color = colors.gray03
+                                text = "생각을 남겨보세요.",
+                                style = FeelinTypography.body3,
+                                color = colors.gray04
                             )
                         }
                         innerTextField()
@@ -459,8 +467,8 @@ fun NoteFormScreen(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                             )
-                            settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
+//                            settings.javaScriptEnabled = true
+//                            settings.domStorageEnabled = true
                             webViewClient = WebViewClient()
                             webChromeClient = WebChromeClient()
                             loadUrl("https://search.melon.com/search/mcom_index.htm")
@@ -482,27 +490,32 @@ fun NoteFormScreen(
 @Composable
 private fun LyricsActionButton(
     text: String,
-    icon: @Composable () -> androidx.compose.ui.graphics.vector.ImageVector,
+    isEnable: Boolean,
+    icon: @Composable () -> ImageVector,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = LocalFeelinColors.current
+    val actionBtnColor = if (isEnable) colors.gray05 else colors.systemDisable
 
     Row(
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier
+            .clickable(enabled = isEnable, onClick = onClick)
+            .border(width = 1.dp, color = colors.gray01, shape = RoundedCornerShape(4.dp))
+            .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
             imageVector = icon(),
             contentDescription = text,
-            tint = colors.gray04,
+            tint = actionBtnColor,
             modifier = Modifier.size(16.dp),
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = text,
-            style = FeelinTypography.caption1,
-            color = colors.gray04,
+            style = FeelinTypography.body2,
+            color = actionBtnColor,
         )
     }
 }

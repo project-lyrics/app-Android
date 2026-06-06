@@ -272,6 +272,9 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                         onNoteClick = { noteId ->
                             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
                         },
+                        onNoteAddClick = {
+                            navController.navigate(FeelinDestination.NoteFormCreate.route)
+                        }
                     )
                 }
             }

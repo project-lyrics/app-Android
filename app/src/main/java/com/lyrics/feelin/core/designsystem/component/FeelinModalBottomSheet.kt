@@ -43,6 +43,7 @@ fun FeelinModalBottomSheet(
     sheetState: SheetState,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
+    showDragHandle: Boolean = true,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -51,7 +52,7 @@ fun FeelinModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         containerColor = feelinColors.modal,
-        dragHandle = { FeelinDragHandle() },
+        dragHandle = { if (showDragHandle) FeelinDragHandle() },
         modifier = modifier
     ) {
         Column(

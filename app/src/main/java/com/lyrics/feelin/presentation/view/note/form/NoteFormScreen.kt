@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -317,8 +318,7 @@ fun NoteFormScreen(
                     }
                 },
                 textStyle = FeelinTypography.body3.copy(color = colors.gray08),
-                // TODO(@이대근): 남은 영역 전체를 차지하도록 해야함 2026.06.04.
-                modifier = Modifier.fillMaxWidth().height(200.dp),
+                modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp),
                 decorationBox = { innerTextField ->
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
                         if (uiState.body.isEmpty()) {
@@ -500,8 +500,8 @@ private fun LyricsActionButton(
 
     Row(
         modifier = modifier
-            .clickable(enabled = isEnable, onClick = onClick)
             .border(width = 1.dp, color = colors.gray01, shape = RoundedCornerShape(4.dp))
+            .clickable(enabled = isEnable, onClick = onClick)
             .padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

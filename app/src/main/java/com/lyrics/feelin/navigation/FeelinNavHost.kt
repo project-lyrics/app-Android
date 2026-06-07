@@ -258,6 +258,7 @@ private fun NavHostController.navigateToMainGraph() {
     }
 }
 
+@Suppress("LongMethod")
 private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
     navigation(
         startDestination = FeelinDestination.HomeGraph.route,

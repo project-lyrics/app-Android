@@ -24,9 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -40,9 +39,11 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -58,6 +59,8 @@ import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheetActio
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarDefaults
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
+import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconDisabled
+import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconEnabled
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.core.designsystem.icon.SearchIcon
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon
@@ -68,6 +71,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
 import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
 import com.lyrics.feelin.presentation.view.component.note.LyricsBackground
+import kotlinx.coroutines.launch
 
 @Composable
 fun NoteFormRoute(
@@ -99,7 +103,7 @@ fun NoteFormRoute(
     )
 }
 
-@Suppress("MagicNumber", "MaxLineLength", "LongMethod")
+@Suppress("MagicNumber", "MaxLineLength", "LongMethod", "MultipleEmitters")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteFormScreen(
@@ -123,6 +127,8 @@ fun NoteFormScreen(
 ) {
     val colors = LocalFeelinColors.current
     val scrollState = rememberScrollState()
+
+    val scope = rememberCoroutineScope()
 
     val isCompleteEnabled = uiState.isCompleteEnabled
 
@@ -280,7 +286,9 @@ fun NoteFormScreen(
                     text = "${uiState.lyrics.length}/$NOTE_FORM_LYRICS_MAX_LENGTH",
                     style = FeelinTypography.caption1,
                     color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
-                    modifier = Modifier.align(Alignment.BottomEnd).padding(bottom = 16.dp, end = 20.dp)
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .padding(bottom = 16.dp, end = 20.dp)
                 )
             }
 
@@ -307,6 +315,7 @@ fun NoteFormScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            // TODO(@이대근): 특정 배경들에는 내부 텍스트 색상이 바뀌어야함 2026.06.07.
             // Body Input Area
             BasicTextField(
                 value = uiState.body,
@@ -318,7 +327,9 @@ fun NoteFormScreen(
                     }
                 },
                 textStyle = FeelinTypography.body3.copy(color = colors.gray08),
-                modifier = Modifier.fillMaxWidth().heightIn(min = 200.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 200.dp),
                 decorationBox = { innerTextField ->
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
                         if (uiState.body.isEmpty()) {
@@ -383,31 +394,53 @@ fun NoteFormScreen(
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         FeelinModalBottomSheet(
             sheetState = sheetState,
-            onDismissRequest = onLyricsBackgroundSheetClose
+            onDismissRequest = onLyricsBackgroundSheetClose,
+            showDragHandle = false
         ) {
-            Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-                Text(
-                    text = "가사 배경 선택",
-                    style = FeelinTypography.title1,
-                    color = colors.gray09,
-                    modifier = Modifier.padding(vertical = 16.dp)
-                )
+            Column(
+                modifier = Modifier
+                    .heightIn(max = 652.dp)
+                    .padding(horizontal = 20.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 20.dp)
+                ) {
+                    Text(
+                        text = "가사 배경",
+                        style = FeelinTypography.title2,
+                        color = colors.gray09,
+                    )
+                    Icon(
+                        imageVector = CloseIcon,
+                        contentDescription = "가사 배경 선택 다이얼로그 닫기",
+                        tint = colors.gray09,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable(onClick = {
+                                scope.launch {
+                                    sheetState.hide()
+                                }.invokeOnCompletion {
+                                    if (!sheetState.isVisible) {
+                                        onLyricsBackgroundSheetClose()
+                                    }
+                                }
+                            })
+                    )
+                }
 
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(4),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                LazyColumn(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(LyricsBackground.entries) { background ->
+                        val isSelected = uiState.temporaryLyricsBackground == background
                         Box(
                             modifier = Modifier
-                                .size(width = 72.dp, height = 48.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .border(
-                                    width = if (uiState.temporaryLyricsBackground == background) 2.dp else 0.dp,
-                                    color = if (uiState.temporaryLyricsBackground == background) colors.brandPrimary else colors.modal,
-                                    shape = RoundedCornerShape(8.dp)
-                                )
+                                .fillMaxWidth()
+                                .height(132.dp)
+                                .clip(RoundedCornerShape(4.dp))
                                 .clickable { onTemporaryBackgroundSelect(background) }
                         ) {
                             Image(
@@ -416,17 +449,38 @@ fun NoteFormScreen(
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.fillMaxSize(),
                             )
+
+                            Icon(
+                                imageVector = if (isSelected) CheckBoxIconEnabled else CheckBoxIconDisabled,
+                                contentDescription = if (isSelected) "선택됨" else "선택 안됨",
+                                tint = Color.Unspecified,
+                                modifier = Modifier
+                                    .align(Alignment.TopEnd)
+                                    .padding(top = 16.dp, end = 16.dp)
+                                    .size(24.dp)
+                            )
+
+                            // TODO(@이대근): 특정 배경들에는 텍스트 색상이 바뀌어야함 2026.06.07.
+                            Text(
+                                text = "이야기로 음악을 느끼다\n이야기로 음악을 채우다",
+                                style = FeelinTypography.body1,
+                                color = if (background == LyricsBackground.BLACK) colors.gray00 else colors.gray09,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .align(Alignment.Center)
+                                    .padding(horizontal = 20.dp)
+                            )
                         }
                     }
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
-                        .clip(RoundedCornerShape(12.dp))
+                        .clip(RoundedCornerShape(8.dp))
                         .background(colors.brandPrimary)
                         .clickable {
                             onBackgroundConfirm()
@@ -440,7 +494,6 @@ fun NoteFormScreen(
                         color = colors.gray00
                     )
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -467,8 +520,9 @@ fun NoteFormScreen(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                             )
-//                            settings.javaScriptEnabled = true
-//                            settings.domStorageEnabled = true
+                            // MARK(@이대근): JS 꺼도 멜론 웹뷰 올바르게 나오는지 확인 필요 2026.06.07.
+                            settings.javaScriptEnabled = true
+                            settings.domStorageEnabled = true
                             webViewClient = WebViewClient()
                             webChromeClient = WebChromeClient()
                             loadUrl("https://search.melon.com/search/mcom_index.htm")

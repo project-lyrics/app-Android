@@ -1,5 +1,7 @@
 package com.lyrics.feelin.presentation.view.note.form
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -399,7 +401,7 @@ fun NoteFormScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .heightIn(max = 652.dp)
+                    .fillMaxHeight(0.88f)
                     .padding(horizontal = 20.dp)
             ) {
                 Row(
@@ -414,7 +416,7 @@ fun NoteFormScreen(
                     )
                     Icon(
                         imageVector = CloseIcon,
-                        contentDescription = "가사 배경 선택 다이얼로그 닫기",
+                        contentDescription = "가사 배경 선택 하단시트 닫기",
                         tint = colors.gray09,
                         modifier = Modifier
                             .size(24.dp)
@@ -509,10 +511,38 @@ fun NoteFormScreen(
         ModalBottomSheet(
             sheetState = sheetState,
             onDismissRequest = onLyricsSearchSheetClose,
-            containerColor = colors.backgroundPrimary,
-            modifier = Modifier.fillMaxHeight(0.88f)
+            containerColor = colors.modal,
+            dragHandle = @Composable {}
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(modifier = Modifier.fillMaxHeight(0.88f).padding(horizontal = 20.dp)) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 20.dp)
+                ) {
+                    Text(
+                        text = "가사 검색",
+                        style = FeelinTypography.title2,
+                        color = colors.gray09,
+                    )
+                    Icon(
+                        imageVector = CloseIcon,
+                        contentDescription = "가사 검색 하단시트 닫기",
+                        tint = colors.gray09,
+                        modifier = Modifier
+                            .size(24.dp)
+                            .clickable(onClick = {
+                                scope.launch {
+                                    sheetState.hide()
+                                }.invokeOnCompletion {
+                                    if (!sheetState.isVisible) {
+                                        onLyricsSearchSheetClose()
+                                    }
+                                }
+                            })
+                    )
+                }
+
                 AndroidView(
                     factory = { context ->
                         WebView(context).apply {
@@ -520,15 +550,23 @@ fun NoteFormScreen(
                                 ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.MATCH_PARENT
                             )
-                            // MARK(@이대근): JS 꺼도 멜론 웹뷰 올바르게 나오는지 확인 필요 2026.06.07.
+                            // JS 비활성화시 멜론 웹페이지 정상 로드 불가 @이대근 2026.06.07.
+                            @SuppressLint("SetJavascriptEnabled")
                             settings.javaScriptEnabled = true
-                            settings.domStorageEnabled = true
                             webViewClient = WebViewClient()
                             webChromeClient = WebChromeClient()
+                            setOnTouchListener { view, event ->
+                                when (event.action) {
+                                    MotionEvent.ACTION_DOWN -> view.parent.requestDisallowInterceptTouchEvent(true)
+                                    MotionEvent.ACTION_UP,
+                                    MotionEvent.ACTION_CANCEL -> view.parent.requestDisallowInterceptTouchEvent(false)
+                                }
+                                false
+                            }
                             loadUrl("https://search.melon.com/search/mcom_index.htm")
                         }
                     },
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier.fillMaxWidth().weight(1f),
                     onRelease = { webView ->
                         webView.stopLoading()
                         webView.webChromeClient = null

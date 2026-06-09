@@ -12,7 +12,7 @@ import org.junit.Test
 class NoteFormViewModelTest {
 
     @Test
-    fun `select topic resets song lyrics background and body`() {
+    fun `select topic preserves song lyrics background and body`() {
         val viewModel = createViewModel()
         viewModel.setSong(sampleSong)
         viewModel.setLyrics("가사")
@@ -24,10 +24,20 @@ class NoteFormViewModelTest {
 
         val state = viewModel.viewState.value
         assertEquals(NoteTopic.FREE, state.selectedTopic)
-        assertNull(state.selectedSong)
-        assertEquals("", state.lyrics)
-        assertEquals(LyricsBackground.DEFAULT, state.lyricsBackground)
-        assertEquals("", state.body)
+        assertEquals(sampleSong, state.selectedSong)
+        assertEquals("가사", state.lyrics)
+        assertEquals(LyricsBackground.BLACK, state.lyricsBackground)
+        assertEquals("본문", state.body)
+        assertEquals(false, state.isSongSectionVisible)
+    }
+
+    @Test
+    fun `select interpretation topic shows song section`() {
+        val viewModel = createViewModel()
+
+        viewModel.selectTopic(NoteTopic.INTERPRETATION)
+
+        assertEquals(true, viewModel.viewState.value.isSongSectionVisible)
     }
 
     @Test
@@ -44,6 +54,44 @@ class NoteFormViewModelTest {
         assertNull(state.selectedSong)
         assertEquals("", state.lyrics)
         assertEquals(LyricsBackground.DEFAULT, state.lyricsBackground)
+        assertEquals(false, state.isSongSectionVisible)
+    }
+
+    @Test
+    fun `show song section sets visibility to true`() {
+        val viewModel = createViewModel()
+
+        viewModel.showSongSection()
+
+        assertEquals(true, viewModel.viewState.value.isSongSectionVisible)
+    }
+
+    @Test
+    fun `show no song dialog sets dialog visible`() {
+        val viewModel = createViewModel()
+
+        viewModel.showNoSongDialog()
+
+        assertEquals(true, viewModel.viewState.value.isNoSongDialogVisible)
+    }
+
+    @Test
+    fun `hide no song dialog sets visibility to false`() {
+        val viewModel = createViewModel()
+
+        viewModel.showNoSongDialog()
+        viewModel.hideNoSongDialog()
+
+        assertEquals(false, viewModel.viewState.value.isNoSongDialogVisible)
+    }
+
+    @Test
+    fun `set lyrics focus updates state`() {
+        val viewModel = createViewModel()
+
+        viewModel.setLyricsFocus(true)
+
+        assertEquals(true, viewModel.viewState.value.isLyricsFocused)
     }
 
     @Test

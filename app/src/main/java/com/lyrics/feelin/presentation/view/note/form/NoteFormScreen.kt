@@ -11,6 +11,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,9 +41,12 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,6 +63,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheet
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheetAction
+import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarDefaults
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithClose
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
@@ -104,6 +110,10 @@ fun NoteFormRoute(
         onBackgroundConfirm = viewModel::confirmBackground,
         onLyricsSearchSheetOpen = viewModel::openLyricsSearchSheet,
         onLyricsSearchSheetClose = viewModel::closeLyricsSearchSheet,
+        onShowSongSection = viewModel::showSongSection,
+        onLyricsFocusChange = viewModel::setLyricsFocus,
+        onShowNoSongDialog = viewModel::showNoSongDialog,
+        onHideNoSongDialog = viewModel::hideNoSongDialog,
         modifier = modifier,
     )
 }
@@ -128,6 +138,10 @@ fun NoteFormScreen(
     onBackgroundConfirm: () -> Unit,
     onLyricsSearchSheetOpen: () -> Unit,
     onLyricsSearchSheetClose: () -> Unit,
+    onShowSongSection: () -> Unit,
+    onLyricsFocusChange: (Boolean) -> Unit,
+    onShowNoSongDialog: () -> Unit,
+    onHideNoSongDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = LocalFeelinColors.current
@@ -198,129 +212,150 @@ fun NoteFormScreen(
                 )
             }
 
-            // Song Component - delete row
-            if (uiState.isSongDeleteVisible) {
-                HorizontalDivider(color = colors.gray01, thickness = 1.dp)
-                Row(
+            if (uiState.isSongSectionVisible) {
+                // Song Component - delete row
+                if (uiState.isSongDeleteVisible) {
+                    HorizontalDivider(color = colors.gray01, thickness = 1.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "곡",
+                            style = FeelinTypography.title3.copy(lineHeight = 20.sp),
+                            color = colors.gray08,
+                            modifier = Modifier.clickable(onClick = onSongDelete)
+                        )
+                        Icon(
+                            imageVector = CloseIcon,
+                            contentDescription = "삭제",
+                            tint = colors.gray08,
+                            modifier = Modifier
+                                .size(16.dp)
+                                .clickable(onClick = onSongDelete)
+                        )
+                    }
+                }
+
+                // Song Component
+                Box(
+                    modifier = Modifier.clickable(
+                        enabled = uiState.isSongSelectable,
+                        onClick = onSongClick,
+                    )
+                ) {
+                    MusicComponent(
+                        state = uiState.selectedSong ?: MusicComponentData.NoteWriteEmpty,
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val lyricsInteractionSource = remember { MutableInteractionSource() }
+                val isLyricsFocused by lyricsInteractionSource.collectIsFocusedAsState()
+                val currentOnLyricsFocusChange by rememberUpdatedState(onLyricsFocusChange)
+
+                LaunchedEffect(isLyricsFocused) {
+                    currentOnLyricsFocusChange(isLyricsFocused)
+                }
+
+                // Lyrics Component
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
+                        .clip(RoundedCornerShape(4.dp))
+                        .height(132.dp)
+                ) {
+                    Image(
+                        painter = painterResource(id = uiState.lyricsBackground.toDrawableRes()),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                    BasicTextField(
+                        value = uiState.lyrics,
+                        onValueChange = {
+                            if (it.length <= NOTE_FORM_LYRICS_MAX_LENGTH) {
+                                onLyricsChange(it)
+                            } else {
+                                onLyricsChange(it.take(NOTE_FORM_LYRICS_MAX_LENGTH))
+                            }
+                        },
+                        interactionSource = lyricsInteractionSource,
+                        textStyle = FeelinTypography.body1.copy(
+                            color = if (uiState.lyricsBackground.isDark()) colors.gray00 else colors.gray09,
+                            textAlign = TextAlign.Center
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.Center)
+                            .padding(horizontal = 20.dp),
+                        decorationBox = { innerTextField ->
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                if (uiState.lyrics.isEmpty() && !uiState.isLyricsFocused) {
+                                    Text(
+                                        text = "좋아하는 가사를 적어주세요 (선택)",
+                                        style = FeelinTypography.body1,
+                                        color = colors.gray04,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                                innerTextField()
+                            }
+                        }
+                    )
+                    Text(
+                        text = "${uiState.lyrics.length}/$NOTE_FORM_LYRICS_MAX_LENGTH",
+                        style = FeelinTypography.caption1,
+                        color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .padding(bottom = 16.dp, end = 20.dp)
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.End),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(
-                        text = "곡",
-                        style = FeelinTypography.title3.copy(lineHeight = 20.sp),
-                        color = colors.gray08,
-                        modifier = Modifier.clickable(onClick = onSongDelete)
+                    LyricsActionButton(
+                        text = "가사 배경",
+                        isEnable = uiState.lyrics.isNotEmpty(),
+                        icon = { WritingIcon },
+                        onClick = {
+                            if (uiState.selectedSong != null) {
+                                onLyricsBackgroundSheetOpen()
+                            } else {
+                                onShowNoSongDialog()
+                            }
+                        },
                     )
-                    Icon(
-                        imageVector = CloseIcon,
-                        contentDescription = "삭제",
-                        tint = colors.gray08,
-                        modifier = Modifier
-                            .size(16.dp)
-                            .clickable(onClick = onSongDelete)
+                    LyricsActionButton(
+                        text = "가사 검색",
+                        isEnable = true,
+                        icon = { SearchIcon },
+                        onClick = {
+                            if (uiState.selectedSong != null) {
+                                onLyricsSearchSheetOpen()
+                            } else {
+                                onShowNoSongDialog()
+                            }
+                        },
                     )
                 }
             }
 
-            // Song Component
-            Box(
-                modifier = Modifier.clickable(
-                    enabled = uiState.isSongSelectable,
-                    onClick = onSongClick,
-                )
-            ) {
-                MusicComponent(
-                    state = uiState.selectedSong ?: MusicComponentData.NoteWriteEmpty,
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Lyrics Component
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(4.dp))
-                    .height(132.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = uiState.lyricsBackground.toDrawableRes()),
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                )
-                BasicTextField(
-                    value = uiState.lyrics,
-                    onValueChange = {
-                        if (it.length <= NOTE_FORM_LYRICS_MAX_LENGTH) {
-                            onLyricsChange(it)
-                        } else {
-                            onLyricsChange(it.take(NOTE_FORM_LYRICS_MAX_LENGTH))
-                        }
-                    },
-                    textStyle = FeelinTypography.body1.copy(
-                        color = if (uiState.lyricsBackground == LyricsBackground.BLACK) colors.gray00 else colors.gray09,
-                        textAlign = TextAlign.Center
-                    ),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center)
-                        .padding(horizontal = 20.dp),
-                    decorationBox = { innerTextField ->
-                        Box(
-                            contentAlignment = Alignment.Center,
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            if (uiState.lyrics.isEmpty()) {
-                                // TODO(@이대근): 입력 상태로 focus될때 나오지 않아야함 2026.06.04.
-                                Text(
-                                    text = "좋아하는 가사를 적어주세요 (선택)",
-                                    style = FeelinTypography.body1,
-                                    color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                            innerTextField()
-                        }
-                    }
-                )
-                Text(
-                    text = "${uiState.lyrics.length}/$NOTE_FORM_LYRICS_MAX_LENGTH",
-                    style = FeelinTypography.caption1,
-                    color = if (uiState.lyrics.isEmpty()) colors.gray04 else colors.gray08,
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 16.dp, end = 20.dp)
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp, alignment = Alignment.End),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                LyricsActionButton(
-                    text = "가사 배경",
-                    isEnable = uiState.lyrics.isNotEmpty(),
-                    icon = { WritingIcon },
-                    onClick = onLyricsBackgroundSheetOpen,
-                )
-                LyricsActionButton(
-                    text = "가사 검색",
-                    isEnable = true,
-                    icon = { SearchIcon },
-                    onClick = onLyricsSearchSheetOpen,
-                )
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
-            // TODO(@이대근): 특정 배경들에는 내부 텍스트 색상이 바뀌어야함 2026.06.07.
             // Body Input Area
             BasicTextField(
                 value = uiState.body,
@@ -338,9 +373,8 @@ fun NoteFormScreen(
                 decorationBox = { innerTextField ->
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopStart) {
                         if (uiState.body.isEmpty()) {
-                            // TODO(@이대근): 카테고리 선택마다 플레이스홀더 문자열이 바뀌어야함 2026.06.04.
                             Text(
-                                text = "생각을 남겨보세요.",
+                                text = uiState.bodyPlaceholder,
                                 style = FeelinTypography.body3,
                                 color = colors.gray04
                             )
@@ -355,29 +389,33 @@ fun NoteFormScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                // TODO(@이대근): '질문', '자유' 카테고리 선택시에만 나타나야 함
-                Row(
-                    modifier = Modifier
-                        .border(
-                            width = 1.dp,
-                            shape = RoundedCornerShape(size = 8.dp),
-                            color = colors.gray01
+                if (uiState.isBottomSongButtonVisible) {
+                    Row(
+                        modifier = Modifier
+                            .border(
+                                width = 1.dp,
+                                shape = RoundedCornerShape(size = 8.dp),
+                                color = colors.gray01
+                            )
+                            .clickable(enabled = uiState.isBottomSongButtonEnabled, onClick = onShowSongSection)
+                            .padding(horizontal = 8.dp, vertical = 6.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Icon(
+                            imageVector = SongListIcon,
+                            contentDescription = "",
+                            tint = if (uiState.isBottomSongButtonEnabled) colors.gray08 else colors.systemDisable,
+                            modifier = Modifier.size(16.dp)
                         )
-                        .padding(horizontal = 8.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = SongListIcon,
-                        contentDescription = "",
-                        tint = if (true) colors.gray08 else colors.systemDisable,
-                        modifier = Modifier.size(16.dp)
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        "곡",
-                        style = FeelinTypography.body2,
-                        color = if (true) colors.gray08 else colors.systemDisable
-                    )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            "곡",
+                            style = FeelinTypography.body2,
+                            color = if (uiState.isBottomSongButtonEnabled) colors.gray08 else colors.systemDisable
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.width(1.dp))
                 }
                 Text(
                     text = "${uiState.body.length}/$NOTE_FORM_BODY_MAX_LENGTH",
@@ -490,11 +528,10 @@ fun NoteFormScreen(
                                     .size(24.dp)
                             )
 
-                            // TODO(@이대근): 특정 배경들에는 텍스트 색상이 바뀌어야함 2026.06.07.
                             Text(
                                 text = "이야기로 음악을 느끼다\n이야기로 음악을 채우다",
                                 style = FeelinTypography.body1,
-                                color = if (background == LyricsBackground.BLACK) colors.gray00 else colors.gray09,
+                                color = if (background.isDark()) colors.gray00 else colors.gray09,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
                                     .align(Alignment.Center)
@@ -605,6 +642,16 @@ fun NoteFormScreen(
             }
         }
     }
+
+    if (uiState.isNoSongDialogVisible) {
+        FeelinModalDialog(
+            title = "곡을 추가한 후,\n가사를 작성하실 수 있어요.",
+            confirmButtonText = "확인",
+            onConfirmButtonClick = onHideNoSongDialog,
+            description = null,
+            isDismissButtonEnable = false,
+        )
+    }
 }
 
 @Composable
@@ -656,6 +703,8 @@ private fun LyricsBackground.toDrawableRes(): Int {
     }
 }
 
+private fun LyricsBackground.isDark(): Boolean = this == LyricsBackground.BLACK || this == LyricsBackground.RED
+
 @Preview(showBackground = true)
 @Composable
 private fun NoteFormScreenCreatePreview() {
@@ -676,7 +725,11 @@ private fun NoteFormScreenCreatePreview() {
             onTemporaryBackgroundSelect = {},
             onBackgroundConfirm = {},
             onLyricsSearchSheetOpen = {},
-            onLyricsSearchSheetClose = {}
+            onLyricsSearchSheetClose = {},
+            onShowSongSection = {},
+            onLyricsFocusChange = {},
+            onShowNoSongDialog = {},
+            onHideNoSongDialog = {}
         )
     }
 }
@@ -692,7 +745,8 @@ private fun NoteFormScreenFreeWithSongPreview() {
                     imageUrl = "https://picsum.photos/200",
                     songName = "No Pain",
                     artistName = "실리카겔"
-                )
+                ),
+                isSongSectionVisible = true
             ),
             onCloseClick = {},
             onCompleteClick = {},
@@ -708,7 +762,42 @@ private fun NoteFormScreenFreeWithSongPreview() {
             onTemporaryBackgroundSelect = {},
             onBackgroundConfirm = {},
             onLyricsSearchSheetOpen = {},
-            onLyricsSearchSheetClose = {}
+            onLyricsSearchSheetClose = {},
+            onShowSongSection = {},
+            onLyricsFocusChange = {},
+            onShowNoSongDialog = {},
+            onHideNoSongDialog = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun NoteFormScreenFreeWithoutSongPreview() {
+    FeelinTheme {
+        NoteFormScreen(
+            uiState = NoteFormUiState.create().copy(
+                selectedTopic = NoteTopic.FREE
+            ),
+            onCloseClick = {},
+            onCompleteClick = {},
+            onCategorySelect = {},
+            onSongClick = {},
+            onSongDelete = {},
+            onLyricsChange = {},
+            onBodyChange = {},
+            onCategorySheetOpen = {},
+            onCategorySheetClose = {},
+            onLyricsBackgroundSheetOpen = {},
+            onLyricsBackgroundSheetClose = {},
+            onTemporaryBackgroundSelect = {},
+            onBackgroundConfirm = {},
+            onLyricsSearchSheetOpen = {},
+            onLyricsSearchSheetClose = {},
+            onShowSongSection = {},
+            onLyricsFocusChange = {},
+            onShowNoSongDialog = {},
+            onHideNoSongDialog = {}
         )
     }
 }
@@ -733,7 +822,11 @@ private fun NoteFormScreenEditPreview() {
             onTemporaryBackgroundSelect = {},
             onBackgroundConfirm = {},
             onLyricsSearchSheetOpen = {},
-            onLyricsSearchSheetClose = {}
+            onLyricsSearchSheetClose = {},
+            onShowSongSection = {},
+            onLyricsFocusChange = {},
+            onShowNoSongDialog = {},
+            onHideNoSongDialog = {}
         )
     }
 }

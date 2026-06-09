@@ -28,6 +28,9 @@ data class NoteFormUiState(
     val isCategorySheetVisible: Boolean,
     val isLyricsBackgroundSheetVisible: Boolean,
     val isLyricsSearchSheetVisible: Boolean,
+    val isSongSectionVisible: Boolean,
+    val isNoSongDialogVisible: Boolean,
+    val isLyricsFocused: Boolean,
     val isEditMode: Boolean,
     val originalData: NoteFormOriginalData,
 ) {
@@ -44,7 +47,21 @@ data class NoteFormUiState(
         }
 
     val isSongDeleteVisible: Boolean
-        get() = !isEditMode && selectedSong != null
+        get() = !isEditMode && selectedSong != null && selectedTopic != NoteTopic.INTERPRETATION && isSongSectionVisible
+
+    val isBottomSongButtonVisible: Boolean
+        get() = selectedTopic != null && selectedTopic != NoteTopic.INTERPRETATION
+
+    val isBottomSongButtonEnabled: Boolean
+        get() = isBottomSongButtonVisible && selectedSong == null
+
+    val bodyPlaceholder: String
+        get() = when (selectedTopic) {
+            NoteTopic.INTERPRETATION -> "해석을 공유해주세요."
+            NoteTopic.FREE -> "이야기를 남겨보세요."
+            NoteTopic.QUESTION -> "질문을 남겨보세요."
+            else -> "생각을 남겨보세요."
+        }
 
     val isSongSelectable: Boolean
         get() = !isEditMode
@@ -87,6 +104,9 @@ data class NoteFormUiState(
                 isCategorySheetVisible = false,
                 isLyricsBackgroundSheetVisible = false,
                 isLyricsSearchSheetVisible = false,
+                isSongSectionVisible = true,
+                isNoSongDialogVisible = false,
+                isLyricsFocused = false,
                 isEditMode = true,
                 originalData = originalData,
             )
@@ -111,6 +131,9 @@ data class NoteFormUiState(
                 isCategorySheetVisible = false,
                 isLyricsBackgroundSheetVisible = false,
                 isLyricsSearchSheetVisible = false,
+                isSongSectionVisible = false,
+                isNoSongDialogVisible = false,
+                isLyricsFocused = false,
                 isEditMode = isEditMode,
                 originalData = originalData,
             )

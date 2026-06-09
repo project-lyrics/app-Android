@@ -32,11 +32,7 @@ class NoteFormViewModel @Inject constructor(
         update {
             it.copy(
                 selectedTopic = topic,
-                selectedSong = null,
-                lyrics = "",
-                lyricsBackground = LyricsBackground.DEFAULT,
-                body = "",
-                temporaryLyricsBackground = LyricsBackground.DEFAULT,
+                isSongSectionVisible = topic == NoteTopic.INTERPRETATION,
                 isCategorySheetVisible = false,
             )
         }
@@ -56,9 +52,26 @@ class NoteFormViewModel @Inject constructor(
                     lyrics = "",
                     lyricsBackground = LyricsBackground.DEFAULT,
                     temporaryLyricsBackground = LyricsBackground.DEFAULT,
+                    isSongSectionVisible = false,
                 )
             }
         }
+    }
+
+    fun showSongSection() {
+        update { it.copy(isSongSectionVisible = true) }
+    }
+
+    fun showNoSongDialog() {
+        update { it.copy(isNoSongDialogVisible = true) }
+    }
+
+    fun hideNoSongDialog() {
+        update { it.copy(isNoSongDialogVisible = false) }
+    }
+
+    fun setLyricsFocus(isFocused: Boolean) {
+        update { it.copy(isLyricsFocused = isFocused) }
     }
 
     fun setLyrics(lyrics: String) {

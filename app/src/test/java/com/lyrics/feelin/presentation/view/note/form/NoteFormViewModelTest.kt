@@ -6,6 +6,7 @@ import com.lyrics.feelin.navigation.FeelinDestination
 import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
 import com.lyrics.feelin.presentation.view.component.note.LyricsBackground
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNull
 import org.junit.Test
 
@@ -76,6 +77,16 @@ class NoteFormViewModelTest {
         viewModel.showSongSection()
 
         assertEquals(true, viewModel.viewState.value.isSongSectionVisible)
+    }
+
+    @Test
+    fun `show song section disables bottom song button`() {
+        val viewModel = createViewModel()
+        viewModel.selectTopic(NoteTopic.FREE)
+
+        viewModel.showSongSection()
+
+        assertFalse(viewModel.viewState.value.isBottomSongButtonEnabled)
     }
 
     @Test

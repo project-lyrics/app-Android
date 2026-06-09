@@ -108,6 +108,17 @@ class NoteFormUiStateTest {
     }
 
     @Test
+    fun `bottom song button is disabled when song section is visible without song`() {
+        val state = NoteFormUiState.create().copy(
+            selectedTopic = NoteTopic.FREE,
+            isSongSectionVisible = true,
+        )
+
+        assertTrue(state.isBottomSongButtonVisible)
+        assertFalse(state.isBottomSongButtonEnabled)
+    }
+
+    @Test
     fun `song delete is hidden when section is not visible`() {
         val state = NoteFormUiState.create().copy(
             selectedTopic = NoteTopic.FREE,

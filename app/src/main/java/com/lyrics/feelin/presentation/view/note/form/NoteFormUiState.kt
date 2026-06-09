@@ -53,7 +53,7 @@ data class NoteFormUiState(
         get() = selectedTopic != null && selectedTopic != NoteTopic.INTERPRETATION
 
     val isBottomSongButtonEnabled: Boolean
-        get() = isBottomSongButtonVisible && selectedSong == null
+        get() = isBottomSongButtonVisible && !isSongSectionVisible
 
     val bodyPlaceholder: String
         get() = when (selectedTopic) {

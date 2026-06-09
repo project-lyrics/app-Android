@@ -260,6 +260,8 @@ internal fun NoteFormLyricsSearchSheet(
                         webViewClient = WebViewClient()
                         webChromeClient = WebChromeClient()
                         setOnTouchListener { view, event ->
+                            // ModalBottomSheet의 드래그 제스처가 WebView 터치와 경쟁해
+                            // 이벤트를 가로채지 않도록 합니다.
                             when (event.action) {
                                 MotionEvent.ACTION_DOWN -> view.parent.requestDisallowInterceptTouchEvent(true)
                                 MotionEvent.ACTION_UP,

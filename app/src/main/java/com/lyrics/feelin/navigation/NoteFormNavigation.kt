@@ -129,6 +129,7 @@ private fun NoteFormDestination(
     NoteFormRoute(
         onCloseClick = { navController.popBackStack() },
         onNavigateToSearchSong = {
+            // REST API 연동 전까지 검색 화면에 넘기는 artistId는 임시값입니다.
             navController.navigate(FeelinDestination.NoteFormSearchSong.createRoute(artistId = 0L))
         },
     )

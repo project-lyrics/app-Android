@@ -20,6 +20,7 @@ class SearchSongViewModel @Inject constructor(
     val viewState: StateFlow<SearchSongUiState> = _viewState.asStateFlow()
 
     fun updateSearchQuery(query: String) {
+        // REST API 연동 전까지는 고정 검색어 기반 stub 응답을 사용합니다.
         if (query == "실리카겔") {
             _viewState.value = SearchSongUiState.searchSample()
         } else if (query == "없는노래") {

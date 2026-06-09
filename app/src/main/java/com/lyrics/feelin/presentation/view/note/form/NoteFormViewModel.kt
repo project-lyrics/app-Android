@@ -33,6 +33,7 @@ class NoteFormViewModel @Inject constructor(
             val isNowInterpretation = topic == NoteTopic.INTERPRETATION
             val wasInterpretation = state.selectedTopic == NoteTopic.INTERPRETATION
 
+            // 기획상 카테고리 전환 시 곡이 있으면 유지하고, 없으면 곡 UI를 숨깁니다. (UI 피그마 댓글 참조)
             val shouldShowSongSection = when {
                 isNowInterpretation -> true
                 wasInterpretation && state.selectedSong != null -> true
@@ -55,6 +56,7 @@ class NoteFormViewModel @Inject constructor(
     fun deleteSong() {
         update {
             if (it.isEditMode) {
+                // 정책상 기존 노트 수정 시에는 첨부했던 곡을 변경하거나 삭제할 수 없습니다.
                 it
             } else {
                 it.copy(

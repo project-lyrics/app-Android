@@ -65,6 +65,7 @@ import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconDisabled
 import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconEnabled
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.core.designsystem.icon.SearchIcon
+import com.lyrics.feelin.core.designsystem.icon.SongListIcon
 import com.lyrics.feelin.core.designsystem.icon.WritingIcon
 import com.lyrics.feelin.core.domain.enum.NoteTopic
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -75,6 +76,8 @@ import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
 import com.lyrics.feelin.presentation.view.component.note.LyricsBackground
 import kotlinx.coroutines.launch
 
+// MARK(@이대근): 지금 화면 구현이 다른 부분들 정리 필요
+// MARK(@이대근): 코드 너무 길음, suppress 떼고 정리 필요
 @Composable
 fun NoteFormRoute(
     onCloseClick: () -> Unit,
@@ -349,8 +352,33 @@ fun NoteFormScreen(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // TODO(@이대근): '질문', '자유' 카테고리 선택시에만 나타나야 함
+                Row(
+                    modifier = Modifier
+                        .border(
+                            width = 1.dp,
+                            shape = RoundedCornerShape(size = 8.dp),
+                            color = colors.gray01
+                        )
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = SongListIcon,
+                        contentDescription = "",
+                        tint = if (true) colors.gray08 else colors.systemDisable,
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        "곡",
+                        style = FeelinTypography.body2,
+                        color = if (true) colors.gray08 else colors.systemDisable
+                    )
+                }
                 Text(
                     text = "${uiState.body.length}/$NOTE_FORM_BODY_MAX_LENGTH",
                     style = FeelinTypography.caption1,

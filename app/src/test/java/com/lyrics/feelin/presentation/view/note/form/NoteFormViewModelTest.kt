@@ -14,6 +14,7 @@ class NoteFormViewModelTest {
     @Test
     fun `select topic preserves song lyrics background and body`() {
         val viewModel = createViewModel()
+        viewModel.selectTopic(NoteTopic.INTERPRETATION)
         viewModel.setSong(sampleSong)
         viewModel.setLyrics("가사")
         viewModel.selectTemporaryBackground(LyricsBackground.BLACK)
@@ -28,7 +29,7 @@ class NoteFormViewModelTest {
         assertEquals("가사", state.lyrics)
         assertEquals(LyricsBackground.BLACK, state.lyricsBackground)
         assertEquals("본문", state.body)
-        assertEquals(false, state.isSongSectionVisible)
+        assertEquals(true, state.isSongSectionVisible)
     }
 
     @Test
@@ -38,6 +39,17 @@ class NoteFormViewModelTest {
         viewModel.selectTopic(NoteTopic.INTERPRETATION)
 
         assertEquals(true, viewModel.viewState.value.isSongSectionVisible)
+    }
+
+    @Test
+    fun `select interpretation to free without song hides section`() {
+        val viewModel = createViewModel()
+        viewModel.selectTopic(NoteTopic.INTERPRETATION)
+        assertEquals(true, viewModel.viewState.value.isSongSectionVisible)
+
+        viewModel.selectTopic(NoteTopic.FREE)
+
+        assertEquals(false, viewModel.viewState.value.isSongSectionVisible)
     }
 
     @Test

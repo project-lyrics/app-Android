@@ -29,10 +29,20 @@ class NoteFormViewModel @Inject constructor(
     val viewState: StateFlow<NoteFormUiState> = _viewState.asStateFlow()
 
     fun selectTopic(topic: NoteTopic) {
-        update {
-            it.copy(
+        update { state ->
+            val isNowInterpretation = topic == NoteTopic.INTERPRETATION
+            val wasInterpretation = state.selectedTopic == NoteTopic.INTERPRETATION
+
+            val shouldShowSongSection = when {
+                isNowInterpretation -> true
+                wasInterpretation && state.selectedSong != null -> true
+                wasInterpretation && state.selectedSong == null -> false
+                else -> state.isSongSectionVisible
+            }
+
+            state.copy(
                 selectedTopic = topic,
-                isSongSectionVisible = topic == NoteTopic.INTERPRETATION,
+                isSongSectionVisible = shouldShowSongSection,
                 isCategorySheetVisible = false,
             )
         }

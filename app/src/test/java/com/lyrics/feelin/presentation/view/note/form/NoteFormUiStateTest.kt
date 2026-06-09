@@ -42,15 +42,23 @@ class NoteFormUiStateTest {
     }
 
     @Test
-    fun `create mode enables song delete only when song exists`() {
-        val state = NoteFormUiState.create().copy(
+    fun `create mode shows song delete in non-interpretation when section visible`() {
+        val stateWithSong = NoteFormUiState.create().copy(
             selectedTopic = NoteTopic.FREE,
             selectedSong = sampleSong,
             isSongSectionVisible = true,
         )
 
-        assertTrue(state.isSongDeleteVisible)
-        assertTrue(state.isSongSelectable)
+        assertTrue(stateWithSong.isSongDeleteVisible)
+        assertTrue(stateWithSong.isSongSelectable)
+
+        val stateWithoutSong = NoteFormUiState.create().copy(
+            selectedTopic = NoteTopic.FREE,
+            isSongSectionVisible = true,
+        )
+
+        assertTrue(stateWithoutSong.isSongDeleteVisible)
+        assertTrue(stateWithoutSong.isSongSelectable)
     }
 
     @Test

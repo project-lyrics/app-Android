@@ -47,7 +47,7 @@ data class NoteFormUiState(
         }
 
     val isSongDeleteVisible: Boolean
-        get() = !isEditMode && selectedSong != null && selectedTopic != NoteTopic.INTERPRETATION && isSongSectionVisible
+        get() = !isEditMode && selectedTopic != NoteTopic.INTERPRETATION && isSongSectionVisible
 
     val isBottomSongButtonVisible: Boolean
         get() = selectedTopic != null && selectedTopic != NoteTopic.INTERPRETATION

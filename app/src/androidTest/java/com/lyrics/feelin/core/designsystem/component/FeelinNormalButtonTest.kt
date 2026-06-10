@@ -8,7 +8,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import org.junit.Rule
 import org.junit.Test
 
-class FeelinCompleteButtonTest {
+class FeelinNormalButtonTest {
     @get:Rule
     val composeRule = createComposeRule()
 
@@ -16,7 +16,7 @@ class FeelinCompleteButtonTest {
     fun enabledButtonShowsTextAndAcceptsInput() {
         composeRule.setContent {
             FeelinTheme {
-                FeelinCompleteButton(
+                FeelinNormalButton(
                     text = "완료",
                     enabled = true,
                     onClick = {},
@@ -31,7 +31,7 @@ class FeelinCompleteButtonTest {
     fun disabledButtonShowsTextAndRejectsInput() {
         composeRule.setContent {
             FeelinTheme {
-                FeelinCompleteButton(
+                FeelinNormalButton(
                     text = "프로필 저장",
                     enabled = false,
                     onClick = {},

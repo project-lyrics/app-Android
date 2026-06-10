@@ -14,8 +14,9 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
+/** 디자인시스템에 접미사가 없이 선언된 버튼입니다. */
 @Composable
-fun FeelinCompleteButton(
+fun FeelinNormalButton(
     text: String,
     enabled: Boolean,
     modifier: Modifier = Modifier,
@@ -43,9 +44,9 @@ fun FeelinCompleteButton(
 
 @Preview(showBackground = true)
 @Composable
-private fun FeelinCompleteButtonPreview() {
+private fun FeelinNormalButtonPreview() {
     FeelinTheme {
-        FeelinCompleteButton(
+        FeelinNormalButton(
             text = "완료",
             enabled = true,
             onClick = {},

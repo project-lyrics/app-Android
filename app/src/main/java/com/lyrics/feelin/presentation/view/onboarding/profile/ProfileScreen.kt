@@ -29,7 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.lyrics.feelin.core.designsystem.component.FeelinCompleteButton
+import com.lyrics.feelin.core.designsystem.component.FeelinNormalButton
 import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
@@ -120,7 +120,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            FeelinCompleteButton(
+            FeelinNormalButton(
                 text = "완료",
                 enabled = isNicknameValid,
                 onClick = {

@@ -48,6 +48,8 @@ import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconEnabled
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.core.domain.enum.NoteTopic
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray08
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.LyricsBackground
 import kotlinx.coroutines.launch
@@ -166,8 +168,6 @@ private fun LyricsBackgroundItem(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val colors = LocalFeelinColors.current
-
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -195,7 +195,7 @@ private fun LyricsBackgroundItem(
         Text(
             text = "이야기로 음악을 느끼다\n이야기로 음악을 채우다",
             style = FeelinTypography.body1,
-            color = if (background.isNoteFormDark()) colors.gray00 else colors.gray09,
+            color = if (background.isNoteFormDark()) LightGray00 else LightGray08,
             textAlign = TextAlign.Center,
             modifier = Modifier
                 .align(Alignment.Center)

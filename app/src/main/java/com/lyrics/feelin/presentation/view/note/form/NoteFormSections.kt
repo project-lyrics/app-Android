@@ -44,6 +44,10 @@ import com.lyrics.feelin.core.designsystem.icon.SearchIcon
 import com.lyrics.feelin.core.designsystem.icon.SongListIcon
 import com.lyrics.feelin.core.domain.enum.NoteTopic
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray04
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
+import com.lyrics.feelin.presentation.designsystem.theme.LightSystemDisable
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.music.MusicComponent
 import com.lyrics.feelin.presentation.view.component.music.MusicComponentData
@@ -186,7 +190,7 @@ internal fun NoteFormLyricsSection(
             onValueChange = actions.onLyricsChange,
             interactionSource = interactionSource,
             textStyle = FeelinTypography.body1.copy(
-                color = if (lyricsBackground.isNoteFormDark()) colors.gray00 else colors.gray09,
+                color = if (lyricsBackground.isNoteFormDark()) LightGray00 else LightGray09,
                 textAlign = TextAlign.Center,
             ),
             modifier = Modifier
@@ -202,7 +206,7 @@ internal fun NoteFormLyricsSection(
                         Text(
                             text = "좋아하는 가사를 적어주세요 (선택)",
                             style = FeelinTypography.body1,
-                            color = colors.gray04,
+                            color = if (selectedSong == null) LightSystemDisable else LightGray04,
                             textAlign = TextAlign.Center,
                         )
                     }

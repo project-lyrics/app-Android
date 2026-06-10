@@ -39,9 +39,9 @@ import androidx.compose.ui.unit.sp
 import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
+import com.lyrics.feelin.core.designsystem.icon.ImageGalleryIcon
 import com.lyrics.feelin.core.designsystem.icon.SearchIcon
 import com.lyrics.feelin.core.designsystem.icon.SongListIcon
-import com.lyrics.feelin.core.designsystem.icon.WritingIcon
 import com.lyrics.feelin.core.domain.enum.NoteTopic
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
@@ -230,7 +230,7 @@ internal fun NoteFormLyricsSection(
         LyricsActionButton(
             text = "가사 배경",
             isEnable = lyrics.isNotEmpty(),
-            icon = { WritingIcon },
+            icon = { ImageGalleryIcon },
             onClick = {
                 if (selectedSong != null) {
                     actions.onLyricsBackgroundSheetOpen()

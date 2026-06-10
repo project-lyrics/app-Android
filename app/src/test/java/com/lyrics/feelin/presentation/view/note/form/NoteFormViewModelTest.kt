@@ -109,6 +109,60 @@ class NoteFormViewModelTest {
     }
 
     @Test
+    fun `set lyrics without song clears input and shows no song dialog`() {
+        val viewModel = createViewModel()
+        viewModel.selectTopic(NoteTopic.FREE)
+        viewModel.showSongSection()
+
+        viewModel.setLyrics("가")
+
+        val state = viewModel.viewState.value
+        assertEquals("", state.lyrics)
+        assertEquals(true, state.isNoSongDialogVisible)
+    }
+
+    @Test
+    fun `set lyrics with song updates lyrics`() {
+        val viewModel = createViewModel()
+        viewModel.setSong(sampleSong)
+
+        viewModel.setLyrics("가사")
+
+        val state = viewModel.viewState.value
+        assertEquals("가사", state.lyrics)
+        assertEquals(false, state.isNoSongDialogVisible)
+    }
+
+    @Test
+    fun `request delete song shows confirmation without deleting song`() {
+        val viewModel = createViewModel()
+        viewModel.setSong(sampleSong)
+        viewModel.setLyrics("가사")
+
+        viewModel.requestDeleteSong()
+
+        val state = viewModel.viewState.value
+        assertEquals(sampleSong, state.selectedSong)
+        assertEquals("가사", state.lyrics)
+        assertEquals(true, state.isSongDeleteDialogVisible)
+    }
+
+    @Test
+    fun `confirm delete song deletes song and hides confirmation`() {
+        val viewModel = createViewModel()
+        viewModel.setSong(sampleSong)
+        viewModel.setLyrics("가사")
+        viewModel.requestDeleteSong()
+
+        viewModel.confirmDeleteSong()
+
+        val state = viewModel.viewState.value
+        assertNull(state.selectedSong)
+        assertEquals("", state.lyrics)
+        assertEquals(false, state.isSongDeleteDialogVisible)
+    }
+
+    @Test
     fun `set lyrics focus updates state`() {
         val viewModel = createViewModel()
 
@@ -130,6 +184,7 @@ class NoteFormViewModelTest {
     @Test
     fun `lyrics and body input are trimmed to max length`() {
         val viewModel = createViewModel()
+        viewModel.setSong(sampleSong)
 
         viewModel.setLyrics("가".repeat(NOTE_FORM_LYRICS_MAX_LENGTH + 1))
         viewModel.setBody("나".repeat(NOTE_FORM_BODY_MAX_LENGTH + 1))

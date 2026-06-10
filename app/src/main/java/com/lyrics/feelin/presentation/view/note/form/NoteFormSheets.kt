@@ -334,5 +334,24 @@ internal fun NoteFormNoSongDialog(
     )
 }
 
+@Composable
+internal fun NoteFormSongDeleteDialog(
+    isVisible: Boolean,
+    onConfirmClick: () -> Unit,
+    onDismissClick: () -> Unit,
+) {
+    if (!isVisible) return
+
+    FeelinModalDialog(
+        title = "곡을 삭제하시겠어요?",
+        confirmButtonText = "확인",
+        onConfirmButtonClick = onConfirmClick,
+        description = null,
+        isDismissButtonEnable = true,
+        dismissButtonText = "취소",
+        onDismissButtonClick = onDismissClick,
+    )
+}
+
 private const val NOTE_FORM_LYRICS_SEARCH_URL = "https://search.melon.com/search/mcom_index.htm"
 private const val NOTE_FORM_SHEET_HEIGHT_RATIO = 0.88f

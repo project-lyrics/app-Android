@@ -65,9 +65,22 @@ class NoteFormViewModel @Inject constructor(
                     lyricsBackground = LyricsBackground.DEFAULT,
                     temporaryLyricsBackground = LyricsBackground.DEFAULT,
                     isSongSectionVisible = false,
+                    isSongDeleteDialogVisible = false,
                 )
             }
         }
+    }
+
+    fun requestDeleteSong() {
+        update { it.copy(isSongDeleteDialogVisible = true) }
+    }
+
+    fun hideSongDeleteDialog() {
+        update { it.copy(isSongDeleteDialogVisible = false) }
+    }
+
+    fun confirmDeleteSong() {
+        deleteSong()
     }
 
     fun showSongSection() {
@@ -87,7 +100,16 @@ class NoteFormViewModel @Inject constructor(
     }
 
     fun setLyrics(lyrics: String) {
-        update { it.copy(lyrics = lyrics.take(NOTE_FORM_LYRICS_MAX_LENGTH)) }
+        update {
+            if (it.selectedSong == null) {
+                it.copy(
+                    lyrics = "",
+                    isNoSongDialogVisible = true,
+                )
+            } else {
+                it.copy(lyrics = lyrics.take(NOTE_FORM_LYRICS_MAX_LENGTH))
+            }
+        }
     }
 
     fun setBody(body: String) {

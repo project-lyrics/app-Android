@@ -38,7 +38,7 @@ fun NoteFormRoute(
         onCompleteClick = onCloseClick, // UI 구현만 수행할때는 화면을 닫는 동작만 수행합니다
         onCategorySelect = viewModel::selectTopic,
         onSongClick = onNavigateToSearchSong,
-        onSongDelete = viewModel::deleteSong,
+        onSongDelete = viewModel::requestDeleteSong,
         onLyricsChange = viewModel::setLyrics,
         onBodyChange = viewModel::setBody,
         onCategorySheetOpen = viewModel::openCategorySheet,
@@ -53,6 +53,8 @@ fun NoteFormRoute(
         onLyricsFocusChange = viewModel::setLyricsFocus,
         onShowNoSongDialog = viewModel::showNoSongDialog,
         onHideNoSongDialog = viewModel::hideNoSongDialog,
+        onConfirmSongDelete = viewModel::confirmDeleteSong,
+        onHideSongDeleteDialog = viewModel::hideSongDeleteDialog,
         modifier = modifier,
     )
 }
@@ -79,6 +81,8 @@ fun NoteFormScreen(
     onLyricsFocusChange: (Boolean) -> Unit,
     onShowNoSongDialog: () -> Unit,
     onHideNoSongDialog: () -> Unit,
+    onConfirmSongDelete: () -> Unit,
+    onHideSongDeleteDialog: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = LocalFeelinColors.current
@@ -153,6 +157,12 @@ fun NoteFormScreen(
         isVisible = uiState.isNoSongDialogVisible,
         onConfirmClick = onHideNoSongDialog,
     )
+
+    NoteFormSongDeleteDialog(
+        isVisible = uiState.isSongDeleteDialogVisible,
+        onConfirmClick = onConfirmSongDelete,
+        onDismissClick = onHideSongDeleteDialog,
+    )
 }
 
 @Preview(showBackground = true)
@@ -217,6 +227,8 @@ private fun NoteFormPreviewContent(uiState: NoteFormUiState) {
             onLyricsFocusChange = {},
             onShowNoSongDialog = {},
             onHideNoSongDialog = {},
+            onConfirmSongDelete = {},
+            onHideSongDeleteDialog = {},
         )
     }
 }

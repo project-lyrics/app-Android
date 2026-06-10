@@ -18,14 +18,14 @@ class LoginErrorTest {
     }
 
     @Test
-    fun oauthErrorKeepsOAuthFailureTypeAndCode() {
-        val error: LoginError = LoginError.OAuthError(
+    fun nonBackendErrorKeepsFailureTypeAndCode() {
+        val error: LoginError = LoginError.NonBackendError(
             type = LoginErrorType.OAUTH_CLIENT,
             code = "Cancelled",
         )
 
-        assertTrue(error is LoginError.OAuthError)
-        assertEquals(LoginErrorType.OAUTH_CLIENT, (error as LoginError.OAuthError).type)
+        assertTrue(error is LoginError.NonBackendError)
+        assertEquals(LoginErrorType.OAUTH_CLIENT, (error as LoginError.NonBackendError).type)
         assertEquals("Cancelled", error.code)
     }
 }

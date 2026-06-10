@@ -91,7 +91,7 @@ fun LoginScreen(
                     isDismissButtonEnable = false,
                 )
             }
-            is LoginError.OAuthError -> {
+            is LoginError.NonBackendError -> {
                 FeelinModalDialog(
                     title = "로그인 시도중 오류가 발생했어요.",
                     description = "에러코드 [-1]",

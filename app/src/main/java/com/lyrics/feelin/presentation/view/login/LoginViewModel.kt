@@ -30,7 +30,7 @@ sealed class LoginError {
         val code: String?,
     ) : LoginError()
 
-    data class OAuthError(
+    data class NonBackendError(
         val type: LoginErrorType,
         val code: String? = null,
     ) : LoginError()
@@ -95,7 +95,7 @@ class LoginViewModel @Inject constructor(
                     code = code,
                 )
             } else {
-                LoginError.OAuthError(
+                LoginError.NonBackendError(
                     type = type,
                     code = code,
                 )

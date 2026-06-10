@@ -9,6 +9,7 @@ sealed class FeelinDestination(
         private const val LOGIN_ROUTE = "login"
         private const val NOTE_DETAIL_ROUTE = "note_detail"
         private const val NOTE_ID_ARGUMENT = "noteId"
+        private const val ARTIST_ID_ARGUMENT = "artistId"
         private const val WEB_VIEW_URL_ARGUMENT = "url"
     }
 
@@ -39,6 +40,21 @@ sealed class FeelinDestination(
     object Home : FeelinDestination(route = "home")
     object NoteSearch : FeelinDestination(route = "note_search")
     object NoteSearchResult : FeelinDestination(route = "note_search_result")
+    object NoteFormCreate : FeelinDestination(route = "note_form/create")
+    object NoteFormEdit : FeelinDestination(route = "note_form/edit/{$NOTE_ID_ARGUMENT}") {
+        const val NoteIdArgument = NOTE_ID_ARGUMENT
+
+        fun createRoute(noteId: Long): String {
+            return "note_form/edit/$noteId"
+        }
+    }
+    object NoteFormSearchSong : FeelinDestination(route = "note_form/search_song/{$ARTIST_ID_ARGUMENT}") {
+        const val ArtistIdArgument = ARTIST_ID_ARGUMENT
+
+        fun createRoute(artistId: Long): String {
+            return "note_form/search_song/$artistId"
+        }
+    }
     object NoteDetail : FeelinDestination(route = "$NOTE_DETAIL_ROUTE/{$NOTE_ID_ARGUMENT}") {
         const val NoteIdArgument = NOTE_ID_ARGUMENT
 

@@ -260,11 +260,11 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/macos
 
-# 개인 프롬프트 파일
+# 개인 프롬프트 파일 (@gdaegeun539)
 .daegeun
 .daegeun/**
 
-# oh-my-openagent files
+# oh-my-openagent files (@gdaegeun539)
 .sisyphus
 .sisyphus/**
 .omo
@@ -273,3 +273,7 @@ Temporary Items
 # antigravity cli files
 .antigravitycli
 .antigravitycli/**
+
+# gajae-code working directory (@gdaegeun539)
+.gjc
+.gjc/**

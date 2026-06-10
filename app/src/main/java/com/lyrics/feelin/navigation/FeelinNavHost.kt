@@ -258,6 +258,7 @@ private fun NavHostController.navigateToMainGraph() {
     }
 }
 
+@Suppress("LongMethod")
 private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
     navigation(
         startDestination = FeelinDestination.HomeGraph.route,
@@ -272,6 +273,9 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                         onNoteClick = { noteId ->
                             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
                         },
+                        onNoteAddClick = {
+                            navController.navigate(FeelinDestination.NoteFormCreate.route)
+                        }
                     )
                 }
             }
@@ -316,6 +320,8 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                 onBackClick = { navController.popBackStack() },
             )
         }
+
+        noteFormNavGraph(navController)
 
         myPageNavGraph(navController)
     }

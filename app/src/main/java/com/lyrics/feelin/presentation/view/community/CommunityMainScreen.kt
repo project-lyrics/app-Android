@@ -4,6 +4,7 @@
 
 package com.lyrics.feelin.presentation.view.community
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -71,6 +72,7 @@ fun CommunityMainScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNoteClick: (Long) -> Unit = {},
+    onNoteAddClick: () -> Unit = {},
     viewModel: CommunityViewModel = viewModel()
 ) {
     val listState = rememberLazyListState()
@@ -130,9 +132,11 @@ fun CommunityMainScreen(
                 shape = CircleShape,
                 modifier = Modifier
                     .padding(bottom = 4.dp, end = 4.dp),
-                onClick = {},
+                onClick = {
+                    onNoteAddClick.invoke()
+                },
             ) {
-                androidx.compose.foundation.Image(
+                Image(
                     painter = painterResource(R.drawable.pencil),
                     modifier = Modifier.size(24.dp),
                     contentDescription = "write note",

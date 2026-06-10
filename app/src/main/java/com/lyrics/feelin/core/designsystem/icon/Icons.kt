@@ -120,3 +120,7 @@ val MeatballIcon: ImageVector
 val SubmitArrowIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.submit_arrow)
+
+val ImageGalleryIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.image_gallery)

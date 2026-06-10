@@ -52,7 +52,11 @@ fun FeelinModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         containerColor = feelinColors.modal,
-        dragHandle = { if (showDragHandle) FeelinDragHandle() },
+        dragHandle = if (showDragHandle) {
+            { FeelinDragHandle() }
+        } else {
+            null
+        },
         modifier = modifier
     ) {
         Column(

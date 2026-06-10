@@ -124,4 +124,3 @@ val SubmitArrowIcon: ImageVector
 val ImageGalleryIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.image_gallery)
-

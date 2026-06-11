@@ -14,10 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +31,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinNicknameInputField
+import com.lyrics.feelin.core.designsystem.component.FeelinNormalButton
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.core.designsystem.component.NicknameValidationResult
 import com.lyrics.feelin.core.designsystem.component.ProfileCharacter
@@ -126,7 +124,7 @@ fun EditProfileScreen(
 
             Spacer(modifier = Modifier.weight(1f))
 
-            CompleteButton(
+            FeelinNormalButton(
                 text = "프로필 저장",
                 enabled = isNicknameValid && hasChanges,
                 onClick = {
@@ -210,28 +208,6 @@ private fun ProfileImageSelectorWithEdit(
                 modifier = Modifier.size(24.dp)
             )
         }
-    }
-}
-
-@Composable
-private fun CompleteButton(text: String, enabled: Boolean, onClick: () -> Unit) {
-    Button(
-        onClick = onClick,
-        enabled = enabled,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(
-            containerColor = LocalFeelinColors.current.systemActivate,
-            disabledContainerColor = LocalFeelinColors.current.systemDisable
-        )
-    ) {
-        Text(
-            text = text,
-            style = FeelinTypography.title2,
-            color = LocalFeelinColors.current.gray00
-        )
     }
 }
 

@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 private const val TAG = "LoginViewModel"
+private const val DEFAULT_LOGIN_ERROR_DESCRIPTION = "로그인 시도중 오류가 발생했어요."
 
 enum class LoginErrorType {
     OAUTH_CLIENT,
@@ -23,13 +24,17 @@ enum class LoginErrorType {
     UNKNOWN,
 }
 
-data class LoginError(
-    val type: LoginErrorType,
-    /** 에러 설명, 자체 서버에서 받는 에러에만 존재 */
-    val description: String? = null,
-    /** 에러 코드, 자체 서버에서 받는 에러에만 존재 */
-    val code: String? = null,
-)
+sealed class LoginError {
+    data class BackendError(
+        val description: String,
+        val code: String?,
+    ) : LoginError()
+
+    data class NonBackendError(
+        val type: LoginErrorType,
+        val code: String? = null,
+    ) : LoginError()
+}
 
 sealed interface LoginUiState {
     data object Idle : LoginUiState
@@ -84,11 +89,17 @@ class LoginViewModel @Inject constructor(
 
     fun updateLoginError(type: LoginErrorType, message: String? = null, code: String? = null) {
         _loginUiState.value = LoginUiState.Error(
-            error = LoginError(
-                type = type,
-                description = message,
-                code = code,
-            )
+            error = if (type == LoginErrorType.BACKEND_SERVER) {
+                LoginError.BackendError(
+                    description = message ?: DEFAULT_LOGIN_ERROR_DESCRIPTION,
+                    code = code,
+                )
+            } else {
+                LoginError.NonBackendError(
+                    type = type,
+                    code = code,
+                )
+            }
         )
     }
 

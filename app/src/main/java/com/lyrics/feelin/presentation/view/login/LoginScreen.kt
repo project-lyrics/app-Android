@@ -78,30 +78,30 @@ fun LoginScreen(
     }
 
     if (loginUiState is LoginUiState.Error) {
-        if ((loginUiState as LoginUiState.Error).error.type == LoginErrorType.BACKEND_SERVER) {
-            val title = (loginUiState as LoginUiState.Error).error.description
-                ?: "로그인 시도중 오류가 발생했어요."
-            val code = (loginUiState as LoginUiState.Error).error.code
-            // MARK(@이대근): 추후 통합된 서버 에러 다이얼로그로 변경 2026.03.15.
-            FeelinModalDialog(
-                title = title,
-                description = "에러코드 [$code]",
-                confirmButtonText = "확인",
-                onConfirmButtonClick = {
-                    loginViewModel.clearLoginUiState()
-                },
-                isDismissButtonEnable = false,
-            )
-        } else {
-            FeelinModalDialog(
-                title = "로그인 시도중 오류가 발생했어요.",
-                description = "에러코드 [-1]",
-                confirmButtonText = "확인",
-                onConfirmButtonClick = {
-                    loginViewModel.clearLoginUiState()
-                },
-                isDismissButtonEnable = false,
-            )
+        when (val error = (loginUiState as LoginUiState.Error).error) {
+            is LoginError.BackendError -> {
+                // MARK(@이대근): 추후 통합된 서버 에러 다이얼로그로 변경 2026.03.15.
+                FeelinModalDialog(
+                    title = error.description,
+                    description = "에러코드 [${error.code}]",
+                    confirmButtonText = "확인",
+                    onConfirmButtonClick = {
+                        loginViewModel.clearLoginUiState()
+                    },
+                    isDismissButtonEnable = false,
+                )
+            }
+            is LoginError.NonBackendError -> {
+                FeelinModalDialog(
+                    title = "로그인 시도중 오류가 발생했어요.",
+                    description = "에러코드 [-1]",
+                    confirmButtonText = "확인",
+                    onConfirmButtonClick = {
+                        loginViewModel.clearLoginUiState()
+                    },
+                    isDismissButtonEnable = false,
+                )
+            }
         }
     }
 

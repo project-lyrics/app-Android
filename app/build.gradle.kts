@@ -19,17 +19,31 @@ val localProperties = Properties().apply {
     }
 }
 
-// 로컬은 local.properties를 우선 사용하고, CI는 env로 폴백하되 둘 다 없으면 즉시 실패한다.
-val kakaoNativeAppKey = localProperties
-    .getProperty("kakao.native.app.key.dev")
-    .orEmpty()
-    .ifBlank { System.getenv("KAKAO_NATIVE_APP_KEY_DEV").orEmpty() }
-    .ifBlank {
+fun requestedTasksContainFlavor(flavorName: String): Boolean {
+    return gradle.startParameter.taskNames.any { taskName ->
+        taskName.contains(flavorName, ignoreCase = true)
+    }
+}
+
+fun kakaoNativeAppKey(
+    flavorName: String,
+    propertyName: String,
+    environmentName: String
+): String {
+    val key = localProperties
+        .getProperty(propertyName)
+        .orEmpty()
+        .ifBlank { System.getenv(environmentName).orEmpty() }
+
+    if (key.isBlank() && requestedTasksContainFlavor(flavorName)) {
         error(
-            "Missing Kakao native app key. Set 'kakao.native.app.key.dev' in local.properties " +
-                "or KAKAO_NATIVE_APP_KEY_DEV in the environment."
+            "Missing Kakao native app key for $flavorName. " +
+                "Set '$propertyName' in local.properties or $environmentName in the environment."
         )
     }
+
+    return key
+}
 
 android {
     namespace = "com.lyrics.feelin"
@@ -43,12 +57,49 @@ android {
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
 
-        // Application 클래스에서 사용할 BuildConfig 생성
-        buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoNativeAppKey\"")
+    flavorDimensions += "environment"
 
-        // AndroidManifest.xml에서 사용할 placeholder
-        manifestPlaceholders["kakaoNativeAppKey"] = kakaoNativeAppKey
+    productFlavors {
+        create("dev") {
+            dimension = "environment"
+            applicationId = "com.lyrics.feelin.dev"
+            val kakaoKey = kakaoNativeAppKey(
+                flavorName = name,
+                propertyName = "kakao.native.app.key.dev",
+                environmentName = "KAKAO_NATIVE_APP_KEY_DEV"
+            )
+            buildConfigField("String", "BASE_URL", "\"http://dev.feelinapp.com/\"")
+            buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoKey\"")
+            manifestPlaceholders["kakaoNativeAppKey"] = kakaoKey
+        }
+
+        create("staging") {
+            dimension = "environment"
+            applicationId = "com.lyrics.feelin.qa"
+            val kakaoKey = kakaoNativeAppKey(
+                flavorName = name,
+                propertyName = "kakao.native.app.key.staging",
+                environmentName = "KAKAO_NATIVE_APP_KEY_STAGING"
+            )
+            buildConfigField("String", "BASE_URL", "\"http://dev.feelinapp.com/\"")
+            buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoKey\"")
+            manifestPlaceholders["kakaoNativeAppKey"] = kakaoKey
+        }
+
+        // MARK(@이대근): prod용 사이닝 키를 추후 생성 필요 2026.06.11.
+        create("prod") {
+            dimension = "environment"
+            val kakaoKey = kakaoNativeAppKey(
+                flavorName = name,
+                propertyName = "kakao.native.app.key.prod",
+                environmentName = "KAKAO_NATIVE_APP_KEY_PROD"
+            )
+            buildConfigField("String", "BASE_URL", "\"http://api.feelinapp.com/\"")
+            buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoKey\"")
+            manifestPlaceholders["kakaoNativeAppKey"] = kakaoKey
+        }
     }
 
     buildTypes {

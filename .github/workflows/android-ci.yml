@@ -12,6 +12,7 @@ permissions:
 env:
   # PR CI는 compile/build 체크만 하므로, fork PR에서는 dummy 값으로도 통과 가능하게 둔다.
   KAKAO_NATIVE_APP_KEY_DEV: ${{ secrets.KAKAO_NATIVE_APP_KEY_DEV || 'dummy-ci-kakao-key' }}
+  KAKAO_NATIVE_APP_KEY_STAGING: ${{ secrets.KAKAO_NATIVE_APP_KEY_STAGING }}
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -74,5 +75,13 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build (assembleDebug, only compile check)
-        run: ./gradlew :app:assembleDebug --no-daemon --stacktrace
+      - name: Build dev debug
+        run: ./gradlew :app:assembleDevDebug --no-daemon --stacktrace
+
+      - name: Build staging debug
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: ./gradlew :app:assembleStagingDebug --no-daemon --stacktrace
+
+      - name: Build staging release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: ./gradlew :app:assembleStagingRelease --no-daemon --stacktrace

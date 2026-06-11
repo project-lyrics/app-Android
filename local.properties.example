@@ -1,0 +1,4 @@
+sdk.dir=YOUR_ANDROID_SDK_DIR_WILL_BE_AUTOMATICALLY_CREATED
+kakao.native.app.key.dev=KAKAO_DEV_NATIVE_APP_KEY_HERE
+kakao.native.app.key.staging=KAKAO_QA_NATIVE_APP_KEY_HERE
+kakao.native.app.key.prod=KAKAO_PROD_NATIVE_APP_KEY_HERE

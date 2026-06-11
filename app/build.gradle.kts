@@ -1,5 +1,5 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import java.util.Properties
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.android.application)
@@ -19,10 +19,40 @@ val localProperties = Properties().apply {
     }
 }
 
-fun requestedTasksContainFlavor(flavorName: String): Boolean {
+fun requestedTasksMentionFlavor(flavorName: String): Boolean {
+    val flavorVariantPattern = Regex(".*$flavorName(debug|release|$).*", RegexOption.IGNORE_CASE)
+
     return gradle.startParameter.taskNames.any { taskName ->
-        taskName.contains(flavorName, ignoreCase = true)
+        flavorVariantPattern.matches(taskName.substringAfterLast(":"))
     }
+}
+
+fun requestedTasksIncludeAggregateBuild(): Boolean {
+    val flavors = listOf("dev", "staging", "prod")
+    val aggregateTaskNames = setOf("assemble", "build", "check", "test", "bundle", "install")
+    val aggregateVariantTaskPattern = Regex(
+        pattern = "(assemble|bundle|install)(debug|release)?|" +
+            "test(debug|release)?(unittest)?|" +
+            "connected(debug|release)?androidtest",
+        option = RegexOption.IGNORE_CASE
+    )
+
+    return gradle.startParameter.taskNames.any { taskName ->
+        val simpleTaskName = taskName.substringAfterLast(":")
+        val hasFlavor = flavors.any { flavor ->
+            Regex(".*$flavor(debug|release|$).*", RegexOption.IGNORE_CASE).matches(simpleTaskName)
+        }
+
+        !hasFlavor &&
+            (
+                simpleTaskName.lowercase() in aggregateTaskNames ||
+                    aggregateVariantTaskPattern.matches(simpleTaskName)
+                )
+    }
+}
+
+fun shouldRequireKakaoNativeAppKey(flavorName: String): Boolean {
+    return requestedTasksMentionFlavor(flavorName) || requestedTasksIncludeAggregateBuild()
 }
 
 fun kakaoNativeAppKey(
@@ -35,7 +65,7 @@ fun kakaoNativeAppKey(
         .orEmpty()
         .ifBlank { System.getenv(environmentName).orEmpty() }
 
-    if (key.isBlank() && requestedTasksContainFlavor(flavorName)) {
+    if (key.isBlank() && shouldRequireKakaoNativeAppKey(flavorName)) {
         error(
             "Missing Kakao native app key for $flavorName. " +
                 "Set '$propertyName' in local.properties or $environmentName in the environment."

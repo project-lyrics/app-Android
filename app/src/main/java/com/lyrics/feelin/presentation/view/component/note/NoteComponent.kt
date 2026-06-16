@@ -44,6 +44,8 @@ fun NoteComponent(
     noteData: NoteComponentData,
     modifier: Modifier = Modifier,
     onClick: ((NoteComponentData) -> Unit)? = null,
+    onLikeClick: ((NoteComponentData) -> Unit)? = null,
+    onBookmarkClick: ((NoteComponentData) -> Unit)? = null,
 ) {
     val feelinColors = LocalFeelinColors.current
 
@@ -132,7 +134,16 @@ fun NoteComponent(
                         }
                     ),
                     contentDescription = "note like icon",
-                    modifier = Modifier.size(24.dp).padding(end = 4.dp),
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(end = 4.dp)
+                        .then(
+                            if (onLikeClick != null) {
+                                Modifier.clickable { onLikeClick(noteData) }
+                            } else {
+                                Modifier
+                            }
+                        ),
                     colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked },
                 )
                 Text(
@@ -162,7 +173,15 @@ fun NoteComponent(
                 ),
                 contentDescription =
                 "note is ${if (noteData.isBookmarked) "" else "not "}bookmarked",
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .then(
+                        if (onBookmarkClick != null) {
+                            Modifier.clickable { onBookmarkClick(noteData) }
+                        } else {
+                            Modifier
+                        }
+                    ),
                 colorFilter = ColorFilter.tint(feelinColors.gray03).takeUnless { noteData.isLiked }
             )
         }

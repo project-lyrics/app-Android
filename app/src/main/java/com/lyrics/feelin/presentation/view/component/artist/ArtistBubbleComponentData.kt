@@ -16,6 +16,7 @@ sealed interface ArtistBubbleComponentData {
     data class HomeFavoriteArtistType(
         override val name: String,
         val imageUrl: String,
+        val id: Long? = null,
     ) : ArtistBubbleComponentData
 
     /** 홈 화면 아티스트 선택 버튼*/

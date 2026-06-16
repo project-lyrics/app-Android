@@ -37,6 +37,10 @@ val NotificationIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.ic_notification)
 
+val NotificationWithBadgeIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.notification_light_badge_on)
+
 val FeelinTextIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.feelin_text_logo)

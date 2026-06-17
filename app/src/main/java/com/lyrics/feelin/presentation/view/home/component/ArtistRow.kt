@@ -26,10 +26,10 @@ import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponen
 @Composable
 fun ArtistRow(
     artists: List<ArtistBubbleComponentData>,
-    modifier: Modifier = Modifier,
     onArtistClick: (Long) -> Unit,
     onShowAllArtistsClick: () -> Unit,
     onFindArtistsClick: () -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
 

@@ -267,9 +267,27 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         navigation(startDestination = FeelinDestination.Home.route, route = FeelinDestination.HomeGraph.route) {
             composable(FeelinDestination.Home.route) {
                 MainScaffold(navController = navController, selectedIndex = 0) {
+                    HomeRoute(navController = navController)
+                }
+            }
+
+            composable(
+                route = FeelinDestination.ArtistRecord.route,
+                arguments = listOf(
+                    navArgument(FeelinDestination.ArtistRecord.ArtistIdArgument) {
+                        type = NavType.LongType
+                    }
+                )
+            ) { backStackEntry ->
+                val arguments = backStackEntry.arguments
+                val artistId = arguments?.getLong(
+                    FeelinDestination.ArtistRecord.ArtistIdArgument
+                ) ?: return@composable
+
+                MainScaffold(navController = navController, selectedIndex = 0) {
                     CommunityMainScreen(
-                        artistName = "필릭스",
-                        onBack = {},
+                        artistName = "아티스트 $artistId",
+                        onBack = { navController.popBackStack() },
                         onNoteClick = { noteId ->
                             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
                         },

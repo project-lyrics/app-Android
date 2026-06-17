@@ -38,6 +38,13 @@ sealed class FeelinDestination(
 
     // Main Flow (with Bottom Navigation)
     object Home : FeelinDestination(route = "home")
+    object ArtistRecord : FeelinDestination(route = "artist_record/{$ARTIST_ID_ARGUMENT}") {
+        const val ArtistIdArgument = ARTIST_ID_ARGUMENT
+
+        fun createRoute(artistId: Long): String {
+            return "artist_record/$artistId"
+        }
+    }
     object NoteSearch : FeelinDestination(route = "note_search")
     object NoteSearchResult : FeelinDestination(route = "note_search_result")
     object NoteFormCreate : FeelinDestination(route = "note_form/create")

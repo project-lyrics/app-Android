@@ -53,7 +53,7 @@ import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.core.designsystem.icon.EmptyImageDarkIcon
 import com.lyrics.feelin.core.designsystem.icon.EmptyImageLightIcon
-import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
+import com.lyrics.feelin.core.designsystem.icon.NotificationIconLight
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.core.domain.model.ProfileType
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -103,7 +103,7 @@ fun MyPageScreen(
                         onClick = onSettingClick
                     )
                     TopBarIconButton(
-                        imageVector = NotificationIcon,
+                        imageVector = NotificationIconLight,
                         contentDescription = "알림",
                         tint = feelinColors.gray09,
                         onClick = {}

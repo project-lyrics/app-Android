@@ -22,17 +22,21 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class HomeViewModel @Inject constructor() : ViewModel() {
 
-    private val _uiState = MutableStateFlow(HomeUiState())
+    private val _uiState = MutableStateFlow(correctForLegacyMode(HomeUiState()))
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
     // TODO(@이대근): 실연동시 삭제 및 테스트코드 수정 2026.06.17.
     // 테스트에서 에러 경로를 검증하기 위한 스위치이며, 프로덕션 주입 생성자와는 분리되어 있다.
     private var shouldFailLoading = false
 
-    internal constructor(shouldFailLoading: Boolean, initialLegacyMode: Boolean = false) : this() {
+    internal constructor(shouldFailLoading: Boolean, initialLegacyMode: Boolean = true) : this() {
         this.shouldFailLoading = shouldFailLoading
         _uiState.update { state ->
-            correctForLegacyMode(state.copy(legacyMode = initialLegacyMode))
+            if (initialLegacyMode) {
+                correctForLegacyMode(state.copy(legacyMode = true))
+            } else {
+                HomeUiState(legacyMode = false)
+            }
         }
     }
 
@@ -265,7 +269,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
 
         internal fun createForTest(
             shouldFailLoading: Boolean = false,
-            initialLegacyMode: Boolean = false,
+            initialLegacyMode: Boolean = true,
         ): HomeViewModel {
             return HomeViewModel(
                 shouldFailLoading = shouldFailLoading,

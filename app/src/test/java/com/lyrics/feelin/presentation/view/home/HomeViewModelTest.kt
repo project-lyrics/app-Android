@@ -30,7 +30,7 @@ class HomeViewModelTest {
 
     @Before
     fun setUp() {
-        viewModel = HomeViewModel()
+        viewModel = HomeViewModel.createForTest(initialLegacyMode = false)
     }
 
     @After
@@ -53,7 +53,7 @@ class HomeViewModelTest {
     }
 
     @Test
-    fun defaultModeLoadKeepsFeedWholeFilter() = runTest {
+    fun currentModeLoadKeepsFeedWholeFilter() = runTest {
         viewModel.loadHomeData()
         advanceUntilIdle()
 
@@ -61,6 +61,23 @@ class HomeViewModelTest {
 
         assertFalse(state.legacyMode)
         assertEquals(FeedTab.FEED, state.selectedTab)
+        assertEquals("전체", state.currentTabState.selectedFilter?.name)
+    }
+
+    @Test
+    fun defaultViewModelStartsInLegacyMode() = runTest {
+        val defaultViewModel = HomeViewModel()
+
+        assertTrue(defaultViewModel.uiState.value.legacyMode)
+        assertEquals(FeedTab.ARTISTS, defaultViewModel.uiState.value.selectedTab)
+
+        defaultViewModel.loadHomeData()
+        advanceUntilIdle()
+
+        val state = defaultViewModel.uiState.value
+
+        assertTrue(state.legacyMode)
+        assertEquals(FeedTab.ARTISTS, state.selectedTab)
         assertEquals("전체", state.currentTabState.selectedFilter?.name)
     }
 

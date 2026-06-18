@@ -47,40 +47,42 @@ fun FeedSection(
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        FeelinTabRow(
-            selectedTabIndex = uiState.selectedTab.ordinal,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            FeelinTab(
-                selected = uiState.selectedTab == FeedTab.FEED,
-                onClick = { onTabClick(FeedTab.FEED) },
-                text = { Text("피드") }
-            )
-            FeelinTab(
-                selected = uiState.selectedTab == FeedTab.ARTISTS,
-                onClick = { onTabClick(FeedTab.ARTISTS) },
-                text = { Text("관심 아티스트") }
-            )
-        }
-
-        Spacer(modifier = Modifier.height(20.dp))
-
-        if (currentTabState.filters.isNotEmpty()) {
-            LazyRow(
-                modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(horizontal = 20.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+        if (!uiState.legacyMode) {
+            FeelinTabRow(
+                selectedTabIndex = uiState.selectedTab.ordinal,
+                modifier = Modifier.fillMaxWidth()
             ) {
-                items(currentTabState.filters) { filter ->
-                    // MARK(@이대근): 담고 있는 데이터의 형태가 달라 같은 FliterButton을 유지할지 결정 필요
-                    FilterButton(
-                        data = filter,
-                        isSelect = currentTabState.selectedFilter?.id == filter.id,
-                        onClick = { onFilterClick(filter) }
-                    )
-                }
+                FeelinTab(
+                    selected = uiState.selectedTab == FeedTab.FEED,
+                    onClick = { onTabClick(FeedTab.FEED) },
+                    text = { Text("피드") }
+                )
+                FeelinTab(
+                    selected = uiState.selectedTab == FeedTab.ARTISTS,
+                    onClick = { onTabClick(FeedTab.ARTISTS) },
+                    text = { Text("관심 아티스트") }
+                )
             }
-            Spacer(modifier = Modifier.height(16.dp))
+
+            Spacer(modifier = Modifier.height(20.dp))
+
+            if (currentTabState.filters.isNotEmpty()) {
+                LazyRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(currentTabState.filters) { filter ->
+                        // MARK(@이대근): 담고 있는 데이터의 형태가 달라 같은 FliterButton을 유지할지 결정 필요
+                        FilterButton(
+                            data = filter,
+                            isSelect = currentTabState.selectedFilter?.id == filter.id,
+                            onClick = { onFilterClick(filter) }
+                        )
+                    }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
 
         if (currentTabState.notes.isEmpty()) {

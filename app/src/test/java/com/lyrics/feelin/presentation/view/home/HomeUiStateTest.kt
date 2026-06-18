@@ -15,6 +15,7 @@ class HomeUiStateTest {
         val state = HomeUiState()
 
         assertEquals(FeedTab.FEED, state.selectedTab)
+        assertEquals(false, state.legacyMode)
     }
 
     @Test

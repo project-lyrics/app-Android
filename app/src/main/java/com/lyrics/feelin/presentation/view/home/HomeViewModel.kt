@@ -29,8 +29,17 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     // 테스트에서 에러 경로를 검증하기 위한 스위치이며, 프로덕션 주입 생성자와는 분리되어 있다.
     private var shouldFailLoading = false
 
-    internal constructor(shouldFailLoading: Boolean) : this() {
+    internal constructor(shouldFailLoading: Boolean, initialLegacyMode: Boolean = false) : this() {
         this.shouldFailLoading = shouldFailLoading
+        _uiState.update { state ->
+            correctForLegacyMode(state.copy(legacyMode = initialLegacyMode))
+        }
+    }
+
+    internal fun setLegacyModeForTest(legacyMode: Boolean) {
+        _uiState.update { state ->
+            correctForLegacyMode(state.copy(legacyMode = legacyMode))
+        }
     }
 
     // 최초 진입 시 배너, 관심 아티스트, 그리고 모든 탭의 피드 상태를 한 번에 받아온다.
@@ -50,10 +59,13 @@ class HomeViewModel @Inject constructor() : ViewModel() {
                 createLoadedState()
             }.onSuccess { loadedState ->
                 _uiState.update { currentState ->
-                    loadedState.copy(
-                        selectedTab = currentState.selectedTab,
-                        isInitialLoading = false,
-                        isRefreshing = false,
+                    correctForLegacyMode(
+                        loadedState.copy(
+                            selectedTab = currentState.selectedTab,
+                            legacyMode = currentState.legacyMode,
+                            isInitialLoading = false,
+                            isRefreshing = false,
+                        )
                     )
                 }
             }.onFailure {
@@ -74,7 +86,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         val selectedFilter = _uiState.value.currentTabState.selectedFilter
 
         _uiState.update { state ->
-            state.copy(isRefreshing = true, errorMessage = null)
+            correctForLegacyMode(state.copy(isRefreshing = true, errorMessage = null))
         }
 
         viewModelScope.launch {
@@ -96,16 +108,22 @@ class HomeViewModel @Inject constructor() : ViewModel() {
     }
 
     fun selectTab(tab: FeedTab) {
-        _uiState.update { state -> state.copy(selectedTab = tab) }
+        _uiState.update { state -> correctForLegacyMode(state.copy(selectedTab = tab)) }
     }
 
     // 필터가 바뀌면 기존 노트를 즉시 비우고, 선택한 필터의 첫 페이지를 새로 요청한다.
     fun selectFilter(filter: FilterButtonData) {
-        val selectedTab = _uiState.value.selectedTab
+        val currentState = _uiState.value
+        val selectedTab = if (currentState.legacyMode) FeedTab.ARTISTS else currentState.selectedTab
+        val selectedFilter = if (currentState.legacyMode) {
+            currentState.tabStates.getValue(FeedTab.ARTISTS).wholeFilter()
+        } else {
+            filter
+        }
 
         updateCurrentTabState { tabState ->
             tabState.copy(
-                selectedFilter = filter,
+                selectedFilter = selectedFilter,
                 notes = emptyList(),
                 isLoading = true,
             )
@@ -116,7 +134,7 @@ class HomeViewModel @Inject constructor() : ViewModel() {
             delay(LOAD_DELAY_MS.milliseconds)
             updateTabState(
                 tab = selectedTab,
-                tabState = createTabState(tab = selectedTab, selectedFilter = filter),
+                tabState = createTabState(tab = selectedTab, selectedFilter = selectedFilter),
             )
         }
     }
@@ -192,14 +210,33 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         )
     }
 
+    private fun FeedTabState.wholeFilter(): FilterButtonData? {
+        return filters.firstOrNull { filter -> filter.name == WHOLE_FILTER_NAME }
+            ?: filters.firstOrNull()
+    }
+
+    private fun correctForLegacyMode(state: HomeUiState): HomeUiState {
+        if (!state.legacyMode) return state
+
+        val artistTabState = state.tabStates.getValue(FeedTab.ARTISTS)
+        val correctedArtistTabState = artistTabState.copy(selectedFilter = artistTabState.wholeFilter())
+
+        return state.copy(
+            selectedTab = FeedTab.ARTISTS,
+            tabStates = state.tabStates.plus(FeedTab.ARTISTS to correctedArtistTabState)
+        )
+    }
+
     // 현재 선택된 탭의 상태만 변경하고, 다른 탭의 필터/노트/페이징 상태는 그대로 보존한다.
     private fun updateCurrentTabState(transform: (FeedTabState) -> FeedTabState) {
         val selectedTab = _uiState.value.selectedTab
 
         _uiState.update { state ->
-            state.copy(
-                tabStates = state.tabStates.plus(
-                    selectedTab to transform(state.tabStates.getValue(selectedTab))
+            correctForLegacyMode(
+                state.copy(
+                    tabStates = state.tabStates.plus(
+                        selectedTab to transform(state.tabStates.getValue(selectedTab))
+                    )
                 )
             )
         }
@@ -211,8 +248,10 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         transform: (HomeUiState) -> HomeUiState = { it },
     ) {
         _uiState.update { state ->
-            transform(
-                state.copy(tabStates = state.tabStates.plus(tab to tabState))
+            correctForLegacyMode(
+                transform(
+                    state.copy(tabStates = state.tabStates.plus(tab to tabState))
+                )
             )
         }
     }
@@ -221,8 +260,18 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         private const val LOAD_DELAY_MS = 500L
         private const val LOAD_FAILURE_MESSAGE = "홈 데이터를 불러오지 못했어요."
         private const val LIKE_COUNT_DELTA = 1
+        private const val WHOLE_FILTER_NAME = "전체"
         private const val MIN_LIKE_COUNT = 0
 
+        internal fun createForTest(
+            shouldFailLoading: Boolean = false,
+            initialLegacyMode: Boolean = false,
+        ): HomeViewModel {
+            return HomeViewModel(
+                shouldFailLoading = shouldFailLoading,
+                initialLegacyMode = initialLegacyMode,
+            )
+        }
         private fun mockArtists(): List<ArtistBubbleComponentData> {
             return listOf(
                 ArtistBubbleComponentData.HomeFavoriteSearchType(name = "찾아보기"),

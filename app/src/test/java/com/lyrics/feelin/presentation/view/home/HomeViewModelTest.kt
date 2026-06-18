@@ -53,6 +53,36 @@ class HomeViewModelTest {
     }
 
     @Test
+    fun defaultModeLoadKeepsFeedWholeFilter() = runTest {
+        viewModel.loadHomeData()
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+
+        assertFalse(state.legacyMode)
+        assertEquals(FeedTab.FEED, state.selectedTab)
+        assertEquals("전체", state.currentTabState.selectedFilter?.name)
+    }
+
+    @Test
+    fun legacyModeInitialAndLoadForceArtistsWholeFilter() = runTest {
+        val legacyViewModel = HomeViewModel.createForTest(initialLegacyMode = true)
+
+        assertTrue(legacyViewModel.uiState.value.legacyMode)
+        assertEquals(FeedTab.ARTISTS, legacyViewModel.uiState.value.selectedTab)
+
+        legacyViewModel.loadHomeData()
+        advanceUntilIdle()
+
+        val state = legacyViewModel.uiState.value
+
+        assertTrue(state.legacyMode)
+        assertEquals(FeedTab.ARTISTS, state.selectedTab)
+        assertEquals("전체", state.currentTabState.selectedFilter?.name)
+        assertEquals(state.currentTabState.filters.first(), state.currentTabState.selectedFilter)
+    }
+
+    @Test
     fun selectTabKeepsExistingFilter() = runTest {
         viewModel.loadHomeData()
         advanceUntilIdle()
@@ -114,6 +144,98 @@ class HomeViewModelTest {
         assertTrue(viewModel.uiState.value.isRefreshing)
         advanceUntilIdle()
         assertFalse(viewModel.uiState.value.isRefreshing)
+    }
+
+    @Test
+    fun legacyModeRefreshKeepsArtistsWholeFilter() = runTest {
+        val legacyViewModel = HomeViewModel.createForTest(initialLegacyMode = true)
+        legacyViewModel.loadHomeData()
+        advanceUntilIdle()
+
+        legacyViewModel.refresh()
+        advanceUntilIdle()
+
+        val state = legacyViewModel.uiState.value
+
+        assertEquals(FeedTab.ARTISTS, state.selectedTab)
+        assertEquals("전체", state.currentTabState.selectedFilter?.name)
+        assertEquals(state.currentTabState.filters.first(), state.currentTabState.selectedFilter)
+        assertFalse(state.isRefreshing)
+    }
+
+    @Test
+    fun legacyModeSelectTabReturnsToArtists() = runTest {
+        val legacyViewModel = HomeViewModel.createForTest(initialLegacyMode = true)
+        legacyViewModel.loadHomeData()
+        advanceUntilIdle()
+
+        legacyViewModel.selectTab(FeedTab.FEED)
+
+        assertEquals(FeedTab.ARTISTS, legacyViewModel.uiState.value.selectedTab)
+        assertEquals(
+            legacyViewModel.uiState.value.currentTabState.filters.first(),
+            legacyViewModel.uiState.value.currentTabState.selectedFilter,
+        )
+        assertEquals("전체", legacyViewModel.uiState.value.currentTabState.selectedFilter?.name)
+    }
+
+    @Test
+    fun legacyModeSelectFilterKeepsArtistsWholeFilterImmediatelyAndAfterLoad() = runTest {
+        val legacyViewModel = HomeViewModel.createForTest(initialLegacyMode = true)
+        legacyViewModel.loadHomeData()
+        advanceUntilIdle()
+        val nextFilter = legacyViewModel.uiState.value.currentTabState.filters[1]
+
+        legacyViewModel.selectFilter(nextFilter)
+
+        assertEquals(FeedTab.ARTISTS, legacyViewModel.uiState.value.selectedTab)
+        assertEquals("전체", legacyViewModel.uiState.value.currentTabState.selectedFilter?.name)
+        assertEquals(
+            legacyViewModel.uiState.value.currentTabState.filters.first(),
+            legacyViewModel.uiState.value.currentTabState.selectedFilter,
+        )
+        assertTrue(legacyViewModel.uiState.value.currentTabState.notes.isEmpty())
+
+        advanceUntilIdle()
+
+        assertEquals(FeedTab.ARTISTS, legacyViewModel.uiState.value.selectedTab)
+        assertEquals("전체", legacyViewModel.uiState.value.currentTabState.selectedFilter?.name)
+        assertEquals(
+            legacyViewModel.uiState.value.currentTabState.filters.first(),
+            legacyViewModel.uiState.value.currentTabState.selectedFilter,
+        )
+        assertTrue(
+            legacyViewModel.uiState.value.currentTabState.notes.all { note ->
+                note.content.startsWith("전체")
+            }
+        )
+        assertTrue(legacyViewModel.uiState.value.currentTabState.notes.isNotEmpty())
+    }
+
+    @Test
+    fun legacyModeTransitionToCurrentModeStartsFromArtistsThenAllowsSelection() = runTest {
+        val legacyViewModel = HomeViewModel.createForTest(initialLegacyMode = true)
+        legacyViewModel.loadHomeData()
+        advanceUntilIdle()
+
+        legacyViewModel.setLegacyModeForTest(false)
+
+        assertFalse(legacyViewModel.uiState.value.legacyMode)
+        assertEquals(FeedTab.ARTISTS, legacyViewModel.uiState.value.selectedTab)
+        assertEquals("전체", legacyViewModel.uiState.value.currentTabState.selectedFilter?.name)
+        assertEquals(
+            legacyViewModel.uiState.value.currentTabState.filters.first(),
+            legacyViewModel.uiState.value.currentTabState.selectedFilter,
+        )
+
+        legacyViewModel.selectTab(FeedTab.FEED)
+
+        assertEquals(FeedTab.FEED, legacyViewModel.uiState.value.selectedTab)
+
+        val nextFilter = legacyViewModel.uiState.value.currentTabState.filters[1]
+        legacyViewModel.selectFilter(nextFilter)
+
+        assertEquals(nextFilter, legacyViewModel.uiState.value.currentTabState.selectedFilter)
     }
 
     @Test

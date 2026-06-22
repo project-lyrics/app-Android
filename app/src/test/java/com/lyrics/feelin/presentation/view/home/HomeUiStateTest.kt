@@ -4,7 +4,6 @@ import com.lyrics.feelin.core.designsystem.component.FilterButtonData
 import com.lyrics.feelin.presentation.view.home.component.FeedTab
 import com.lyrics.feelin.presentation.view.home.component.FeedTabState
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -45,8 +44,9 @@ class HomeUiStateTest {
 
     @Test
     fun errorStateExposesMessage() {
-        val state = HomeUiState(errorMessage = "홈 피드를 불러오지 못했어요.")
+        val expected = "홈 피드를 불러오지 못했어요."
+        val state = HomeUiState(errorMessage = expected)
 
-        assertNotNull(state.errorMessage)
+        assertEquals(expected, state.errorMessage)
     }
 }

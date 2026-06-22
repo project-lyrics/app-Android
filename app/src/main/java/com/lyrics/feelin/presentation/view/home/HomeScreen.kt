@@ -36,8 +36,8 @@ import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponen
 import com.lyrics.feelin.presentation.view.home.component.ArtistRow
 import com.lyrics.feelin.presentation.view.home.component.BannerSection
 import com.lyrics.feelin.presentation.view.home.component.DummyBannerSection
-import com.lyrics.feelin.presentation.view.home.component.FeedSection
 import com.lyrics.feelin.presentation.view.home.component.HomeHeader
+import com.lyrics.feelin.presentation.view.home.component.feedSection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -150,16 +150,14 @@ fun HomeScreen(
                             )
                         }
 
-                        item {
-                            FeedSection(
-                                uiState = uiState,
-                                onTabClick = viewModel::selectTab,
-                                onFilterClick = viewModel::selectFilter,
-                                onNoteClick = onNoteClick,
-                                onNoteLikeClick = viewModel::toggleLike,
-                                onNoteBookmarkClick = viewModel::toggleBookmark
-                            )
-                        }
+                        feedSection(
+                            uiState = uiState,
+                            onTabClick = viewModel::selectTab,
+                            onFilterClick = viewModel::selectFilter,
+                            onNoteClick = onNoteClick,
+                            onNoteLikeClick = viewModel::toggleLike,
+                            onNoteBookmarkClick = viewModel::toggleBookmark
+                        )
                     }
                 }
             }

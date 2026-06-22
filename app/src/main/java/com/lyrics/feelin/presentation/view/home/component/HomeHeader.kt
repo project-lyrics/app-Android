@@ -64,7 +64,7 @@ fun HomeHeader(
 @Preview(
     showBackground = true,
     name = "Home Header - Dark Theme",
-    backgroundColor = 0xFF00000,
+    backgroundColor = 0xFF000000,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable
@@ -81,7 +81,7 @@ private fun HomeHeaderPreview() {
 @Preview(
     showBackground = true,
     name = "Home Header Unread - Dark Theme",
-    backgroundColor = 0xFF00000,
+    backgroundColor = 0xFF000000,
     uiMode = Configuration.UI_MODE_NIGHT_YES
 )
 @Composable

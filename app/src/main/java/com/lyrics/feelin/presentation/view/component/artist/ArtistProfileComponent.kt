@@ -2,6 +2,7 @@ package com.lyrics.feelin.presentation.view.component.artist
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -33,7 +34,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightSystemDisable
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 @Composable
-fun ArtistBubbleComponent(state: ArtistBubbleComponentData, modifier: Modifier = Modifier) {
+fun ArtistBubbleComponent(
+    state: ArtistBubbleComponentData,
+    modifier: Modifier = Modifier,
+    onClick: (() -> Unit)? = null,
+) {
     val feelinColors = LocalFeelinColors.current
 
     val imgSize = when (state) {
@@ -63,8 +68,14 @@ fun ArtistBubbleComponent(state: ArtistBubbleComponentData, modifier: Modifier =
         color = if (state is ArtistBubbleComponentData.InitialSelectArtistType) LightGray08 else feelinColors.gray08
     )
 
+    val bubbleModifier = if (onClick != null) {
+        modifier.clickable(onClick = onClick)
+    } else {
+        modifier
+    }
+
     ArtistProfileLayout(
-        modifier = modifier,
+        modifier = bubbleModifier,
         mainContent = {
             if (state is ArtistBubbleComponentData.HomeFavoriteSearchType) {
                 Box(

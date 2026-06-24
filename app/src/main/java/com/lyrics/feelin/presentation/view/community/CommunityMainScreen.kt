@@ -56,7 +56,7 @@ import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.core.designsystem.component.FeelinTransparentTopAppBar
 import com.lyrics.feelin.core.designsystem.component.TopBarIconButton
-import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
+import com.lyrics.feelin.core.designsystem.icon.NotificationIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
@@ -112,7 +112,7 @@ fun CommunityMainScreen(
                     onBackClick = onBack,
                     actions = {
                         TopBarIconButton(
-                            imageVector = NotificationIcon,
+                            imageVector = NotificationIconLight,
                             contentDescription = "알림",
                             tint = LightGray09, // 투명 상태일 때는 다크모드 미 적용입니다.
                             onClick = {},

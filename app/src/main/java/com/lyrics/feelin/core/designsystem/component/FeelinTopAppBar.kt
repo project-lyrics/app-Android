@@ -33,7 +33,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.icon.BackIcon
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
-import com.lyrics.feelin.core.designsystem.icon.NotificationIcon
+import com.lyrics.feelin.core.designsystem.icon.NotificationIconLight
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconDark
 import com.lyrics.feelin.core.designsystem.icon.SettingsIconLight
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -313,7 +313,7 @@ private fun FeelinTransparentTopAppBarPreview() {
                 onBackClick = {},
                 actions = {
                     TopBarIconButton(
-                        imageVector = NotificationIcon,
+                        imageVector = NotificationIconLight,
                         contentDescription = "알림",
                         onClick = {}
                     )
@@ -364,7 +364,7 @@ private fun FeelinTopAppBarDoubleIconPreview() {
                         onClick = {}
                     )
                     TopBarIconButton(
-                        imageVector = NotificationIcon,
+                        imageVector = NotificationIconLight,
                         contentDescription = "알림",
                         tint = LocalFeelinColors.current.gray09,
                         onClick = {}

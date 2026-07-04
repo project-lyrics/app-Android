@@ -3,8 +3,9 @@ package com.lyrics.feelin.presentation.view.home.component
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
-import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
@@ -12,6 +13,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -40,9 +42,10 @@ fun HomeBottomSheetScaffold(
         containerColor = feelinColors.modal,
         dragHandle = null,
         shape = RectangleShape,
-        modifier = modifier
+        modifier = modifier.fillMaxHeight()
     ) {
         Column(
+            modifier = Modifier.statusBarsPadding(),
             horizontalAlignment = Alignment.Start,
             content = content
         )

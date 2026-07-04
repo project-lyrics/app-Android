@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -52,7 +51,7 @@ fun MyFavoriteArtistsBottomSheet(
     HomeBottomSheetScaffold(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.fillMaxHeight(SHEET_HEIGHT_RATIO),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier
@@ -161,5 +160,4 @@ private fun MyFavoriteArtistsBottomSheetPreview() {
     }
 }
 
-private const val SHEET_HEIGHT_RATIO = 0.88f
 private const val GRID_COLUMNS = 3

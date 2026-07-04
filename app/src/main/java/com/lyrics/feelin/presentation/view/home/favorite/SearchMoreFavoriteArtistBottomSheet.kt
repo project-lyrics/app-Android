@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -56,7 +55,6 @@ import com.lyrics.feelin.presentation.view.onboarding.favoriteartist.FavoriteArt
 import kotlinx.coroutines.flow.collectLatest
 
 private const val GRID_COL_MAX_ELEMENTS = 3
-private const val SHEET_HEIGHT_RATIO = 0.88f
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,7 +82,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
     HomeBottomSheetScaffold(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        modifier = modifier.fillMaxHeight(SHEET_HEIGHT_RATIO),
+        modifier = modifier,
     ) {
         Column(
             modifier = Modifier

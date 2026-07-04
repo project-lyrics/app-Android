@@ -49,4 +49,20 @@ class HomeUiStateTest {
 
         assertEquals(expected, state.errorMessage)
     }
+
+    @Test
+    fun defaultStateHasNoBottomSheet() {
+        val state = HomeUiState()
+
+        assertEquals(HomeBottomSheetType.None, state.bottomSheetType)
+    }
+
+    @Test
+    fun bottomSheetStateCanBeSet() {
+        val myFavoriteState = HomeUiState(bottomSheetType = HomeBottomSheetType.MyFavoriteArtists)
+        val searchState = HomeUiState(bottomSheetType = HomeBottomSheetType.SearchMoreArtists)
+
+        assertEquals(HomeBottomSheetType.MyFavoriteArtists, myFavoriteState.bottomSheetType)
+        assertEquals(HomeBottomSheetType.SearchMoreArtists, searchState.bottomSheetType)
+    }
 }

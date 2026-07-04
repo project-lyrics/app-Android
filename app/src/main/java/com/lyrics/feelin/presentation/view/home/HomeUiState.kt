@@ -6,6 +6,15 @@ import com.lyrics.feelin.presentation.view.home.component.FeedTab
 import com.lyrics.feelin.presentation.view.home.component.FeedTabState
 
 /**
+ * 홈 화면에서 표시할 바텀 시트 종류.
+ */
+enum class HomeBottomSheetType {
+    None,
+    MyFavoriteArtists,
+    SearchMoreArtists,
+}
+
+/**
  * 홈 화면의 UI 상태.
  *
  * 각 탭(FEED/ARTISTS)마다 독립적인 필터, 노트 목록, 페이징 상태를 유지한다.
@@ -21,6 +30,7 @@ data class HomeUiState(
     val isRefreshing: Boolean = false,
     val isInitialLoading: Boolean = false,
     val errorMessage: String? = null,
+    val bottomSheetType: HomeBottomSheetType = HomeBottomSheetType.None,
 ) {
     val currentTabState: FeedTabState
         get() = tabStates.getValue(selectedTab)

@@ -38,6 +38,8 @@ import com.lyrics.feelin.presentation.view.home.component.BannerSection
 import com.lyrics.feelin.presentation.view.home.component.DummyBannerSection
 import com.lyrics.feelin.presentation.view.home.component.HomeHeader
 import com.lyrics.feelin.presentation.view.home.component.feedSection
+import com.lyrics.feelin.presentation.view.home.favorite.MyFavoriteArtistsBottomSheet
+import com.lyrics.feelin.presentation.view.home.favorite.SearchMoreFavoriteArtistBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -120,8 +122,8 @@ fun HomeScreen(
                                 ArtistRow(
                                     artists = uiState.artists,
                                     onArtistClick = onArtistClick,
-                                    onShowAllArtistsClick = {},
-                                    onFindArtistsClick = {},
+                                    onShowAllArtistsClick = viewModel::showMyFavoriteArtistsBottomSheet,
+                                    onFindArtistsClick = viewModel::showSearchMoreArtistsBottomSheet,
                                 )
                             }
                         }
@@ -161,6 +163,28 @@ fun HomeScreen(
                     }
                 }
             }
+        }
+
+        if (uiState.bottomSheetType == HomeBottomSheetType.MyFavoriteArtists) {
+            val favoriteArtists = uiState.artists.filterIsInstance<ArtistBubbleComponentData.HomeFavoriteArtistType>()
+            MyFavoriteArtistsBottomSheet(
+                artists = favoriteArtists,
+                onArtistClick = { artistId ->
+                    viewModel.hideBottomSheet()
+                    onArtistClick(artistId)
+                },
+                onDismissRequest = viewModel::hideBottomSheet,
+            )
+        }
+
+        if (uiState.bottomSheetType == HomeBottomSheetType.SearchMoreArtists) {
+            SearchMoreFavoriteArtistBottomSheet(
+                onArtistClick = { artistId ->
+                    viewModel.hideBottomSheet()
+                    onArtistClick(artistId)
+                },
+                onDismissRequest = viewModel::hideBottomSheet,
+            )
         }
 
         // 최초 진입 시 전체 화면을 덮는 오버레이로, 중복 요청과 터치 이벤트를 차단한다.

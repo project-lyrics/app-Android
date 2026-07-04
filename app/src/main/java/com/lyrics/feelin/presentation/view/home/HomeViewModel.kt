@@ -182,6 +182,18 @@ class HomeViewModel @Inject constructor() : ViewModel() {
         _uiState.update { state -> state.copy(errorMessage = null) }
     }
 
+    fun showMyFavoriteArtistsBottomSheet() {
+        _uiState.update { state -> state.copy(bottomSheetType = HomeBottomSheetType.MyFavoriteArtists) }
+    }
+
+    fun showSearchMoreArtistsBottomSheet() {
+        _uiState.update { state -> state.copy(bottomSheetType = HomeBottomSheetType.SearchMoreArtists) }
+    }
+
+    fun hideBottomSheet() {
+        _uiState.update { state -> state.copy(bottomSheetType = HomeBottomSheetType.None) }
+    }
+
     private fun createLoadedState(): HomeUiState {
         val currentState = _uiState.value
         val tabStates = FeedTab.entries.associateWith { tab ->

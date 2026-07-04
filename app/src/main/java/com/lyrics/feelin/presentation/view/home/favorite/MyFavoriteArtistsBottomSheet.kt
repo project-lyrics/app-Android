@@ -4,15 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -21,17 +17,14 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil3.compose.AsyncImage
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponent
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
 import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
 
@@ -88,57 +81,20 @@ fun MyFavoriteArtistsBottomSheet(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(artists) { artist ->
-                    MyFavoriteArtistItem(
-                        artist = artist,
-                        onClick = {
+                    ArtistBubbleComponent(
+                        state = ArtistBubbleComponentData.FavoriteArtistFindType(
+                            name = artist.name,
+                            imageUrl = artist.imageUrl,
+                            id = artist.id ?: 0L,
+                        ),
+                        modifier = Modifier.clickable {
                             onDismissRequest()
                             artist.id?.let { onArtistClick(it) }
-                        }
+                        },
                     )
                 }
             }
         }
-    }
-}
-
-// MARK(@이대근): 얘 이거 왜 ArtistBubbleComponent 안쓰고 따로 만들었지?
-@Composable
-private fun MyFavoriteArtistItem(
-    artist: ArtistBubbleComponentData.HomeFavoriteArtistType,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    val feelinColors = LocalFeelinColors.current
-
-    Column(
-        modifier = modifier
-            .size(width = 108.dp, height = 146.dp)
-            .clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(108.dp)
-                .clip(CircleShape),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = artist.imageUrl,
-                contentDescription = artist.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(CircleShape)
-            )
-        }
-        Spacer(modifier = Modifier.height(10.dp))
-        Text(
-            text = artist.name,
-            style = FeelinTypography.caption2,
-            color = feelinColors.gray08,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
     }
 }
 

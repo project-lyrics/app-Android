@@ -1,7 +1,6 @@
 package com.lyrics.feelin.presentation.view.home.favorite
 
 import android.content.Intent
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,11 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -35,23 +32,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponent
+import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
 import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
-import com.lyrics.feelin.presentation.view.onboarding.favoriteartist.FavoriteArtistData
 import kotlinx.coroutines.flow.collectLatest
 
 private const val GRID_COL_MAX_ELEMENTS = 3
@@ -183,65 +177,21 @@ fun SearchMoreFavoriteArtistBottomSheet(
                     modifier = Modifier.fillMaxWidth().weight(1f)
                 ) {
                     items(artists, key = { it.id }) { artist ->
-                        SearchArtistItem(
-                            artist = artist,
-                            onClick = {
+                        ArtistBubbleComponent(
+                            state = ArtistBubbleComponentData.FavoriteArtistFindType(
+                                name = artist.name,
+                                imageUrl = artist.imageUrl,
+                                id = artist.id.toLong(),
+                            ),
+                            modifier = Modifier.clickable {
                                 onDismissRequest()
                                 onArtistClick(artist.id.toLong())
-                            }
+                            },
                         )
                     }
                 }
             }
         }
-    }
-}
-
-// MARK(@이대근): 얘 이거 왜 ArtistBubbleComponent 안쓰고 따로 만들었지?
-@Composable
-private fun SearchArtistItem(
-    artist: FavoriteArtistData,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    val feelinColors = LocalFeelinColors.current
-
-    Column(
-        modifier = modifier
-            .width(108.dp)
-            .height(146.dp)
-            .clickable(onClick = onClick),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Box(
-            modifier = Modifier
-                .size(108.dp)
-                .background(
-                    color = feelinColors.gray00,
-                    shape = CircleShape
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            AsyncImage(
-                model = artist.imageUrl,
-                contentDescription = artist.name,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(96.dp)
-                    .clip(CircleShape)
-                    .background(feelinColors.gray01)
-            )
-        }
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Text(
-            text = artist.name,
-            style = FeelinTypography.body2,
-            color = feelinColors.gray08,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
     }
 }
 

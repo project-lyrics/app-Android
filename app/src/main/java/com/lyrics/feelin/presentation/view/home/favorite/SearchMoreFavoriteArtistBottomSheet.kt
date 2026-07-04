@@ -1,7 +1,6 @@
 package com.lyrics.feelin.presentation.view.home.favorite
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,6 +41,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
@@ -85,14 +85,14 @@ fun SearchMoreFavoriteArtistBottomSheet(
         modifier = modifier,
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 8.dp),
-                verticalAlignment = Alignment.Top
+                verticalAlignment = Alignment.Top,
+                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 IconButton(
                     onClick = onDismissRequest,
@@ -101,15 +101,18 @@ fun SearchMoreFavoriteArtistBottomSheet(
                     Icon(
                         imageVector = CloseIcon,
                         contentDescription = "Close",
-                        tint = feelinColors.gray08
+                        tint = feelinColors.gray09
                     )
                 }
-                Spacer(modifier = Modifier.width(8.dp))
-                Column {
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.weight(1f)
+                ) {
                     Text(
                         text = "새로운 관심 아티스트를 찾아보세요",
                         style = FeelinTypography.heading3,
-                        color = feelinColors.gray08
+                        color = feelinColors.gray09
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
@@ -118,6 +121,8 @@ fun SearchMoreFavoriteArtistBottomSheet(
                         color = feelinColors.gray04
                     )
                 }
+
+                Spacer(modifier = Modifier.size(24.dp))
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -132,7 +137,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
                     .padding(horizontal = 20.dp)
             )
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(32.dp))
 
             if (isEmpty) {
                 Box(
@@ -152,19 +157,19 @@ fun SearchMoreFavoriteArtistBottomSheet(
                             onClick = {
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
-                                    Uri.parse("https://forms.gle/nvxuLVfr1WuvFqrq8")
+                                    "https://forms.gle/nvxuLVfr1WuvFqrq8".toUri()
                                 )
                                 context.startActivity(intent)
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = feelinColors.gray01,
-                                contentColor = feelinColors.gray07
+                                contentColor = feelinColors.gray09,
                             ),
                             shape = RoundedCornerShape(8.dp)
                         ) {
                             Text(
                                 text = "아티스트 요청하기",
-                                style = FeelinTypography.body2
+                                style = FeelinTypography.body2,
                             )
                         }
                     }
@@ -175,9 +180,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
                     contentPadding = PaddingValues(start = 20.dp, end = 20.dp, bottom = 40.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
+                    modifier = Modifier.fillMaxWidth().weight(1f)
                 ) {
                     items(artists, key = { it.id }) { artist ->
                         SearchArtistItem(
@@ -194,6 +197,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
     }
 }
 
+// MARK(@이대근): 얘 이거 왜 ArtistBubbleComponent 안쓰고 따로 만들었지?
 @Composable
 private fun SearchArtistItem(
     artist: FavoriteArtistData,

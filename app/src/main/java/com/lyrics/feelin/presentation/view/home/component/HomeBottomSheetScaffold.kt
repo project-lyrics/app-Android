@@ -39,7 +39,7 @@ fun HomeBottomSheetScaffold(
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        containerColor = feelinColors.modal,
+        containerColor = feelinColors.backgroundPrimary,
         dragHandle = null,
         shape = RectangleShape,
         modifier = modifier.fillMaxHeight()

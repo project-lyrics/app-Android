@@ -35,7 +35,7 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
 import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
 
-@Suppress("UnusedParameter")
+@Suppress("UnusedParameter") // MARK(@이대근): ViewModel 사용 혹은 삭제와 함께 어노테이션 삭제 2026.07.05.
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyFavoriteArtistsBottomSheet(
@@ -70,13 +70,13 @@ fun MyFavoriteArtistsBottomSheet(
                     Icon(
                         imageVector = CloseIcon,
                         contentDescription = "닫기",
-                        tint = feelinColors.gray08
+                        tint = feelinColors.gray09
                     )
                 }
                 Text(
                     text = "나의 관심 아티스트",
                     style = FeelinTypography.heading3,
-                    color = feelinColors.gray09,
+                    color = feelinColors.gray08,
                     modifier = Modifier.align(Alignment.Center)
                 )
             }
@@ -101,6 +101,7 @@ fun MyFavoriteArtistsBottomSheet(
     }
 }
 
+// MARK(@이대근): 얘 이거 왜 ArtistBubbleComponent 안쓰고 따로 만들었지?
 @Composable
 private fun MyFavoriteArtistItem(
     artist: ArtistBubbleComponentData.HomeFavoriteArtistType,

@@ -29,12 +29,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.AsyncImage
-import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheet
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
+import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
 
 @Suppress("UnusedParameter")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -49,7 +49,7 @@ fun MyFavoriteArtistsBottomSheet(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val feelinColors = LocalFeelinColors.current
 
-    FeelinModalBottomSheet(
+    HomeBottomSheetScaffold(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         modifier = modifier.fillMaxHeight(SHEET_HEIGHT_RATIO),

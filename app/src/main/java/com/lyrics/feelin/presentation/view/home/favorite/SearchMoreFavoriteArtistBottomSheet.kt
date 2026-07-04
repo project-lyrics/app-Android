@@ -46,12 +46,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheet
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
 import com.lyrics.feelin.presentation.view.onboarding.favoriteartist.FavoriteArtistData
 import kotlinx.coroutines.flow.collectLatest
 
@@ -81,7 +81,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
             }
     }
 
-    FeelinModalBottomSheet(
+    HomeBottomSheetScaffold(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         modifier = modifier.fillMaxHeight(SHEET_HEIGHT_RATIO),

@@ -1,6 +1,5 @@
 package com.lyrics.feelin.presentation.view.home.favorite
 
-import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -32,7 +31,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.lyrics.feelin.core.designsystem.component.FeelinGrayButton
@@ -41,6 +39,7 @@ import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
+import com.lyrics.feelin.presentation.util.openExternalBrowser
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponent
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
 import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffold
@@ -52,9 +51,9 @@ private const val GRID_COL_MAX_ELEMENTS = 3
 @Composable
 fun SearchMoreFavoriteArtistBottomSheet(
     onArtistClick: (Long) -> Unit,
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SearchMoreFavoriteArtistViewModel = hiltViewModel(),
+    onDismissRequest: () -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val feelinColors = LocalFeelinColors.current
@@ -92,7 +91,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
                 ) {
                     Icon(
                         imageVector = CloseIcon,
-                        contentDescription = "Close",
+                        contentDescription = "닫기",
                         tint = feelinColors.gray09
                     )
                 }
@@ -148,11 +147,9 @@ fun SearchMoreFavoriteArtistBottomSheet(
                         FeelinGrayButton(
                             text = "아티스트 요청하기",
                             onClick = {
-                                val intent = Intent(
-                                    Intent.ACTION_VIEW,
-                                    "https://forms.gle/nvxuLVfr1WuvFqrq8".toUri()
+                                context.openExternalBrowser(
+                                    "https://forms.gle/nvxuLVfr1WuvFqrq8"
                                 )
-                                context.startActivity(intent)
                             },
                         )
                     }

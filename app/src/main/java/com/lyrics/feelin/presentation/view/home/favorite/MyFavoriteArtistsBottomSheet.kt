@@ -37,9 +37,9 @@ import com.lyrics.feelin.presentation.view.home.component.HomeBottomSheetScaffol
 fun MyFavoriteArtistsBottomSheet(
     artists: List<ArtistBubbleComponentData.HomeFavoriteArtistType>,
     onArtistClick: (Long) -> Unit,
-    onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: MyFavoriteArtistsViewModel = hiltViewModel(),
+    onDismissRequest: () -> Unit = {},
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val feelinColors = LocalFeelinColors.current

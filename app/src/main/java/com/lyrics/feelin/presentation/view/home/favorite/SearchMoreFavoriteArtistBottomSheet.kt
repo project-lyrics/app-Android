@@ -16,11 +16,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.lyrics.feelin.core.designsystem.component.FeelinGrayButton
 import com.lyrics.feelin.core.designsystem.component.FeelinSearchInputField
 import com.lyrics.feelin.core.designsystem.icon.CloseIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
@@ -143,11 +141,12 @@ fun SearchMoreFavoriteArtistBottomSheet(
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             text = "검색 결과가 없어요.",
-                            style = FeelinTypography.body2,
-                            color = feelinColors.gray04
+                            style = FeelinTypography.body3,
+                            color = feelinColors.gray09
                         )
                         Spacer(modifier = Modifier.height(16.dp))
-                        Button(
+                        FeelinGrayButton(
+                            text = "아티스트 요청하기",
                             onClick = {
                                 val intent = Intent(
                                     Intent.ACTION_VIEW,
@@ -155,17 +154,7 @@ fun SearchMoreFavoriteArtistBottomSheet(
                                 )
                                 context.startActivity(intent)
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = feelinColors.gray01,
-                                contentColor = feelinColors.gray09,
-                            ),
-                            shape = RoundedCornerShape(8.dp)
-                        ) {
-                            Text(
-                                text = "아티스트 요청하기",
-                                style = FeelinTypography.body2,
-                            )
-                        }
+                        )
                     }
                 }
             } else {

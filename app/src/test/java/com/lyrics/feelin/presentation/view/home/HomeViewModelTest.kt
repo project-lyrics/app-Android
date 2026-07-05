@@ -274,6 +274,28 @@ class HomeViewModelTest {
         assertEquals("홈 데이터를 불러오지 못했어요.", failingViewModel.uiState.value.errorMessage)
         assertFalse(failingViewModel.uiState.value.isInitialLoading)
     }
+
+    @Test
+    fun showMyFavoriteArtistsBottomSheetUpdatesState() = runTest {
+        viewModel.showMyFavoriteArtistsBottomSheet()
+
+        assertEquals(HomeBottomSheetType.MyFavoriteArtists, viewModel.uiState.value.bottomSheetType)
+    }
+
+    @Test
+    fun showSearchMoreArtistsBottomSheetUpdatesState() = runTest {
+        viewModel.showSearchMoreArtistsBottomSheet()
+
+        assertEquals(HomeBottomSheetType.SearchMoreArtists, viewModel.uiState.value.bottomSheetType)
+    }
+
+    @Test
+    fun hideBottomSheetResetsState() = runTest {
+        viewModel.showMyFavoriteArtistsBottomSheet()
+        viewModel.hideBottomSheet()
+
+        assertEquals(HomeBottomSheetType.None, viewModel.uiState.value.bottomSheetType)
+    }
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)

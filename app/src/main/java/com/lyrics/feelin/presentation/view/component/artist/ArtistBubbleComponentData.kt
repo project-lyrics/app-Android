@@ -28,5 +28,6 @@ sealed interface ArtistBubbleComponentData {
     data class FavoriteArtistFindType(
         override val name: String,
         val imageUrl: String,
+        val id: Long = 0L,
     ) : ArtistBubbleComponentData
 }

@@ -68,10 +68,17 @@ fun ArtistBubbleComponent(
         color = if (state is ArtistBubbleComponentData.InitialSelectArtistType) LightGray08 else feelinColors.gray08
     )
 
+    val sizeModifier = when (state) {
+        is ArtistBubbleComponentData.FavoriteArtistFindType -> {
+            Modifier.size(width = 108.dp, height = 146.dp)
+        }
+        else -> Modifier
+    }
+
     val bubbleModifier = if (onClick != null) {
-        modifier.clickable(onClick = onClick)
+        sizeModifier.then(modifier).clickable(onClick = onClick)
     } else {
-        modifier
+        sizeModifier.then(modifier)
     }
 
     ArtistProfileLayout(
@@ -211,6 +218,7 @@ private fun FavoriteArtistTypePreview() {
     val data = ArtistBubbleComponentData.FavoriteArtistFindType(
         name = "검정치마",
         imageUrl = "https://i.scdn.co/image/ab6761610000e5eb8609536d21beed6769d09d7f",
+        id = 1L,
     )
     FeelinTheme {
         ArtistBubbleComponent(

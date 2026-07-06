@@ -24,6 +24,11 @@ import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.mypage.blockedusers.component.BlockedUserListItem
 import kotlinx.coroutines.launch
 
+private val previewBlockedUsers = listOf(
+    BlockedUserListItemData(1L, "차단된 사용자 닉네임", null),
+    BlockedUserListItemData(2L, "차단된 사용자 닉네임 2", null)
+)
+
 @Composable
 fun BlockedUsersScreen(
     blockedUsers: List<BlockedUserListItemData>,
@@ -90,10 +95,7 @@ fun BlockedUsersScreen(
 private fun BlockedUsersScreenPreviewListLight() {
     FeelinTheme {
         BlockedUsersScreen(
-            blockedUsers = listOf(
-                BlockedUserListItemData(1L, "차단된 사용자 닉네임", null),
-                BlockedUserListItemData(2L, "차단된 사용자 닉네임 2", null)
-            ),
+            blockedUsers = previewBlockedUsers,
             onBackClick = {}
         )
     }
@@ -104,10 +106,7 @@ private fun BlockedUsersScreenPreviewListLight() {
 private fun BlockedUsersScreenPreviewListDark() {
     FeelinTheme {
         BlockedUsersScreen(
-            blockedUsers = listOf(
-                BlockedUserListItemData(1L, "차단된 사용자 닉네임", null),
-                BlockedUserListItemData(2L, "차단된 사용자 닉네임 2", null)
-            ),
+            blockedUsers = previewBlockedUsers,
             onBackClick = {}
         )
     }

@@ -54,8 +54,8 @@ import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageLogoutStatus
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageViewModel
-import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUserListItemData
 import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersScreen
+import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersViewModel
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.detail.NoteDetailScreen
@@ -410,16 +410,16 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
             }
         }
 
-        composable(FeelinDestination.BlockedUsers.route) {
-            val blockedUsersMockData = listOf(
-                BlockedUserListItemData(userId = 1, nickname = "username01", profileImageUrl = null),
-                BlockedUserListItemData(userId = 2, nickname = "username02", profileImageUrl = null),
-                BlockedUserListItemData(userId = 3, nickname = "username03", profileImageUrl = null),
-            )
+        composable(FeelinDestination.BlockedUsers.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(FeelinDestination.MyPageGraph.route)
+            }
+            val viewModel: BlockedUsersViewModel = hiltViewModel(parentEntry)
+            val uiState by viewModel.uiState.collectAsState()
 
             MainScaffold(navController = navController, selectedIndex = 2) {
                 BlockedUsersScreen(
-                    blockedUsers = blockedUsersMockData,
+                    blockedUsers = uiState.blockedUsers,
                     onBackClick = { navController.popBackStack() }
                 )
             }

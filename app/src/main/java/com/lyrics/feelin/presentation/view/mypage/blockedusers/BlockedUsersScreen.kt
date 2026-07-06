@@ -41,6 +41,7 @@ fun BlockedUsersScreen(
     modifier: Modifier = Modifier
 ) {
     val colors = LocalFeelinColors.current
+    // TODO(@이대근): 3버튼 표시시 하단바와 스낵바가 겹침, 추후 전역 스낵바 도입 및 이를 제거 2026.07.07.
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 

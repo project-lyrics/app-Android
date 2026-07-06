@@ -3,8 +3,13 @@ package com.lyrics.feelin.presentation.view.mypage.blockedusers
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
@@ -40,7 +45,10 @@ fun BlockedUsersScreen(
     val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+            .background(colors.backgroundPrimary),
         topBar = {
             FeelinTopAppBarWithBack(
                 title = "차단된 유저 관리",

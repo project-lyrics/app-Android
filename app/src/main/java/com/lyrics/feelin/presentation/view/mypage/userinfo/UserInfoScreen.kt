@@ -21,12 +21,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.lyrics.feelin.core.designsystem.component.FeelinActionButton
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.mypage.component.LoginInfoConfigs
-import com.lyrics.feelin.presentation.view.mypage.component.SettingInfoActionButton
 import com.lyrics.feelin.presentation.view.mypage.component.SettingInfoItem
 import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 import com.lyrics.feelin.presentation.view.mypage.component.UserLoginInfoItem
@@ -71,7 +71,7 @@ fun UserInfoScreen(
             SettingInfoItem(
                 title = uid,
                 trailingContent = {
-                    SettingInfoActionButton(text = "복사", onClick = { /* TODO: UID 복사기능 및 스낵바 표시 */ })
+                    FeelinActionButton(text = "복사", onClick = { /* TODO: UID 복사기능 및 스낵바 표시 */ })
                 },
             )
 

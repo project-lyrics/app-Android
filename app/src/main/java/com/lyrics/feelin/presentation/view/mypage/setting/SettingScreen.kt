@@ -38,6 +38,7 @@ import com.lyrics.feelin.presentation.view.mypage.component.SettingMenuItem
 fun SettingScreen(
     onBackClick: () -> Unit,
     onUserInfoClick: () -> Unit,
+    onBlockedUsersClick: () -> Unit,
     onLogoutClick: () -> Unit,
     onInternalWebViewClick: (String) -> Unit,
     onExternalBrowserClick: (String) -> Unit,
@@ -84,6 +85,8 @@ fun SettingScreen(
                 Spacer(modifier = Modifier.height(40.dp))
 
                 SettingMenuItem(title = "회원 정보", onClick = onUserInfoClick)
+                Spacer(modifier = Modifier.height(16.dp))
+                SettingMenuItem(title = "차단된 유저 관리", onClick = onBlockedUsersClick)
 
                 SettingCategoryDivider()
 
@@ -152,6 +155,7 @@ private fun SettingScreenPreview() {
         SettingScreen(
             onBackClick = {},
             onUserInfoClick = {},
+            onBlockedUsersClick = {},
             onLogoutClick = {},
             onInternalWebViewClick = {},
             onExternalBrowserClick = {},

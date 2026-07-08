@@ -37,8 +37,9 @@ private val previewBlockedUsers = listOf(
 @Composable
 fun BlockedUsersScreen(
     blockedUsers: List<BlockedUserListItemData>,
-    onBackClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUnblockClick: (Long) -> Unit = {},
+    onBackClick: () -> Unit = {},
 ) {
     val colors = LocalFeelinColors.current
     // TODO(@이대근): 3버튼 표시시 하단바와 스낵바가 겹침, 추후 전역 스낵바 도입 및 이를 제거 2026.07.07.
@@ -88,6 +89,7 @@ fun BlockedUsersScreen(
                     BlockedUserListItem(
                         data = user,
                         onUnblockClick = {
+                            onUnblockClick(user.userId)
                             coroutineScope.launch {
                                 snackbarHostState.showSnackbar(message = "차단 해제되었습니다")
                             }

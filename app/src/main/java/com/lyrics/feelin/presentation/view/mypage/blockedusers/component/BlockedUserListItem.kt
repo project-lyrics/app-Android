@@ -22,17 +22,17 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.lyrics.feelin.core.designsystem.component.FeelinActionButton
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUserListItemData
+import com.lyrics.feelin.presentation.view.mypage.component.FeelinActionButton
 
 @Composable
 fun BlockedUserListItem(
     data: BlockedUserListItemData,
-    onUnblockClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onUnblockClick: () -> Unit = {},
 ) {
     val colors = LocalFeelinColors.current
 

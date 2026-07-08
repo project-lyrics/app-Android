@@ -420,6 +420,7 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
             MainScaffold(navController = navController, selectedIndex = 2) {
                 BlockedUsersScreen(
                     blockedUsers = uiState.blockedUsers,
+                    onUnblockClick = viewModel::unblockUser,
                     onBackClick = { navController.popBackStack() }
                 )
             }

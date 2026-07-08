@@ -1,4 +1,4 @@
-package com.lyrics.feelin.core.designsystem.component
+package com.lyrics.feelin.presentation.view.mypage.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

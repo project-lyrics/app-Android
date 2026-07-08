@@ -19,4 +19,10 @@ class BlockedUsersViewModel @Inject constructor() : ViewModel() {
         )
     )
     val uiState: StateFlow<BlockedUsersUiState> = _uiState.asStateFlow()
+
+    fun unblockUser(userId: Long) {
+        _uiState.value = _uiState.value.copy(
+            blockedUsers = _uiState.value.blockedUsers.filter { it.userId != userId }
+        )
+    }
 }

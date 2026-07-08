@@ -54,6 +54,8 @@ import com.lyrics.feelin.presentation.view.login.LoginScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageLogoutStatus
 import com.lyrics.feelin.presentation.view.mypage.MyPageScreen
 import com.lyrics.feelin.presentation.view.mypage.MyPageViewModel
+import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersScreen
+import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersViewModel
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.detail.NoteDetailScreen
@@ -345,6 +347,7 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
     }
 }
 
+@Suppress("LongMethod")
 private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
     navigation(startDestination = FeelinDestination.MyPage.route, route = FeelinDestination.MyPageGraph.route) {
         composable(FeelinDestination.MyPage.route) { backStackEntry ->
@@ -389,6 +392,7 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
                 SettingScreen(
                     onBackClick = { navController.popBackStack() },
                     onUserInfoClick = { navController.navigate(FeelinDestination.UserInfo.route) },
+                    onBlockedUsersClick = { navController.navigate(FeelinDestination.BlockedUsers.route) },
                     onLogoutClick = viewModel::logout,
                     onInternalWebViewClick = { url ->
                         navController.navigate(FeelinDestination.InternalWebView.createRoute(url))
@@ -403,6 +407,22 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
         composable(FeelinDestination.UserInfo.route) {
             MainScaffold(navController = navController, selectedIndex = 2) {
                 UserInfoScreen(onBackClick = { navController.popBackStack() })
+            }
+        }
+
+        composable(FeelinDestination.BlockedUsers.route) { backStackEntry ->
+            val parentEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(FeelinDestination.MyPageGraph.route)
+            }
+            val viewModel: BlockedUsersViewModel = hiltViewModel(parentEntry)
+            val uiState by viewModel.uiState.collectAsState()
+
+            MainScaffold(navController = navController, selectedIndex = 2) {
+                BlockedUsersScreen(
+                    blockedUsers = uiState.blockedUsers,
+                    onUnblockClick = viewModel::unblockUser,
+                    onBackClick = { navController.popBackStack() }
+                )
             }
         }
     }

@@ -72,6 +72,7 @@ sealed class FeelinDestination(
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")
+    object BlockedUsers : FeelinDestination(route = "blocked_users")
 
     object InternalWebView : FeelinDestination(
         route = "internal_webview?$WEB_VIEW_URL_ARGUMENT={$WEB_VIEW_URL_ARGUMENT}"

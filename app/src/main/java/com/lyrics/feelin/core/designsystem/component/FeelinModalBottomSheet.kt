@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -52,6 +53,7 @@ fun FeelinModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
         containerColor = feelinColors.modal,
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
         dragHandle = if (showDragHandle) {
             { FeelinDragHandle() }
         } else {
@@ -117,8 +119,9 @@ fun FeelinModalBottomSheetAction(
                 imageVector = icon,
                 contentDescription = text,
                 tint = feelinColors.gray09,
-                modifier = Modifier.padding(end = 12.dp)
+                modifier = Modifier.size(24.dp),
             )
+            Spacer(modifier = Modifier.width(12.dp))
         }
         Text(text = text, style = FeelinTypography.body1.copy(color = feelinColors.gray09))
     }

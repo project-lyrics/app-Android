@@ -7,6 +7,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheet
 import com.lyrics.feelin.core.designsystem.component.FeelinModalBottomSheetAction
+import com.lyrics.feelin.core.designsystem.icon.DeleteIcon
+import com.lyrics.feelin.core.designsystem.icon.ModifyIcon
+import com.lyrics.feelin.core.designsystem.icon.ProhibitIcon
+import com.lyrics.feelin.core.designsystem.icon.ReportIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,19 +36,23 @@ fun NoteMenuBottomSheet(
         if (isMyNote) {
             FeelinModalBottomSheetAction(
                 text = "수정하기",
+                icon = ModifyIcon,
                 onClick = { onEditClick(noteData.id) },
             )
             FeelinModalBottomSheetAction(
                 text = "삭제하기",
+                icon = DeleteIcon,
                 onClick = { onDeleteClick(noteData.id) },
             )
         } else {
             FeelinModalBottomSheetAction(
                 text = "신고하기",
+                icon = ReportIcon,
                 onClick = { onReportClick(noteData.id) },
             )
             FeelinModalBottomSheetAction(
                 text = "차단하기",
+                icon = ProhibitIcon,
                 onClick = { onBlockClick(noteData.publisher.id) },
             )
         }

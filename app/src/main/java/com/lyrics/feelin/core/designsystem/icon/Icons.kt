@@ -136,3 +136,19 @@ val SubmitArrowIcon: ImageVector
 val ImageGalleryIcon: ImageVector
     @Composable
     get() = ImageVector.vectorResource(id = R.drawable.image_gallery)
+
+val ReportIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.report)
+
+val ModifyIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.modify)
+
+val DeleteIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.control_delete)
+
+val ProhibitIcon: ImageVector
+    @Composable
+    get() = ImageVector.vectorResource(id = R.drawable.prohibit)

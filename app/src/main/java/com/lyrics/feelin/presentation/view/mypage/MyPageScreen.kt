@@ -35,6 +35,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,6 +62,8 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
+import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteMenuBottomSheet
 import com.lyrics.feelin.presentation.view.component.profile.ProfileComponent
 
 private const val NICKNAME_CARET_ROTATION_DEGREES = 270f
@@ -70,9 +74,12 @@ fun MyPageScreen(
     onSettingClick: () -> Unit,
     modifier: Modifier = Modifier,
     onNoteClick: (Long) -> Unit = {},
+    onNoteReportClick: (Long) -> Unit = {},
+    currentUserId: Long? = null,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val myPageState by viewModel.myPageScreenState.collectAsState()
+    var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
 
     val feelinColors = LocalFeelinColors.current
 
@@ -285,6 +292,7 @@ fun MyPageScreen(
                                         NoteComponent(
                                             noteData = it,
                                             onClick = { note -> onNoteClick(note.id) },
+                                            onMenuClick = { note -> selectedNoteForMenu = note },
                                         )
                                     }
                                 }
@@ -320,6 +328,18 @@ fun MyPageScreen(
                     )
                 }
             }
+        }
+
+        selectedNoteForMenu?.let { selectedNote ->
+            NoteMenuBottomSheet(
+                noteData = selectedNote,
+                currentUserId = currentUserId,
+                onReportClick = { noteId ->
+                    selectedNoteForMenu = null
+                    onNoteReportClick(noteId)
+                },
+                onDismissRequest = { selectedNoteForMenu = null },
+            )
         }
     }
 }

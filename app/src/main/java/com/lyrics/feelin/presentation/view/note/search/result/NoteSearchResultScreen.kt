@@ -67,6 +67,8 @@ import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.util.label
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
+import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteMenuBottomSheet
 import kotlinx.coroutines.flow.collectLatest
 
 private enum class HeaderState {
@@ -135,6 +137,8 @@ fun NoteSearchResultScreen(
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
     onNoteClick: (Long) -> Unit = {},
+    onNoteReportClick: (Long) -> Unit = {},
+    currentUserId: Long? = null,
     viewModel: NoteSearchResultViewModel = viewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -142,6 +146,7 @@ fun NoteSearchResultScreen(
     val density = LocalDensity.current
     val listState = rememberLazyListState()
     val headerState = rememberHeaderState(listState)
+    var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
     val pinnedFilterTopPadding = if (headerState == HeaderState.CollapsedBarOnly) {
         COLLAPSED_TOP_BAR_HEIGHT.dp
     } else {
@@ -254,6 +259,7 @@ fun NoteSearchResultScreen(
                         NoteComponent(
                             noteData = note,
                             onClick = { onNoteClick(it.id) },
+                            onMenuClick = { selectedNoteForMenu = it },
                         )
                     }
 
@@ -296,6 +302,18 @@ fun NoteSearchResultScreen(
                 TopicFilterRow(
                     selectedNoteTopic = viewState.selectedNoteTopic,
                     onTopicSelect = viewModel::selectTopic,
+                )
+            }
+
+            selectedNoteForMenu?.let { selectedNote ->
+                NoteMenuBottomSheet(
+                    noteData = selectedNote,
+                    currentUserId = currentUserId,
+                    onReportClick = { noteId ->
+                        selectedNoteForMenu = null
+                        onNoteReportClick(noteId)
+                    },
+                    onDismissRequest = { selectedNoteForMenu = null },
                 )
             }
         }

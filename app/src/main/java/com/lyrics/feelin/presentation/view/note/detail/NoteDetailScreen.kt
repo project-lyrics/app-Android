@@ -29,7 +29,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.buildAnnotatedString
@@ -46,12 +48,15 @@ import com.lyrics.feelin.presentation.view.component.comment.CommentComponentDat
 import com.lyrics.feelin.presentation.view.component.comment.CommentInputField
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
 import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteMenuBottomSheet
 
 @Composable
 fun NoteDetailScreen(
     noteId: Long,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onNoteReportClick: (Long) -> Unit = {},
+    currentUserId: Long? = null,
     viewModel: NoteDetailViewModel = hiltViewModel(),
 ) {
     val viewState by viewModel.viewState.collectAsState()
@@ -65,6 +70,8 @@ fun NoteDetailScreen(
         viewState = viewState,
         commentInputState = commentInputState,
         onBackClick = onBackClick,
+        onNoteReportClick = onNoteReportClick,
+        currentUserId = currentUserId,
         onCommentMoreClick = viewModel::selectComment,
         onSendComment = viewModel::writeComment,
         modifier = modifier,
@@ -76,11 +83,14 @@ private fun NoteDetailContent(
     viewState: NoteDetailViewState,
     commentInputState: TextFieldState,
     onBackClick: () -> Unit,
+    onNoteReportClick: (Long) -> Unit,
+    currentUserId: Long?,
     onCommentMoreClick: (CommentComponentData) -> Unit,
     onSendComment: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
+    var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
 
     Scaffold(
         modifier = modifier
@@ -113,6 +123,7 @@ private fun NoteDetailContent(
             NoteDetailStatus.LOADING -> NoteDetailLoadingContent(innerPadding = innerPadding)
             NoteDetailStatus.SUCCESS -> NoteDetailSuccessContent(
                 viewState = viewState,
+                onNoteMenuClick = { selectedNoteForMenu = it },
                 onCommentMoreClick = onCommentMoreClick,
                 innerPadding = innerPadding,
             )
@@ -121,6 +132,18 @@ private fun NoteDetailContent(
                 innerPadding = innerPadding,
             )
         }
+    }
+
+    selectedNoteForMenu?.let { selectedNote ->
+        NoteMenuBottomSheet(
+            noteData = selectedNote,
+            currentUserId = currentUserId,
+            onReportClick = { selectedNoteId ->
+                selectedNoteForMenu = null
+                onNoteReportClick(selectedNoteId)
+            },
+            onDismissRequest = { selectedNoteForMenu = null },
+        )
     }
 }
 
@@ -139,6 +162,7 @@ private fun NoteDetailLoadingContent(innerPadding: PaddingValues, modifier: Modi
 @Composable
 private fun NoteDetailSuccessContent(
     viewState: NoteDetailViewState,
+    onNoteMenuClick: (NoteComponentData) -> Unit,
     onCommentMoreClick: (CommentComponentData) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -153,7 +177,10 @@ private fun NoteDetailSuccessContent(
             .fillMaxSize(),
     ) {
         item {
-            NoteComponent(noteData = viewState.note)
+            NoteComponent(
+                noteData = viewState.note,
+                onMenuClick = onNoteMenuClick,
+            )
             if (hasComments) {
                 HorizontalDivider(color = feelinColors.backgroundTertiary, thickness = 8.dp)
             }
@@ -248,6 +275,8 @@ private fun NoteDetailScreenPreview() {
             ),
             commentInputState = remember { TextFieldState() },
             onBackClick = {},
+            onNoteReportClick = {},
+            currentUserId = null,
             onCommentMoreClick = {},
             onSendComment = {},
         )
@@ -271,6 +300,8 @@ private fun NoteDetailNoCommentScreenPreview() {
             ),
             commentInputState = remember { TextFieldState() },
             onBackClick = {},
+            onNoteReportClick = {},
+            currentUserId = null,
             onCommentMoreClick = {},
             onSendComment = {},
         )

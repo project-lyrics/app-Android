@@ -23,6 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
@@ -33,6 +36,8 @@ import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.artist.ArtistBubbleComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteMenuBottomSheet
 import com.lyrics.feelin.presentation.view.home.component.ArtistRow
 import com.lyrics.feelin.presentation.view.home.component.BannerSection
 import com.lyrics.feelin.presentation.view.home.component.DummyBannerSection
@@ -47,11 +52,14 @@ fun HomeScreen(
     onBannerClick: (String) -> Unit,
     onArtistClick: (Long) -> Unit,
     onNoteClick: (Long) -> Unit,
+    onNoteReportClick: (Long) -> Unit,
     onNotificationClick: () -> Unit,
     modifier: Modifier = Modifier,
+    currentUserId: Long? = null,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsState()
+    var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.loadHomeData()
@@ -158,11 +166,24 @@ fun HomeScreen(
                             onFilterClick = viewModel::selectFilter,
                             onNoteClick = onNoteClick,
                             onNoteLikeClick = viewModel::toggleLike,
-                            onNoteBookmarkClick = viewModel::toggleBookmark
+                            onNoteBookmarkClick = viewModel::toggleBookmark,
+                            onNoteMenuClick = { selectedNoteForMenu = it },
                         )
                     }
                 }
             }
+        }
+
+        selectedNoteForMenu?.let { selectedNote ->
+            NoteMenuBottomSheet(
+                noteData = selectedNote,
+                currentUserId = currentUserId,
+                onReportClick = { noteId ->
+                    selectedNoteForMenu = null
+                    onNoteReportClick(noteId)
+                },
+                onDismissRequest = { selectedNoteForMenu = null },
+            )
         }
 
         if (uiState.bottomSheetType == HomeBottomSheetType.MyFavoriteArtists) {
@@ -221,6 +242,7 @@ private fun HomeScreenPreviewLoading() {
             onBannerClick = {},
             onArtistClick = {},
             onNoteClick = {},
+            onNoteReportClick = {},
             onNotificationClick = {},
         )
     }

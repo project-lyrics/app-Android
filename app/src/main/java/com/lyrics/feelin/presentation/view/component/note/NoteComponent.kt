@@ -46,6 +46,7 @@ fun NoteComponent(
     onClick: ((NoteComponentData) -> Unit)? = null,
     onLikeClick: ((NoteComponentData) -> Unit)? = null,
     onBookmarkClick: ((NoteComponentData) -> Unit)? = null,
+    onMenuClick: ((NoteComponentData) -> Unit)? = null,
 ) {
     val feelinColors = LocalFeelinColors.current
 
@@ -80,7 +81,15 @@ fun NoteComponent(
             Icon(
                 imageVector = MeatballIcon,
                 contentDescription = "${noteData.song.name} menu",
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier
+                    .size(24.dp)
+                    .then(
+                        if (onMenuClick != null) {
+                            Modifier.clickable { onMenuClick(noteData) }
+                        } else {
+                            Modifier
+                        }
+                    ),
                 tint = feelinColors.gray03,
             )
         }

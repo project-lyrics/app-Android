@@ -3,9 +3,10 @@ package com.lyrics.feelin.presentation.view.note.report
 import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -13,13 +14,17 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,13 +34,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinCheckboxItem
 import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinNormalButton
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarDefaults
 import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
+import com.lyrics.feelin.core.designsystem.icon.CheckBoxIconEnabled
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
@@ -75,11 +84,18 @@ fun NoteReportScreen(
     val feelinColors = LocalFeelinColors.current
 
     Scaffold(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .statusBarsPadding(),
         topBar = {
             FeelinTopAppBarWithBack(
                 title = "신고하기",
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
+                paddingValues = PaddingValues(
+                    horizontal = FeelinTopAppBarDefaults.HorizontalPadding,
+                    vertical = 10.dp,
+                ),
+                showDivider = false,
             )
         },
         bottomBar = {
@@ -87,6 +103,7 @@ fun NoteReportScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(feelinColors.backgroundPrimary)
+                    .navigationBarsPadding()
                     .padding(vertical = 12.dp)
             ) {
                 FeelinCheckboxItem(
@@ -95,7 +112,7 @@ fun NoteReportScreen(
                     text = "개인정보 수집에 동의합니다.",
                     required = true
                 )
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(32.dp))
                 FeelinNormalButton(
                     text = "신고하기",
                     enabled = isSubmitEnabled,
@@ -113,19 +130,33 @@ fun NoteReportScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
-            reportReasons.forEach { reason ->
-                FeelinRadioButtonItem(
-                    selected = selectedReason == reason,
-                    text = reason,
-                    onClick = {
-                        selectedReason = reason
-                        if (reason != "기타") {
-                            otherReasonText = ""
+            Text(
+                text = "신고사유",
+                style = FeelinTypography.heading3,
+                color = feelinColors.gray09,
+                modifier = Modifier.padding(horizontal = 20.dp),
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Column(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+            ) {
+                reportReasons.forEach { reason ->
+                    ReportReasonItem(
+                        selected = selectedReason == reason,
+                        text = reason,
+                        onClick = {
+                            selectedReason = reason
+                            if (reason != "기타") {
+                                otherReasonText = ""
+                            }
                         }
-                    }
-                )
+                    )
+                }
             }
 
             if (selectedReason == "기타") {
@@ -159,7 +190,11 @@ fun NoteReportScreen(
                 text = "*관리자 검토 진행 후 신고가 반려될 수 있으며, 고의적인 허위신고가 반복될 경우 서비스 이용이 제한될 수 있습니다.",
                 style = FeelinTypography.caption1,
                 color = feelinColors.gray05,
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)
+                modifier = Modifier.padding(
+                    start = 20.dp,
+                    top = 24.dp,
+                    end = 20.dp,
+                ),
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -186,7 +221,7 @@ fun NoteReportScreen(
 }
 
 @Composable
-private fun FeelinRadioButtonItem(
+private fun ReportReasonItem(
     selected: Boolean,
     text: String,
     onClick: () -> Unit,
@@ -196,23 +231,35 @@ private fun FeelinRadioButtonItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = onClick)
-            .padding(horizontal = 20.dp, vertical = 14.dp),
+            .selectable(
+                selected = selected,
+                onClick = onClick,
+                role = Role.RadioButton,
+            ),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .size(24.dp)
-                .border(
-                    width = if (selected) 6.dp else 1.5.dp,
-                    color = if (selected) feelinColors.brandPrimary else feelinColors.gray02,
-                    shape = CircleShape
-                )
-        )
-        Spacer(modifier = Modifier.size(12.dp))
+        if (selected) {
+            Icon(
+                imageVector = CheckBoxIconEnabled,
+                contentDescription = "선택됨",
+                tint = Color.Unspecified,
+                modifier = Modifier.size(24.dp),
+            )
+        } else {
+            Box(
+                modifier = Modifier
+                    .size(24.dp)
+                    .border(
+                        width = 1.dp,
+                        color = feelinColors.gray02,
+                        shape = CircleShape,
+                    ),
+            )
+        }
+        Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = text,
-            style = FeelinTypography.title2,
+            style = FeelinTypography.body1,
             color = feelinColors.gray09
         )
     }

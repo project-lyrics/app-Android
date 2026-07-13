@@ -41,7 +41,9 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -64,6 +66,8 @@ import com.lyrics.feelin.presentation.designsystem.theme.LightGray03
 import com.lyrics.feelin.presentation.designsystem.theme.LightGray09
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.component.note.NoteComponent
+import com.lyrics.feelin.presentation.view.component.note.NoteComponentData
+import com.lyrics.feelin.presentation.view.component.note.NoteMenuBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,11 +76,14 @@ fun CommunityMainScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     onNoteClick: (Long) -> Unit = {},
+    onNoteReportClick: (Long) -> Unit = {},
     onNoteAddClick: () -> Unit = {},
+    currentUserId: Long? = null,
     viewModel: CommunityViewModel = viewModel()
 ) {
     val listState = rememberLazyListState()
     val communityViewState by viewModel.viewState.collectAsState()
+    var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
 
     val feelinColors = LocalFeelinColors.current
 
@@ -293,6 +300,7 @@ fun CommunityMainScreen(
                         NoteComponent(
                             noteData = note,
                             onClick = { onNoteClick(it.id) },
+                            onMenuClick = { selectedNoteForMenu = it },
                         )
                     }
                 }
@@ -308,6 +316,18 @@ fun CommunityMainScreen(
                     )
                 }
             }
+        }
+
+        selectedNoteForMenu?.let { selectedNote ->
+            NoteMenuBottomSheet(
+                noteData = selectedNote,
+                currentUserId = currentUserId,
+                onReportClick = { noteId ->
+                    selectedNoteForMenu = null
+                    onNoteReportClick(noteId)
+                },
+                onDismissRequest = { selectedNoteForMenu = null },
+            )
         }
     }
 }

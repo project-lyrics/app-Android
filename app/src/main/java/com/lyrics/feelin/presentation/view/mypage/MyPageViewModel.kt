@@ -20,6 +20,7 @@ class MyPageViewModel @Inject constructor(
 ) : ViewModel() {
     private val _myPageScreenStatus: MutableStateFlow<MyPageScreenState> = MutableStateFlow(MyPageScreenState.initial())
     val myPageScreenState: StateFlow<MyPageScreenState> = _myPageScreenStatus.asStateFlow()
+    val currentUserId: StateFlow<Long?> = authRepository.userId
 
     private val _logoutStatus: MutableStateFlow<MyPageLogoutStatus> = MutableStateFlow(MyPageLogoutStatus.IDLE)
     val logoutStatus: StateFlow<MyPageLogoutStatus> = _logoutStatus.asStateFlow()

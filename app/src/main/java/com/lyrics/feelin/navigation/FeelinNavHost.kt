@@ -59,6 +59,7 @@ import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersViewM
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.detail.NoteDetailScreen
+import com.lyrics.feelin.presentation.view.note.report.NoteReportScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.note.search.result.NoteSearchResultScreen
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingUiState
@@ -293,6 +294,9 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                         onNoteClick = { noteId ->
                             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
                         },
+                        onNoteReportClick = { noteId ->
+                            navController.navigate(FeelinDestination.NoteReport.createRoute(noteId))
+                        },
                         onNoteAddClick = {
                             navController.navigate(FeelinDestination.NoteFormCreate.route)
                         }
@@ -322,6 +326,9 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                         onNoteClick = { noteId ->
                             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
                         },
+                        onNoteReportClick = { noteId ->
+                            navController.navigate(FeelinDestination.NoteReport.createRoute(noteId))
+                        },
                     )
                 }
             }
@@ -336,6 +343,23 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
                 ?: return@composable
 
             NoteDetailScreen(
+                noteId = noteId,
+                onBackClick = { navController.popBackStack() },
+                onNoteReportClick = { selectedNoteId ->
+                    navController.navigate(FeelinDestination.NoteReport.createRoute(selectedNoteId))
+                },
+            )
+        }
+
+        composable(
+            route = FeelinDestination.NoteReport.route,
+            arguments = listOf(navArgument(FeelinDestination.NoteReport.NoteIdArgument) { type = NavType.LongType }),
+        ) { backStackEntry ->
+            val noteId = backStackEntry.arguments
+                ?.getLong(FeelinDestination.NoteReport.NoteIdArgument)
+                ?: return@composable
+
+            NoteReportScreen(
                 noteId = noteId,
                 onBackClick = { navController.popBackStack() },
             )
@@ -361,6 +385,9 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
                     onSettingClick = { navController.navigate(FeelinDestination.Setting.route) },
                     onNoteClick = { noteId ->
                         navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
+                    },
+                    onNoteReportClick = { noteId ->
+                        navController.navigate(FeelinDestination.NoteReport.createRoute(noteId))
                     },
                     viewModel = viewModel,
                 )

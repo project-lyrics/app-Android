@@ -23,6 +23,9 @@ fun HomeRoute(
         onNoteClick = { noteId ->
             navController.navigate(FeelinDestination.NoteDetail.createRoute(noteId))
         },
+        onNoteReportClick = { noteId ->
+            navController.navigate(FeelinDestination.NoteReport.createRoute(noteId))
+        },
         onNotificationClick = {
             // TODO(@이대근): 추후 알림 화면 라우트 연결 2026.06.17.
             Log.d("HomeRoute", "Notification clicked")

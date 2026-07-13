@@ -36,6 +36,7 @@ fun LazyListScope.feedSection(
     onNoteClick: (Long) -> Unit = {},
     onNoteLikeClick: (Long) -> Unit = {},
     onNoteBookmarkClick: (Long) -> Unit = {},
+    onNoteMenuClick: (NoteComponentData) -> Unit = {},
 ) {
     feedSectionHeader(
         selectedTab = uiState.selectedTab,
@@ -55,7 +56,8 @@ fun LazyListScope.feedSection(
         notes = uiState.currentTabState.notes,
         onNoteClick = onNoteClick,
         onNoteLikeClick = onNoteLikeClick,
-        onNoteBookmarkClick = onNoteBookmarkClick
+        onNoteBookmarkClick = onNoteBookmarkClick,
+        onNoteMenuClick = onNoteMenuClick,
     )
 }
 
@@ -138,6 +140,7 @@ private fun LazyListScope.feedSectionNotes(
     onNoteClick: (Long) -> Unit,
     onNoteLikeClick: (Long) -> Unit,
     onNoteBookmarkClick: (Long) -> Unit,
+    onNoteMenuClick: (NoteComponentData) -> Unit,
 ) {
     if (notes.isEmpty()) {
         item(key = "feedEmptyState") {
@@ -156,6 +159,7 @@ private fun LazyListScope.feedSectionNotes(
             onClick = { onNoteClick(note.id) },
             onLikeClick = { onNoteLikeClick(note.id) },
             onBookmarkClick = { onNoteBookmarkClick(note.id) },
+            onMenuClick = onNoteMenuClick,
             modifier = Modifier.fillMaxWidth()
         )
     }

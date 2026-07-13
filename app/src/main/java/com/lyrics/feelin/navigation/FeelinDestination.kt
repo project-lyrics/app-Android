@@ -69,6 +69,13 @@ sealed class FeelinDestination(
             return "$NOTE_DETAIL_ROUTE/$noteId"
         }
     }
+    object NoteReport : FeelinDestination(route = "note_report/{$NOTE_ID_ARGUMENT}") {
+        const val NoteIdArgument = NOTE_ID_ARGUMENT
+
+        fun createRoute(noteId: Long): String {
+            return "note_report/$noteId"
+        }
+    }
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")

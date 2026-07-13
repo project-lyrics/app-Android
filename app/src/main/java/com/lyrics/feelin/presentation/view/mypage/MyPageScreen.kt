@@ -75,10 +75,10 @@ fun MyPageScreen(
     modifier: Modifier = Modifier,
     onNoteClick: (Long) -> Unit = {},
     onNoteReportClick: (Long) -> Unit = {},
-    currentUserId: Long? = null,
     viewModel: MyPageViewModel = hiltViewModel(),
 ) {
     val myPageState by viewModel.myPageScreenState.collectAsState()
+    val currentUserId by viewModel.currentUserId.collectAsState()
     var selectedNoteForMenu by remember { mutableStateOf<NoteComponentData?>(null) }
 
     val feelinColors = LocalFeelinColors.current

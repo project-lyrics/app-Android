@@ -1,6 +1,5 @@
 package com.lyrics.feelin.navigation
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -27,8 +26,7 @@ fun HomeRoute(
             navController.navigate(FeelinDestination.NoteReport.createRoute(noteId))
         },
         onNotificationClick = {
-            // TODO(@이대근): 추후 알림 화면 라우트 연결 2026.06.17.
-            Log.d("HomeRoute", "Notification clicked")
+            navController.navigate(FeelinDestination.Notification.route)
         }
     )
 }

@@ -38,6 +38,7 @@ sealed class FeelinDestination(
 
     // Main Flow (with Bottom Navigation)
     object Home : FeelinDestination(route = "home")
+    object Notification : FeelinDestination(route = "notification")
     object ArtistRecord : FeelinDestination(route = "artist_record/{$ARTIST_ID_ARGUMENT}") {
         const val ArtistIdArgument = ARTIST_ID_ARGUMENT
 

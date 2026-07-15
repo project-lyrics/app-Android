@@ -63,7 +63,7 @@ import com.lyrics.feelin.presentation.view.note.report.NoteReportScreen
 import com.lyrics.feelin.presentation.view.note.search.NoteSearchScreen
 import com.lyrics.feelin.presentation.view.note.search.result.NoteSearchResultScreen
 import com.lyrics.feelin.presentation.view.notification.NotificationScreen
-import com.lyrics.feelin.presentation.view.notification.NotificationUiState
+import com.lyrics.feelin.presentation.view.notification.NotificationViewModel
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingUiState
 import com.lyrics.feelin.presentation.view.onboarding.OnboardingViewModel
 import com.lyrics.feelin.presentation.view.onboarding.genderage.OnboardingGenderAgeScreen
@@ -308,10 +308,13 @@ private fun NavGraphBuilder.mainNavGraph(navController: NavHostController) {
         }
 
         composable(FeelinDestination.Notification.route) {
+            val viewModel: NotificationViewModel = hiltViewModel()
+            val uiState by viewModel.uiState.collectAsState()
+
             NotificationScreen(
-                uiState = NotificationUiState.populatedSample(),
-                onEditClick = {},
-                onTabClick = {},
+                uiState = uiState,
+                onBackClick = { navController.popBackStack() },
+                onTabClick = viewModel::selectTab,
                 onNotificationClick = {},
                 onDialogConfirmClick = {},
             )

@@ -1,13 +1,13 @@
 package com.lyrics.feelin.presentation.view.notification.component
 
 import android.content.res.Configuration
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -21,9 +21,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.lyrics.feelin.R
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
@@ -51,16 +53,34 @@ fun NotificationListItem(
             .padding(horizontal = 20.dp, vertical = 20.dp),
         verticalAlignment = Alignment.Top
     ) {
-        // FIXME(@이대근): 고정 리소스 사용하면 안됨, 네트워크 이미지를 표현해야 함.
-        Image(
-            painter = painterResource(id = item.thumbnailRes),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
+        Box(
             modifier = Modifier
                 .size(36.dp)
-                .alpha(thumbnailAlpha)
-                .clip(CircleShape)
-        )
+        ) {
+            AsyncImage(
+                model = item.imageUrl,
+                contentDescription = null,
+                // MARK(@이대근): placeholder, error 다른 것으로 할 수 있는지 확인 2026.07.15.
+                placeholder = painterResource(id = R.drawable.lyrics_background_img00),
+                error = painterResource(id = R.drawable.lyrics_background_img00),
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .alpha(thumbnailAlpha)
+                    .clip(CircleShape)
+                    .background(feelinColors.backgroundTertiary)
+            )
+
+            if (!item.isRead) {
+                Box(
+                    modifier = Modifier
+                        .size(4.dp)
+                        .background(color = feelinColors.point, shape = CircleShape)
+                        .align(Alignment.TopEnd)
+                        .testTag("notificationUnreadIndicator")
+                )
+            }
+        }
 
         Spacer(modifier = Modifier.width(12.dp))
 
@@ -73,22 +93,12 @@ fun NotificationListItem(
                 color = messageColor
             )
 
-            Spacer(modifier = Modifier.height(6.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
             Text(
                 text = item.timeLabel,
                 style = FeelinTypography.caption2,
                 color = timeColor
-            )
-        }
-
-        if (!item.isRead) {
-            Spacer(modifier = Modifier.width(8.dp))
-            Box(
-                modifier = Modifier
-                    .size(4.dp)
-                    .background(color = feelinColors.point, shape = CircleShape)
-                    .align(Alignment.CenterVertically)
             )
         }
     }
@@ -113,7 +123,7 @@ private fun NotificationListItemPreview() {
                     id = 1L,
                     message = "누군가 내 노트에 좋아요를 남겼어요.",
                     timeLabel = "방금 전",
-                    thumbnailRes = R.drawable.lyrics_background_img00,
+                    imageUrl = "https://picsum.photos/seed/feelin-preview-unread/72/72",
                     isRead = false
                 ),
                 onClick = {}
@@ -123,7 +133,7 @@ private fun NotificationListItemPreview() {
                     id = 2L,
                     message = "누군가 내 노트에 좋아요를 남겼어요.",
                     timeLabel = "3시간 전",
-                    thumbnailRes = R.drawable.lyrics_background_img00,
+                    imageUrl = "https://picsum.photos/seed/feelin-preview-read/72/72",
                     isRead = true
                 ),
                 onClick = {}
@@ -136,7 +146,7 @@ private fun NotificationListItemPreview() {
                     id = 3L,
                     message = longMsg,
                     timeLabel = "1일 전",
-                    thumbnailRes = R.drawable.lyrics_background_img00,
+                    imageUrl = "https://picsum.photos/seed/feelin-preview-report/72/72",
                     isRead = false
                 ),
                 onClick = {}

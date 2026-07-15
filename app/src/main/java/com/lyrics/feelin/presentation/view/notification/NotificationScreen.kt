@@ -2,7 +2,6 @@ package com.lyrics.feelin.presentation.view.notification
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -12,18 +11,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.core.designsystem.component.FeelinModalDialog
 import com.lyrics.feelin.core.designsystem.component.FeelinTab
 import com.lyrics.feelin.core.designsystem.component.FeelinTabRow
-import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarNoBack
+import com.lyrics.feelin.core.designsystem.component.FeelinTopAppBarWithBack
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
-import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import com.lyrics.feelin.presentation.view.notification.component.NotificationEmptyState
 import com.lyrics.feelin.presentation.view.notification.component.NotificationListItem
@@ -31,7 +32,7 @@ import com.lyrics.feelin.presentation.view.notification.component.NotificationLi
 @Composable
 fun NotificationScreen(
     uiState: NotificationUiState,
-    onEditClick: () -> Unit,
+    onBackClick: () -> Unit,
     onTabClick: (NotificationTab) -> Unit,
     onNotificationClick: (Long) -> Unit,
     onDialogConfirmClick: () -> Unit,
@@ -44,19 +45,11 @@ fun NotificationScreen(
             .background(color = feelinColors.backgroundPrimary)
             .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top + WindowInsetsSides.Bottom)),
         topBar = {
-            FeelinTopAppBarNoBack(
+            FeelinTopAppBarWithBack(
                 title = "알림",
+                onBackClick = onBackClick,
                 centeredTitle = true,
-                actions = {
-                    if (uiState.items.isNotEmpty()) {
-                        Text(
-                            text = "편집",
-                            style = FeelinTypography.body1,
-                            color = feelinColors.gray09,
-                            modifier = Modifier.clickable(onClick = onEditClick)
-                        )
-                    }
-                }
+                showDivider = false,
             )
         }
     ) { contentPadding ->
@@ -69,7 +62,7 @@ fun NotificationScreen(
             FeelinTabRow(
                 selectedTabIndex = uiState.selectedTab.ordinal
             ) {
-                NotificationTab.values().forEach { tab ->
+                NotificationTab.entries.forEach { tab ->
                     FeelinTab(
                         selected = uiState.selectedTab == tab,
                         onClick = { onTabClick(tab) },
@@ -82,14 +75,21 @@ fun NotificationScreen(
                 NotificationEmptyState(modifier = Modifier.weight(1f))
             } else {
                 LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(
+                    itemsIndexed(
                         items = uiState.items,
-                        key = { it.id }
-                    ) { item ->
+                        key = { _, item -> item.id }
+                    ) { index, item ->
                         NotificationListItem(
                             item = item,
                             onClick = onNotificationClick
                         )
+                        if (index != uiState.items.lastIndex) {
+                            HorizontalDivider(
+                                modifier = Modifier.testTag("notificationDivider"),
+                                thickness = 1.dp,
+                                color = feelinColors.gray01
+                            )
+                        }
                     }
                 }
             }
@@ -121,7 +121,7 @@ private fun NotificationScreenPopulatedPreview() {
     FeelinTheme {
         NotificationScreen(
             uiState = NotificationUiState.populatedSample(),
-            onEditClick = {},
+            onBackClick = {},
             onTabClick = {},
             onNotificationClick = {},
             onDialogConfirmClick = {}
@@ -143,7 +143,7 @@ private fun NotificationScreenEmptyPreview() {
     FeelinTheme {
         NotificationScreen(
             uiState = NotificationUiState.emptySample(),
-            onEditClick = {},
+            onBackClick = {},
             onTabClick = {},
             onNotificationClick = {},
             onDialogConfirmClick = {}
@@ -165,7 +165,7 @@ private fun NotificationScreenReportPreview() {
     FeelinTheme {
         NotificationScreen(
             uiState = NotificationUiState.reportSample(),
-            onEditClick = {},
+            onBackClick = {},
             onTabClick = {},
             onNotificationClick = {},
             onDialogConfirmClick = {}
@@ -187,7 +187,7 @@ private fun NotificationScreenDeletedNoteDialogPreview() {
     FeelinTheme {
         NotificationScreen(
             uiState = NotificationUiState.deletedNoteDialogSample(),
-            onEditClick = {},
+            onBackClick = {},
             onTabClick = {},
             onNotificationClick = {},
             onDialogConfirmClick = {}

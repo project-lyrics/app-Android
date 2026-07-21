@@ -34,6 +34,7 @@ import com.lyrics.feelin.presentation.view.mypage.component.UserLoginInfoItem
 @Composable
 fun UserInfoScreen(
     onBackClick: () -> Unit,
+    onGenderBirthYearClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val feelinColors = LocalFeelinColors.current
@@ -78,7 +79,10 @@ fun UserInfoScreen(
             UserInfoCategoryDivider()
 
             InnerTitle(title = "성별 및 출생 년도")
-            SettingMenuItem("${gender}ㆍ${birthYear}년", onClick = {})
+            SettingMenuItem(
+                title = "${gender}ㆍ${birthYear}년",
+                onClick = onGenderBirthYearClick,
+            )
         }
     }
 }
@@ -118,6 +122,9 @@ private fun UserInfoCategoryDivider() {
 @Composable
 private fun UserInfoScreenPreview() {
     FeelinTheme {
-        UserInfoScreen(onBackClick = {})
+        UserInfoScreen(
+            onBackClick = {},
+            onGenderBirthYearClick = {},
+        )
     }
 }

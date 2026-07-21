@@ -57,6 +57,7 @@ import com.lyrics.feelin.presentation.view.mypage.MyPageViewModel
 import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersScreen
 import com.lyrics.feelin.presentation.view.mypage.blockedusers.BlockedUsersViewModel
 import com.lyrics.feelin.presentation.view.mypage.setting.SettingScreen
+import com.lyrics.feelin.presentation.view.mypage.userinfo.EditGenderBirthYearScreen
 import com.lyrics.feelin.presentation.view.mypage.userinfo.UserInfoScreen
 import com.lyrics.feelin.presentation.view.note.detail.NoteDetailScreen
 import com.lyrics.feelin.presentation.view.note.report.NoteReportScreen
@@ -448,8 +449,20 @@ private fun NavGraphBuilder.myPageNavGraph(navController: NavHostController) {
 
         composable(FeelinDestination.UserInfo.route) {
             MainScaffold(navController = navController, selectedIndex = 2) {
-                UserInfoScreen(onBackClick = { navController.popBackStack() })
+                UserInfoScreen(
+                    onBackClick = { navController.popBackStack() },
+                    onGenderBirthYearClick = {
+                        navController.navigate(FeelinDestination.EditGenderBirthYear.route)
+                    },
+                )
             }
+        }
+
+        composable(FeelinDestination.EditGenderBirthYear.route) {
+            EditGenderBirthYearScreen(
+                onBackClick = { navController.popBackStack() },
+                onSaveClick = { navController.popBackStack() },
+            )
         }
 
         composable(FeelinDestination.BlockedUsers.route) { backStackEntry ->

@@ -80,6 +80,7 @@ sealed class FeelinDestination(
     object MyPage : FeelinDestination(route = "my_page")
     object Setting : FeelinDestination(route = "setting")
     object UserInfo : FeelinDestination(route = "user_info")
+    object EditGenderBirthYear : FeelinDestination(route = "edit_gender_birth_year")
     object BlockedUsers : FeelinDestination(route = "blocked_users")
 
     object InternalWebView : FeelinDestination(

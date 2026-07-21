@@ -39,20 +39,21 @@ fun FeelinGenderButton(
     Column(
         modifier = modifier
             .fillMaxWidth()
+            .height(204.dp)
             .background(
                 color = if (selected) feelinColors.systemPressedBrand else feelinColors.gray00,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .border(
                 width = if (selected) 0.dp else 1.dp,
                 color = feelinColors.gray01,
-                shape = RoundedCornerShape(12.dp)
+                shape = RoundedCornerShape(8.dp)
             )
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) { onClick() }
-            .padding(vertical = 24.dp),
+            .padding(vertical = 22.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(

@@ -110,7 +110,7 @@ fun OnboardingGenderAgeScreen(
                         onClick = { selectedGender = "male" },
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
                     FeelinGenderButton(
                         text = "여성",
                         iconRes = if (selectedGender == "female") {
@@ -159,7 +159,7 @@ fun OnboardingGenderAgeScreen(
                         containerColor = feelinColors.systemActivate,
                         disabledContainerColor = feelinColors.systemDisable
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = "다음",
@@ -282,7 +282,7 @@ private fun OnboardingGenderAgeScreenWithState(
                         onClick = { },
                         modifier = Modifier.weight(1f)
                     )
-                    Spacer(modifier = Modifier.width(12.dp))
+                    Spacer(modifier = Modifier.width(14.dp))
                     FeelinGenderButton(
                         text = "여성",
                         iconRes = if (selectedGender == "female") {
@@ -325,7 +325,7 @@ private fun OnboardingGenderAgeScreenWithState(
                         containerColor = feelinColors.systemActivate,
                         disabledContainerColor = feelinColors.systemDisable
                     ),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 ) {
                     Text(
                         text = "다음",

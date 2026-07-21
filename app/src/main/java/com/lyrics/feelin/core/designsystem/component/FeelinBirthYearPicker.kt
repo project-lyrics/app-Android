@@ -54,9 +54,10 @@ fun FeelinBirthYearPicker(
     val startYear = 1900
     val years = (startYear..currentYear).toList()
 
-    var selectedYearIndex by remember {
+    val initialYearIndex = years.indexOf(value.removeSuffix("년").toIntOrNull())
+    var selectedYearIndex by remember(value) {
         mutableIntStateOf(
-            value.toIntOrNull()?.let { years.indexOf(it) } ?: years.indexOf(currentYear)
+            initialYearIndex.takeIf { it >= 0 } ?: years.indexOf(currentYear)
         )
     }
 
@@ -64,15 +65,15 @@ fun FeelinBirthYearPicker(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(52.dp)
                 .background(
                     color = if (isActivated) feelinColors.systemPressedBrand else feelinColors.gray00,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .border(
                     width = if (isActivated) 0.dp else 1.dp,
                     color = feelinColors.gray01,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .clickable { showDialog = true }
                 .padding(horizontal = 16.dp),

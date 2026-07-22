@@ -20,16 +20,10 @@ class BirthYearPickerDarkThemeTest {
 
     @Test
     fun numberPickerUsesLightTextColorInNightMode() {
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-
-        val nightConfig = Configuration(context.resources.configuration).apply {
-            uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_YES
-        }
-        val nightContext = context.createConfigurationContext(nightConfig)
-        val themedContext = ContextThemeWrapper(nightContext, R.style.Theme_Feelin)
-
-        val picker = NumberPicker(themedContext)
-        val inputText = findEditText(picker)
+        val inputText = createPickerInputText(
+            uiMode = Configuration.UI_MODE_NIGHT_YES,
+            styleRes = R.style.Theme_Feelin
+        )
 
         assertTrue(
             "NumberPicker text color should be light in night mode, but was #${Integer.toHexString(inputText.currentTextColor)}",
@@ -39,21 +33,59 @@ class BirthYearPickerDarkThemeTest {
 
     @Test
     fun numberPickerUsesDarkTextColorInLightMode() {
-        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
-
-        val lightConfig = Configuration(context.resources.configuration).apply {
-            uiMode = (uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or Configuration.UI_MODE_NIGHT_NO
-        }
-        val lightContext = context.createConfigurationContext(lightConfig)
-        val themedContext = ContextThemeWrapper(lightContext, R.style.Theme_Feelin)
-
-        val picker = NumberPicker(themedContext)
-        val inputText = findEditText(picker)
+        val inputText = createPickerInputText(
+            uiMode = Configuration.UI_MODE_NIGHT_NO,
+            styleRes = R.style.Theme_Feelin
+        )
 
         assertTrue(
             "NumberPicker text color should be dark in light mode, but was #${Integer.toHexString(inputText.currentTextColor)}",
             !isLightColor(inputText.currentTextColor)
         )
+    }
+
+    /**
+     * 온보딩처럼 Compose에서 라이트를 강제하는 화면을 모사합니다.
+     * 시스템이 다크 모드여도 명시적 라이트 테마를 쓰면 피커 글자색이 어두워야 합니다.
+     */
+    @Test
+    fun numberPickerWithExplicitLightThemeIgnoresSystemNightMode() {
+        val inputText = createPickerInputText(
+            uiMode = Configuration.UI_MODE_NIGHT_YES,
+            styleRes = R.style.Theme_Feelin_Light
+        )
+
+        assertTrue(
+            "NumberPicker with explicit light theme should use dark text even in night mode, " +
+                "but was #${Integer.toHexString(inputText.currentTextColor)}",
+            !isLightColor(inputText.currentTextColor)
+        )
+    }
+
+    @Test
+    fun numberPickerWithExplicitDarkThemeIgnoresSystemLightMode() {
+        val inputText = createPickerInputText(
+            uiMode = Configuration.UI_MODE_NIGHT_NO,
+            styleRes = R.style.Theme_Feelin_Dark
+        )
+
+        assertTrue(
+            "NumberPicker with explicit dark theme should use light text even in light mode, " +
+                "but was #${Integer.toHexString(inputText.currentTextColor)}",
+            isLightColor(inputText.currentTextColor)
+        )
+    }
+
+    private fun createPickerInputText(uiMode: Int, styleRes: Int): EditText {
+        val context = ApplicationProvider.getApplicationContext<android.content.Context>()
+
+        val config = Configuration(context.resources.configuration).apply {
+            this.uiMode = (this.uiMode and Configuration.UI_MODE_NIGHT_MASK.inv()) or uiMode
+        }
+        val configContext = context.createConfigurationContext(config)
+        val themedContext = ContextThemeWrapper(configContext, styleRes)
+
+        return findEditText(NumberPicker(themedContext))
     }
 
     private fun findEditText(picker: NumberPicker): EditText {

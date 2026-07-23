@@ -7,6 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +40,7 @@ fun FeelinGenderButton(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(204.dp)
+            .defaultMinSize(minHeight = 204.dp)
             .background(
                 color = if (selected) feelinColors.systemPressedBrand else feelinColors.gray00,
                 shape = RoundedCornerShape(8.dp)

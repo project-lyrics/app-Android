@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,61 +87,65 @@ fun EditGenderBirthYearScreen(
                 .padding(horizontal = 20.dp)
                 .windowInsetsPadding(WindowInsets.navigationBars),
         ) {
-            Spacer(modifier = Modifier.height(36.dp))
-
-            Text(
-                text = "성별",
-                style = FeelinTypography.title2,
-                color = feelinColors.gray05,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .verticalScroll(rememberScrollState()),
             ) {
-                FeelinGenderButton(
-                    text = "남성",
-                    iconRes = if (selectedGender == "male") {
-                        R.drawable.ic_gender_male_active
-                    } else {
-                        R.drawable.ic_gender_male_inactive
-                    },
-                    selected = selectedGender == "male",
-                    onClick = { selectedGender = "male" },
-                    modifier = Modifier.weight(1f),
+                Spacer(modifier = Modifier.height(36.dp))
+
+                Text(
+                    text = "성별",
+                    style = FeelinTypography.title2,
+                    color = feelinColors.gray05,
                 )
-                FeelinGenderButton(
-                    text = "여성",
-                    iconRes = if (selectedGender == "female") {
-                        R.drawable.ic_gender_female_active
-                    } else {
-                        R.drawable.ic_gender_female_inactive
-                    },
-                    selected = selectedGender == "female",
-                    onClick = { selectedGender = "female" },
-                    modifier = Modifier.weight(1f),
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(14.dp),
+                ) {
+                    FeelinGenderButton(
+                        text = "남성",
+                        iconRes = if (selectedGender == "male") {
+                            R.drawable.ic_gender_male_active
+                        } else {
+                            R.drawable.ic_gender_male_inactive
+                        },
+                        selected = selectedGender == "male",
+                        onClick = { selectedGender = "male" },
+                        modifier = Modifier.weight(1f),
+                    )
+                    FeelinGenderButton(
+                        text = "여성",
+                        iconRes = if (selectedGender == "female") {
+                            R.drawable.ic_gender_female_active
+                        } else {
+                            R.drawable.ic_gender_female_inactive
+                        },
+                        selected = selectedGender == "female",
+                        onClick = { selectedGender = "female" },
+                        modifier = Modifier.weight(1f),
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "출생 연도",
+                    style = FeelinTypography.title2,
+                    color = feelinColors.gray05,
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                FeelinBirthYearPicker(
+                    value = "${selectedBirthYear}년",
+                    placeholder = "출생 연도를 입력해주세요",
+                    onValueChange = { selectedBirthYear = it.removeSuffix("년") },
                 )
             }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            Text(
-                text = "출생 연도",
-                style = FeelinTypography.title2,
-                color = feelinColors.gray05,
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            FeelinBirthYearPicker(
-                value = "${selectedBirthYear}년",
-                placeholder = "출생 연도를 입력해주세요",
-                onValueChange = { selectedBirthYear = it.removeSuffix("년") },
-            )
-
-            Spacer(modifier = Modifier.weight(1f))
 
             FeelinNormalButton(
                 text = "회원 정보 저장",

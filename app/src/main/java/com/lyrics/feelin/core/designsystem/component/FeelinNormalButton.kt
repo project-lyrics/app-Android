@@ -12,6 +12,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.LightGray00
+import com.lyrics.feelin.presentation.designsystem.theme.LocalDarkTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 
 /** 디자인시스템에 접미사가 없이 선언된 버튼입니다. */
@@ -22,6 +24,9 @@ fun FeelinNormalButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit = {},
 ) {
+    val feelinColors = LocalFeelinColors.current
+    val isDarkTheme = LocalDarkTheme.current
+
     Button(
         onClick = onClick,
         enabled = enabled,
@@ -30,14 +35,16 @@ fun FeelinNormalButton(
             .height(56.dp),
         shape = RoundedCornerShape(12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = LocalFeelinColors.current.systemActivate,
-            disabledContainerColor = LocalFeelinColors.current.systemDisable,
+            containerColor = feelinColors.systemActivate,
+            contentColor = LightGray00,
+            disabledContainerColor = feelinColors.systemDisable,
+            // Figma Button(709:5452): 라이트 disabled는 흰색, 다크 disabled는 gray04
+            disabledContentColor = if (isDarkTheme) feelinColors.gray04 else LightGray00,
         )
     ) {
         Text(
             text = text,
             style = FeelinTypography.title2,
-            color = LocalFeelinColors.current.gray00,
         )
     }
 }

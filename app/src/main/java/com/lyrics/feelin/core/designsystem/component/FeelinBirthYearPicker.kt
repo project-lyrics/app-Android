@@ -79,7 +79,11 @@ fun FeelinBirthYearPicker(
                     color = feelinColors.gray01,
                     shape = RoundedCornerShape(8.dp)
                 )
-                .clickable { showDialog = true }
+                .clickable {
+                    // 이전에 취소한 임시 선택이 남지 않도록, 열 때마다 커밋된 값 기준으로 리셋한다.
+                    selectedYearIndex = initialYearIndex.takeIf { it >= 0 } ?: years.indexOf(currentYear)
+                    showDialog = true
+                }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {

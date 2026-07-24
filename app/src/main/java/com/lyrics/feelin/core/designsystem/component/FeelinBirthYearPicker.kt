@@ -1,5 +1,6 @@
 package com.lyrics.feelin.core.designsystem.component
 
+import android.view.ContextThemeWrapper
 import android.widget.NumberPicker
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,9 +31,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import com.lyrics.feelin.R
 import com.lyrics.feelin.core.designsystem.icon.CaretIcon
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTheme
 import com.lyrics.feelin.presentation.designsystem.theme.FeelinTypography
+import com.lyrics.feelin.presentation.designsystem.theme.LocalDarkTheme
 import com.lyrics.feelin.presentation.designsystem.theme.LocalFeelinColors
 import java.util.Calendar
 
@@ -44,6 +47,7 @@ fun FeelinBirthYearPicker(
     modifier: Modifier = Modifier
 ) {
     val feelinColors = LocalFeelinColors.current
+    val isDarkTheme = LocalDarkTheme.current
     var showDialog by remember { mutableStateOf(false) }
     val displayText = value.ifEmpty { placeholder }
     val isActivated = value.isNotEmpty()
@@ -54,9 +58,10 @@ fun FeelinBirthYearPicker(
     val startYear = 1900
     val years = (startYear..currentYear).toList()
 
-    var selectedYearIndex by remember {
+    val initialYearIndex = years.indexOf(value.removeSuffix("년").toIntOrNull())
+    var selectedYearIndex by remember(value) {
         mutableIntStateOf(
-            value.toIntOrNull()?.let { years.indexOf(it) } ?: years.indexOf(currentYear)
+            initialYearIndex.takeIf { it >= 0 } ?: years.indexOf(currentYear)
         )
     }
 
@@ -64,17 +69,21 @@ fun FeelinBirthYearPicker(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
+                .height(52.dp)
                 .background(
                     color = if (isActivated) feelinColors.systemPressedBrand else feelinColors.gray00,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
                 .border(
                     width = if (isActivated) 0.dp else 1.dp,
                     color = feelinColors.gray01,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(8.dp)
                 )
-                .clickable { showDialog = true }
+                .clickable {
+                    // 이전에 취소한 임시 선택이 남지 않도록, 열 때마다 커밋된 값 기준으로 리셋한다.
+                    selectedYearIndex = initialYearIndex.takeIf { it >= 0 } ?: years.indexOf(currentYear)
+                    showDialog = true
+                }
                 .padding(horizontal = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -113,7 +122,12 @@ fun FeelinBirthYearPicker(
                     ) {
                         AndroidView(
                             factory = { context ->
-                                NumberPicker(context).apply {
+                                // 네이티브 NumberPicker는 Compose 테마를 따르지 않으므로,
+                                // Compose의 다크 여부(LocalDarkTheme)에 맞는 명시적 테마로 감싼다.
+                                // 온보딩처럼 라이트를 강제하는 화면에서도 피커가 라이트로 그려진다.
+                                val pickerTheme =
+                                    if (isDarkTheme) R.style.Theme_Feelin_Dark else R.style.Theme_Feelin_Light
+                                NumberPicker(ContextThemeWrapper(context, pickerTheme)).apply {
                                     minValue = 0
                                     maxValue = years.size - 1
                                     displayedValues = years.map { it.toString() }.toTypedArray()

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Feelin" parent="android:Theme.Material.Light.NoActionBar" />
+    <!-- 시스템 나이트 모드와 무관하게 항상 라이트/다크로 resolve되는 명시적 스타일입니다.
+         온보딩처럼 라이트를 강제하는 화면의 네이티브 뷰(NumberPicker 등)에서 사용합니다. -->
+    <style name="Theme.Feelin.Light" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Feelin.Dark" parent="android:Theme.Material.NoActionBar" />
+
+    <!-- 시스템 나이트 모드를 따라가는 앱 기본 테마입니다. values-night에서는 Theme.Feelin.Dark를 가리킵니다. -->
+    <style name="Theme.Feelin" parent="Theme.Feelin.Light" />
 
     <style name="Theme.Feelin.Starting" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/brand_primary</item>

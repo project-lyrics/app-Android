@@ -188,9 +188,10 @@ Detekt에 formatting 및 Compose 규칙을 결합하고 `app/detekt.yml`을 저�
 
 ```text
 detekt
-  └── assembleDevDebug
-        ├── develop push: staging debug/release
-        └── main push: prod debug/release
+  └── Build Check
+        ├── 모든 PR 및 push: assembleDevDebug
+        ├── develop push: assembleStagingDebug, assembleStagingRelease
+        └── main push: assembleProdDebug, assembleProdRelease
 ```
 
 ### 테스트
